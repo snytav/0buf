@@ -181,6 +181,8 @@ __global__ void GPU_MakeDepartureLists(GPUCell  **cells,int nt,int *d_stage)
 				{
 
 					c->flyDirection(&p,&ix,&iy,&iz);
+					c->writeParticleToSurface(num,&p);
+
 
 //					if(p.direction == 0) printf("Blin-hren'\n");
 //					f(p.direction != (ix | (iy << 2) |(iz << 4))) printf("Blin-hren'^2\n");
