@@ -207,6 +207,60 @@ __global__ void GPU_MakeDepartureLists(GPUCell  **cells,int nt,int *d_stage)
 			}
 }
 
+__global__ void GPU_RemoveDepartureParticles(GPUCell  **cells,int nt,int *d_stage)
+{
+	    unsigned int nx = blockIdx.x;
+		unsigned int ny = blockIdx.y;
+		unsigned int nz = blockIdx.z;
+		int ix,iy,iz;//,n;
+
+		Particle p;
+		Cell  *c,*c0 = cells[0],nc;//,*new_c;
+		c = cells[c0->getGlobalCellNumber(nx,ny,nz)];
+
+
+
+
+
+
+
+
+		for(int num = 0;num < c->number_of_particles; num++)
+			{
+			p = c->readParticleFromSurfaceDevice(num);
+
+
+				if(!c->isPointInCell(p.GetX()))   //check Paricle = operator !!!!!!!!!!!!!!!!!!!!!!!!!!!
+				{
+					c->removeParticleFromSurfaceDevice(num,&p,&(c->number_of_particles));
+//					c->flyDirection(&p,&ix,&iy,&iz);
+//
+//					//if(p.direction == 0) printf("Blin-hren'\n");
+//					//f(p.direction != (ix | (iy << 2) |(iz << 4))) printf("Blin-hren'^2\n");
+//                    if(c->departureListLength == PARTICLES_FLYING_ONE_DIRECTION)
+//                    {
+//                    	d_stage[0] = TOO_MANY_PARTICLES;
+//                    	d_stage[1] = c->i;
+//                    	d_stage[2] = c->l;
+//                    	d_stage[3] = c->k;
+//                    	d_stage[1] = ix;
+//                    	d_stage[2] = iy;
+//                    	d_stage[3] = iz;
+//                    	return;
+//                    }
+//					c->departureListLength++;
+//					int num1 = c->departure[ix][iy][iz];
+//
+//					c->departureList[ix][iy][iz][num1] = p;
+//
+//					c->departure[ix][iy][iz] += 1;
+//
+//					num--;
+				}
+			}
+}
+
+
 
 __global__ void GPU_ArrangeFlights(GPUCell  **cells,int nt, int *d_stage)
 {
