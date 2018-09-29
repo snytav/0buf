@@ -1893,16 +1893,32 @@ int MakeParticleList(int nt,int *stage,int *stage1,int **d_stage,int **d_stage1)
              printf("after_MakeDepartureLists %d %s\n",after_MakeDepartureLists,cudaGetErrorString(after_MakeDepartureLists));
           }
 
+          cudaDeviceSynchronize();
+
+              int err = cudaGetLastError();
+
+              if(err != cudaSuccess)
+                  {
+                     printf("MakeParticleList sync error %d %s\n",err,getErrorString(err));
+                  }
+              err = MemoryCopy(stage,*d_stage,sizeof(int)*(Nx+2)*(Ny+2)*(Nz+2),DEVICE_TO_HOST);
+
+              if(err != cudaSuccess)
+              {
+                 printf("MakeParticleList error %d %s\n",err,getErrorString(err));
+                 exit(0);
+              }
 
 
-//                cudaError_t cudaStatus1 = cudaLaunchKernel(
-//                             (const void*)GPU_RemoveDepartureParticles, // pointer to kernel func.
-//                             dimGrid,                       // grid
-//                             dimBlockOne,                   // block
-//                             args,                          // arguments
-//                             16000,
-//                             0
-//                         );
+
+                cudaError_t cudaStatus1 = cudaLaunchKernel(
+                             (const void*)GPU_RemoveDepartureParticles, // pointer to kernel func.
+                             dimGrid,                       // grid
+                             dimBlockOne,                   // block
+                             args,                          // arguments
+                             16000,
+                             0
+                         );
 
 
     cudaError_t after_remove = cudaGetLastError();
@@ -1913,17 +1929,17 @@ int MakeParticleList(int nt,int *stage,int *stage1,int **d_stage,int **d_stage1)
 
     cudaDeviceSynchronize();
 
-    int err = cudaGetLastError();
+    int err1 = cudaGetLastError();
 
-    if(err != cudaSuccess)
+    if(err1 != cudaSuccess)
         {
-           printf("MakeParticleList sync error %d %s\n",err,getErrorString(err));
+           printf("after_remove sync error %d %s\n",err1,getErrorString(err1));
         }
-    err = MemoryCopy(stage,*d_stage,sizeof(int)*(Nx+2)*(Ny+2)*(Nz+2),DEVICE_TO_HOST);
+    err1 = MemoryCopy(stage,*d_stage,sizeof(int)*(Nx+2)*(Ny+2)*(Nz+2),DEVICE_TO_HOST);
 
-    if(err != cudaSuccess)
+    if(err1 != cudaSuccess)
     {
-       printf("MakeParticleList error %d %s\n",err,getErrorString(err));
+       printf("after_remove error %d %s\n",err,getErrorString(err1));
        exit(0);
     }
 
