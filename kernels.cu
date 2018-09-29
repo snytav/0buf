@@ -182,8 +182,8 @@ __global__ void GPU_MakeDepartureLists(GPUCell  **cells,int nt,int *d_stage)
 					c->removeParticleFromSurfaceDevice(num,&p,&(c->number_of_particles));
 					c->flyDirection(&p,&ix,&iy,&iz);
 
-					//if(p.direction == 0) printf("Blin-hren'\n");
-					//f(p.direction != (ix | (iy << 2) |(iz << 4))) printf("Blin-hren'^2\n");
+//					if(p.direction == 0) printf("Blin-hren'\n");
+//					f(p.direction != (ix | (iy << 2) |(iz << 4))) printf("Blin-hren'^2\n");
                     if(c->departureListLength == PARTICLES_FLYING_ONE_DIRECTION)
                     {
                     	d_stage[0] = TOO_MANY_PARTICLES;
