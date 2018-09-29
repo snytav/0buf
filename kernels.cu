@@ -176,11 +176,15 @@ __global__ void GPU_MakeDepartureLists(GPUCell  **cells,int nt,int *d_stage)
 			{
 			p = c->readParticleFromSurfaceDevice(num);
 
-
+			c->flyDirection(&p,&ix,&iy,&iz);
+			c->writeParticleToSurface(num,&p);
 				if(!c->isPointInCell(p.GetX()))   //check Paricle = operator !!!!!!!!!!!!!!!!!!!!!!!!!!!
 				{
 
-					c->flyDirection(&p,&ix,&iy,&iz);
+//					c->flyDirection(&p,&ix,&iy,&iz);
+					printf("fly %d:(%d,%d,%d) %d \n",p.direction,ix,iy,iz,ix*9 +iy*3 +iz);
+
+
 					c->writeParticleToSurface(num,&p);
 
 
@@ -204,13 +208,17 @@ __global__ void GPU_MakeDepartureLists(GPUCell  **cells,int nt,int *d_stage)
 
 					c->departure[ix][iy][iz] += 1;
 				}
+				else
+				{
+					printf("home %d:(%d,%d,%d) %d \n",p.direction,ix,iy,iz,ix*9 +iy*3 +iz);
+				}
 			}
 
 	     	for(int num = 0;num < c->number_of_particles; num++)
 			{
 	     		p = c->readParticleFromSurfaceDevice(num);
 
-				if(!c->isPointInCell(p.GetX()))   //check Paricle = operator !!!!!!!!!!!!!!!!!!!!!!!!!!!
+				if(p.direction != 13)   //check Paricle = operator !!!!!!!!!!!!!!!!!!!!!!!!!!!
 				{
 					c->removeParticleFromSurfaceDevice(num,&p,&(c->number_of_particles));
 										num--;

@@ -42,7 +42,7 @@ public:
   
    double x,y,z,pu,pv,pw,m,q_m,x1,y1,z1;
    //LiteCurrentTensor t1,t2;
-   char direction;
+   int direction;
 
    particle_sorts sort;
 

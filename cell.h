@@ -697,7 +697,7 @@ int    getCellNumberCenterY(double x,double x0,double hx){double t = (x-x0)/hx +
  	     *dy = (((p->y > y0 + hy) && (p->y < y0 + 2*hy)) || ((p->y < hy) && (l == Ny - 1))) ? 2 : ( ((p->y < y0) || ((p->y > ym-hy) && (l == 0))) ? 0 : 1);
  	     *dz = (((p->z > z0 + hz) && (p->z < z0 + 2*hz)) || ((p->z < hz) && (k == Nz - 1))) ? 2 : ( ((p->z < z0) || ((p->z > zm-hz) && (k == 0))) ? 0 : 1);
 
- 	     p->direction = (*dx) | ((*dy)<< 2) | ((*dz) << 4);
+ 	     p->direction = (*dx)*9 +(*dy)*3 +(*dz);//(*dx) | ((*dy)<< 2) | ((*dz) << 4);
    }
 
  #ifdef __CUDACC__
