@@ -201,7 +201,10 @@ __global__ void GPU_MakeDepartureLists(GPUCell  **cells,int nt,int *d_stage)
 					c->departureList[ix][iy][iz][num1] = p;
 
 					c->departure[ix][iy][iz] += 1;
+				}
 
+				if(!c->isPointInCell(p.GetX()))   //check Paricle = operator !!!!!!!!!!!!!!!!!!!!!!!!!!!
+				{
 					c->removeParticleFromSurfaceDevice(num,&p,&(c->number_of_particles));
 										num--;
 				}
