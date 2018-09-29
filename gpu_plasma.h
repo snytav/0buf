@@ -1909,14 +1909,7 @@ int MakeParticleList(int nt,int *stage,int *stage1,int **d_stage,int **d_stage1)
                  exit(0);
               }
 
-              cudaStatus = cudaLaunchKernel(
-                                   (const void*)GPU_MakeDepartureLists_rm, // pointer to kernel func.
-                                   dimGrid,                       // grid
-                                   dimBlockOne,                   // block
-                                   args,                          // arguments
-                                   16000,
-                                   0
-                               );
+
 
 
 
@@ -1977,7 +1970,25 @@ int reallyPassParticlesToAnotherCells(int nt,int *stage1,int *d_stage1)
 {
     int err;
     dim3 dimGridBulk(Nx,Ny,Nz),dimBlockOne(1,1,1);
+    dim3 dimGrid(Nx+2,Ny+2,Nz+2);
+    cudaError_t cudaStatus;
+
 	cudaMemset(d_stage1,0,sizeof(int)*(Nx+2)*(Ny+2)*(Nz+2));
+
+	//////////////////////////////////////
+	void* args1[] = {
+	    		         (void *)&d_CellArray,
+	    		         (void *)&nt,
+	    		         (void *)&d_stage1,
+	    		         0};
+	   cudaStatus = cudaLaunchKernel(
+	                                   (const void*)GPU_MakeDepartureLists_rm, // pointer to kernel func.
+	                                   dimGrid,                       // grid
+	                                   dimBlockOne,                   // block
+	                                   args1,                          // arguments
+	                                   16000,
+	                                   0
+	                               );
 
 
 //	    GPU_ArrangeFlights//<<<dimGridBulk, dimBlockOne>>>(d_CellArray,nt,d_stage1);
@@ -1987,7 +1998,7 @@ int reallyPassParticlesToAnotherCells(int nt,int *stage1,int *d_stage1)
 	    		          (void*)&d_stage1,
 	    		          0};
 
-	        cudaError_t cudaStatus = cudaLaunchKernel(
+	         cudaStatus = cudaLaunchKernel(
 	                     (const void*)GPU_ArrangeFlights, // pointer to kernel func.
 	                     dimGridBulk,                       // grid
 	                     dimBlockOne,                   // block
