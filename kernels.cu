@@ -180,6 +180,7 @@ __global__ void GPU_MakeDepartureLists(GPUCell  **cells,int nt,int *d_stage)
 				if(!c->isPointInCell(p.GetX()))   //check Paricle = operator !!!!!!!!!!!!!!!!!!!!!!!!!!!
 				{
 					c->removeParticleFromSurfaceDevice(num,&p,&(c->number_of_particles));
+					num--;
 					c->flyDirection(&p,&ix,&iy,&iz);
 
 //					if(p.direction == 0) printf("Blin-hren'\n");
@@ -202,7 +203,7 @@ __global__ void GPU_MakeDepartureLists(GPUCell  **cells,int nt,int *d_stage)
 
 					c->departure[ix][iy][iz] += 1;
 
-					num--;
+
 				}
 			}
 }
