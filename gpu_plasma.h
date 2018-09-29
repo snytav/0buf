@@ -1909,6 +1909,15 @@ int MakeParticleList(int nt,int *stage,int *stage1,int **d_stage,int **d_stage1)
                  exit(0);
               }
 
+              cudaStatus = cudaLaunchKernel(
+                                   (const void*)GPU_MakeDepartureLists_rm, // pointer to kernel func.
+                                   dimGrid,                       // grid
+                                   dimBlockOne,                   // block
+                                   args,                          // arguments
+                                   16000,
+                                   0
+                               );
+
 
 
 //                cudaError_t cudaStatus1 = cudaLaunchKernel(

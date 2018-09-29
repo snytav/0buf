@@ -213,6 +213,21 @@ __global__ void GPU_MakeDepartureLists(GPUCell  **cells,int nt,int *d_stage)
 					printf("home %d:(%d,%d,%d) %d \n",p.direction,ix,iy,iz,ix*9 +iy*3 +iz);
 				}
 			}
+}
+
+
+__global__ void GPU_MakeDepartureLists_rm(GPUCell  **cells,int nt,int *d_stage)
+{
+	    unsigned int nx = blockIdx.x;
+		unsigned int ny = blockIdx.y;
+		unsigned int nz = blockIdx.z;
+		int ix,iy,iz;//,n;
+
+		Particle p;
+		Cell  *c,*c0 = cells[0],nc;//,*new_c;
+		c = cells[c0->getGlobalCellNumber(nx,ny,nz)];
+
+
 
 	     	for(int num = 0;num < c->number_of_particles; num++)
 			{
