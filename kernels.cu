@@ -335,7 +335,7 @@ __global__ void GPU_ArrangeFlights(GPUCell  **cells,int nt, int *d_stage)
 						{
 							printf("хрень %x %x \n",p.direction, (snd_ix | (snd_iy << 2) |(snd_iz << 4)));
 						}
-
+                        p.direction = 13;
 						c->Insert(p);
 
 					}

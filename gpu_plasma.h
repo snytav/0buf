@@ -1975,20 +1975,7 @@ int reallyPassParticlesToAnotherCells(int nt,int *stage1,int *d_stage1)
 
 	cudaMemset(d_stage1,0,sizeof(int)*(Nx+2)*(Ny+2)*(Nz+2));
 
-	//////////////////////////////////////
-	void* args1[] = {
-	    		         (void *)&d_CellArray,
-	    		         (void *)&nt,
-	    		         (void *)&d_stage1,
-	    		         0};
-	   cudaStatus = cudaLaunchKernel(
-	                                   (const void*)GPU_MakeDepartureLists_rm, // pointer to kernel func.
-	                                   dimGrid,                       // grid
-	                                   dimBlockOne,                   // block
-	                                   args1,                          // arguments
-	                                   16000,
-	                                   0
-	                               );
+
 
 
 //	    GPU_ArrangeFlights//<<<dimGridBulk, dimBlockOne>>>(d_CellArray,nt,d_stage1);
@@ -2006,6 +1993,21 @@ int reallyPassParticlesToAnotherCells(int nt,int *stage1,int *d_stage1)
 	                     16000,
 	                     0
 	                 );
+
+	         //////////////////////////////////////
+	         	void* args1[] = {
+	         	    		         (void *)&d_CellArray,
+	         	    		         (void *)&nt,
+	         	    		         (void *)&d_stage1,
+	         	    		         0};
+	         	   cudaStatus = cudaLaunchKernel(
+	         	                                   (const void*)GPU_MakeDepartureLists_rm, // pointer to kernel func.
+	         	                                   dimGrid,                       // grid
+	         	                                   dimBlockOne,                   // block
+	         	                                   args1,                          // arguments
+	         	                                   16000,
+	         	                                   0
+	         	                               );
 
 
 #ifdef BALANCING_PRINTS
