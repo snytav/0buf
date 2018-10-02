@@ -330,7 +330,7 @@ __global__ void GPU_ArrangeFlights(GPUCell  **cells,int nt, int *d_stage)
 			for(iy = 0;iy < 3;iy++)
 				for(iz = 0;iz < 3;iz++)
 				{
-//					int index = ix*9 +iy*3 +iz;
+
 					n = c0->getWrapCellNumber(nx+ix-1,ny+iy-1,nz+iz-1);
 
 		            snd_c  = cells[ n ];
@@ -338,29 +338,29 @@ __global__ void GPU_ArrangeFlights(GPUCell  **cells,int nt, int *d_stage)
 		            for(int j = 0;j < snd_c->number_of_particles;j++)
 		            {
 		            	p1 = snd_c->readParticleFromSurfaceDevice(j);
-					snd_ix = ix;
-					snd_iy = iy;
-					snd_iz = iz;
-
-					c->inverseDirection(&snd_ix,&snd_iy,&snd_iz);
-
-					num = snd_c->departure[snd_ix][snd_iy][snd_iz];
-
-
-
-					    for(int i = 0;i < num;i++)
-					    {
-						    p = snd_c->departureList[snd_ix][snd_iy][snd_iz][i];
-
-
-
-							if(d_compare(p,p1) == 1 && p1.direction != 13)
+//					snd_ix = ix;
+//					snd_iy = iy;
+//					snd_iz = iz;
+//
+//					c->inverseDirection(&snd_ix,&snd_iy,&snd_iz);
+//
+//					num = snd_c->departure[snd_ix][snd_iy][snd_iz];
+//
+//
+//
+//					    for(int i = 0;i < num;i++)
+//					    {
+//						    p = snd_c->departureList[snd_ix][snd_iy][snd_iz][i];
+//
+//
+//
+							if(p1.direction != 13)
 							{
-								p.direction = 13;
-								c->Insert(p);
+								p1.direction = 13;
+								c->Insert(p1);
 							}
-
-						}
+//
+//						}
 
 
 					}
