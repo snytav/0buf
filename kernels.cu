@@ -182,7 +182,7 @@ __global__ void GPU_MakeDepartureLists(GPUCell  **cells,int nt,int *d_stage)
 				{
 
 //					c->flyDirection(&p,&ix,&iy,&iz);
-					printf("fly %d:(%d,%d,%d) %d \n",p.direction,ix,iy,iz,ix*9 +iy*3 +iz);
+//					printf("fly %d:(%d,%d,%d) %d \n",p.direction,ix,iy,iz,ix*9 +iy*3 +iz);
 
 
 					c->writeParticleToSurface(num,&p);
@@ -210,7 +210,7 @@ __global__ void GPU_MakeDepartureLists(GPUCell  **cells,int nt,int *d_stage)
 				}
 				else
 				{
-					printf("home %d:(%d,%d,%d) %d \n",p.direction,ix,iy,iz,ix*9 +iy*3 +iz);
+//					printf("home %d:(%d,%d,%d) %d \n",p.direction,ix,iy,iz,ix*9 +iy*3 +iz);
 				}
 			}
 }
@@ -294,6 +294,23 @@ __global__ void GPU_RemoveDepartureParticles(GPUCell  **cells,int nt,int *d_stag
 			}
 }
 
+__device__ int d_comd(double a,double b)
+{
+	return (fabs(a - b) < TOLERANCE);
+}
+
+__device__ int d_compare(Particle p,Particle p1)
+{
+	int tx = d_comd(p.x,p1.x);
+	int ty = d_comd(p.y,p1.y);
+	int tz = d_comd(p.z,p1.z);
+	int tpx = d_comd(p.pu,p1.pu);
+	double dpx = fabs(p.pu - p1.pu);
+	int tpy = d_comd(p.pv,p1.pv);
+	int tpz = d_comd(p.pw,p1.pw);
+
+	return (tx && ty && tz && tpx && tpy && tpz);
+}
 
 
 __global__ void GPU_ArrangeFlights(GPUCell  **cells,int nt, int *d_stage)
@@ -302,7 +319,7 @@ __global__ void GPU_ArrangeFlights(GPUCell  **cells,int nt, int *d_stage)
 	unsigned int ny = blockIdx.y;
 	unsigned int nz = blockIdx.z;
 	int ix,iy,iz,snd_ix,snd_iy,snd_iz,num,n;
-	Particle p;
+	Particle p,p1;
 
 	Cell  *c,*c0 = cells[0],nc,*snd_c;
 
@@ -331,12 +348,19 @@ __global__ void GPU_ArrangeFlights(GPUCell  **cells,int nt, int *d_stage)
 					for(int i = 0;i < num;i++)
 					{
 						p = snd_c->departureList[snd_ix][snd_iy][snd_iz][i];
-						if (p.direction != (snd_ix | (snd_iy << 2) |(snd_iz << 4)))
+
+						for(int j = 0;j < snd_c->number_of_particles;j++)
 						{
-							printf("хрень %x %x \n",p.direction, (snd_ix | (snd_iy << 2) |(snd_iz << 4)));
+							p1 = snd_c->readParticleFromSurfaceDevice(j);
+
+							if(d_compare(p,p1) == 1 && p1.direction != 13)
+							{
+								p.direction = 13;
+								c->Insert(p);
+							}
+
 						}
-                        p.direction = 13;
-						c->Insert(p);
+
 
 					}
 
