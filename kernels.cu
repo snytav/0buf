@@ -335,8 +335,9 @@ __global__ void GPU_ArrangeFlights(GPUCell  **cells,int nt, int *d_stage)
 
 		            snd_c  = cells[ n ];
 
-
-
+		            for(int j = 0;j < snd_c->number_of_particles;j++)
+		            {
+		            	p1 = snd_c->readParticleFromSurfaceDevice(j);
 					snd_ix = ix;
 					snd_iy = iy;
 					snd_iz = iz;
@@ -345,9 +346,8 @@ __global__ void GPU_ArrangeFlights(GPUCell  **cells,int nt, int *d_stage)
 
 					num = snd_c->departure[snd_ix][snd_iy][snd_iz];
 
-					for(int j = 0;j < snd_c->number_of_particles;j++)
-					{
-						p1 = snd_c->readParticleFromSurfaceDevice(j);
+
+
 					    for(int i = 0;i < num;i++)
 					    {
 						    p = snd_c->departureList[snd_ix][snd_iy][snd_iz][i];
