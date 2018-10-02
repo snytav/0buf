@@ -330,7 +330,7 @@ __global__ void GPU_ArrangeFlights(GPUCell  **cells,int nt, int *d_stage)
 			for(iy = 0;iy < 3;iy++)
 				for(iz = 0;iz < 3;iz++)
 				{
-					int index = ix*9 +iy*3 +iz;
+//					int index = ix*9 +iy*3 +iz;
 					n = c0->getWrapCellNumber(nx+ix-1,ny+iy-1,nz+iz-1);
 
 		            snd_c  = cells[ n ];
