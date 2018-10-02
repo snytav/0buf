@@ -345,13 +345,14 @@ __global__ void GPU_ArrangeFlights(GPUCell  **cells,int nt, int *d_stage)
 
 					num = snd_c->departure[snd_ix][snd_iy][snd_iz];
 
-					for(int i = 0;i < num;i++)
+					for(int j = 0;j < snd_c->number_of_particles;j++)
 					{
-						p = snd_c->departureList[snd_ix][snd_iy][snd_iz][i];
+						p1 = snd_c->readParticleFromSurfaceDevice(j);
+					    for(int i = 0;i < num;i++)
+					    {
+						    p = snd_c->departureList[snd_ix][snd_iy][snd_iz][i];
 
-						for(int j = 0;j < snd_c->number_of_particles;j++)
-						{
-							p1 = snd_c->readParticleFromSurfaceDevice(j);
+
 
 							if(d_compare(p,p1) == 1 && p1.direction != 13)
 							{
