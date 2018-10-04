@@ -1031,8 +1031,8 @@ __global__ void GPU_CurrentsAllCells(GPUCell  **cells,int nt)
 	copyCurrentsToSharedMemory(c_jx,c_jy,c_jz,c,
 				threadIdx.x,blockIdx,blockDim.x);
 
-	copyFieldsToSharedMemory(c_ex,c_ey,c_ez,c_hx,c_hy,c_hz,c,
-			threadIdx.x,blockIdx,blockDim.x);
+//	copyFieldsToSharedMemory(c_ex,c_ey,c_ez,c_hx,c_hy,c_hz,c,
+//			threadIdx.x,blockIdx,blockDim.x);
 
 	set_cell_double_arrays_to_zero(m_c_jx,m_c_jy,m_c_jz,CURRENT_SUM_BUFFER_LENGTH,
 			threadIdx.x,blockDim.x);
