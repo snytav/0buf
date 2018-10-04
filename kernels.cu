@@ -709,7 +709,7 @@ __device__ void copyFieldsToSharedMemory(
 }
 
 __device__ void copyCurrentsToSharedMemory(
-		 CellDouble *c_jx,
+
 		 CellDouble *c_jy,
 		 CellDouble *c_jz,
 		 Cell *c,
@@ -726,9 +726,35 @@ __device__ void copyCurrentsToSharedMemory(
 //		if(index < 125) {
 
 
-		copyCellDouble(c_jx,c->Jx,index,blockId);
+
 		copyCellDouble(c_jy,c->Jy,index,blockId);
 		copyCellDouble(c_jz,c->Jz,index,blockId);
+		//}
+		index += blockDimX;
+	}
+
+	__syncthreads();
+
+}
+
+__device__ void copyCurrentToSharedMemory(
+		 CellDouble *dst,
+		 CellDouble *src,
+		 Cell *c,
+		 int index,
+		 dim3 blockId,
+		 int blockDimX
+		)
+{
+	//int index  = threadIdx.x;
+
+
+	while(index < CellExtent*CellExtent*CellExtent)
+	{
+//		if(index < 125) {
+
+
+		copyCellDouble(dst,src,index,blockId);
 		//}
 		index += blockDimX;
 	}
@@ -1028,11 +1054,12 @@ __global__ void GPU_CurrentsAllCells(GPUCell  **cells,int nt)
 	assignSharedWithLocal(&c_jx,&c_jy,&c_jz,&c_ex,&c_ey,&c_ez,&c_hx,&c_hy,&c_hz,fd);
 
 
-	copyCurrentsToSharedMemory(c_jx,c_jy,c_jz,c,
+	copyCurrentsToSharedMemory(c_jx,c->Jx,c,
+					threadIdx.x,blockIdx,blockDim.x);
+	copyCurrentsToSharedMemory(c_jy,c_jz,c,
 				threadIdx.x,blockIdx,blockDim.x);
 
-//	copyFieldsToSharedMemory(c_ex,c_ey,c_ez,c_hx,c_hy,c_hz,c,
-//			threadIdx.x,blockIdx,blockDim.x);
+
 
 	set_cell_double_arrays_to_zero(m_c_jx,m_c_jy,m_c_jz,CURRENT_SUM_BUFFER_LENGTH,
 			threadIdx.x,blockDim.x);
