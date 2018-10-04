@@ -861,10 +861,10 @@ __device__ void AccumulateCurrentWithParticlesInCell(
 
 
 
-__device__ void copyFromSharedMemoryToCell(
-		                                     CellDouble *c_jx,
-											 CellDouble *c_jy,
-											 CellDouble *c_jz,
+__device__ void copyFromSharedMemoryToCell(  CellDouble *dst,
+		                                     CellDouble *src,
+//											 CellDouble *c_jy,
+//											 CellDouble *c_jz,
 											 Cell  *c,
 				                             int index,
 				                             int blockDimX,
@@ -873,14 +873,36 @@ __device__ void copyFromSharedMemoryToCell(
 {
 	while(index < CellExtent*CellExtent*CellExtent)
 	{
-      	copyCellDouble(c->Jx,c_jx,index,blockIdx);
-    	copyCellDouble(c->Jy,c_jy,index,blockIdx);
-    	copyCellDouble(c->Jz,c_jz,index,blockIdx);
+      	copyCellDouble(dst,src,index,blockIdx);
+//    	copyCellDouble(c->Jy,c_jy,index,blockIdx);
+//    	copyCellDouble(c->Jz,c_jz,index,blockIdx);
 
     	index += blockDim.x;
     }
+//    c->busyParticleArray = 0;
+}
+
+__device__ void copyFromSharedMemoryToCell(
+                                                     CellDouble *c_jx,
+                                                                                         CellDouble *c_jy,
+                                                                                         CellDouble *c_jz,
+                                                                                         Cell  *c,
+                                                             int index,
+                                                             int blockDimX,
+                                                             dim3 blockId
+                )
+{
+        while(index < CellExtent*CellExtent*CellExtent)
+        {
+        copyCellDouble(c->Jx,c_jx,index,blockIdx);
+        copyCellDouble(c->Jy,c_jy,index,blockIdx);
+        copyCellDouble(c->Jz,c_jz,index,blockIdx);
+
+        index += blockDim.x;
+    }
     c->busyParticleArray = 0;
 }
+
 
 
 __global__ void GPU_StepAllCells(GPUCell  **cells//,
@@ -924,20 +946,11 @@ __global__ void GPU_StepAllCells(GPUCell  **cells//,
 }
 
 
-__global__ void GPU_CurrentsAllCells(GPUCell  **cells,int nt
-//		                         int i,
-//		                         double *global_jx,
-//		                         double mass,
-//		                         double q_mass
-//		                         CellDouble *
-		                         )
+__global__ void GPU_CurrentsAllCells(GPUCell  **cells,int nt)
 {
 	Cell  *c,*c0 = cells[0];
 	__shared__  CellDouble fd[9];
 	CellDouble *c_jx,*c_jy,*c_jz,*c_ex,*c_ey,*c_ez,*c_hx,*c_hy,*c_hz;
-//	CurrentTensor t1,t2;
-//	int pqr2;
-//	Particle p;
 	__shared__ CellDouble m_c_jx[CURRENT_SUM_BUFFER_LENGTH];
 	__shared__ CellDouble m_c_jy[CURRENT_SUM_BUFFER_LENGTH];
 	__shared__ CellDouble m_c_jz[CURRENT_SUM_BUFFER_LENGTH];
@@ -962,31 +975,10 @@ __global__ void GPU_CurrentsAllCells(GPUCell  **cells,int nt
 	addCellDouble(c_jx,&(m_c_jx[0]),threadIdx.x,blockIdx,CURRENT_SUM_BUFFER_LENGTH);
 	addCellDouble(c_jy,&(m_c_jy[0]),threadIdx.x,blockIdx,CURRENT_SUM_BUFFER_LENGTH);
 	addCellDouble(c_jz,&(m_c_jz[0]),threadIdx.x,blockIdx,CURRENT_SUM_BUFFER_LENGTH);
-//	addCellDouble(c_jx,&(m_c_jx[1]),threadIdx.x,blockIdx,3);
-//	addCellDouble(c_jx,&(m_c_jx[2]),threadIdx.x,blockIdx,3);
 
-    copyFromSharedMemoryToCell(c_jx,c_jy,c_jz,c,threadIdx.x,blockDim.x,blockIdx);
-
-//    if((c->i == 28) && (c->l == 3) && (c->k == 2) && (nt == 1))
-//    	{
-//    		for(int i = 0;i < CellExtent;i++)
-//    		{
-//    			for(int l = 0;l < CellExtent;l++)
-//    			{
-//    				for(int k = 0;k < CellExtent;k++)
-//    				{
-//    					if(fabs(c_jx->M[i][l][k]) > 1e-15)
-//    					{
-//    						printf("c_jx %5d %3d %3d %25.15e thread %5d %3d %3d block %5d %3d %3d nt %3d\n",
-//    								i,l,k,
-//    								c_jx->M[i][l][k],
-//    								threadIdx.x,threadIdx.y, threadIdx.z,
-//    								blockIdx.x,blockIdx.y,blockIdx.z,nt);
-//    					}
-//    				}
-//    			}
-//    		}
-//    	}
+    copyFromSharedMemoryToCell(c->Jx,c_jx,c,threadIdx.x,blockDim.x,blockIdx);
+    copyFromSharedMemoryToCell(c->Jy,c_jy,c,threadIdx.x,blockDim.x,blockIdx);
+    copyFromSharedMemoryToCell(c->Jz,c_jz,c,threadIdx.x,blockDim.x,blockIdx);
 
 }
 
