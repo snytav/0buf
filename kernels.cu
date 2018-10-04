@@ -629,6 +629,44 @@ __device__ void assignSharedWithLocal(
 }
 
 __device__ void copyFieldsToSharedMemory(
+		 CellDouble *c_ex,
+		 CellDouble *c_ey,
+		 CellDouble *c_ez,
+		 CellDouble *c_hx,
+		 CellDouble *c_hy,
+		 CellDouble *c_hz,
+		 Cell *c,
+		 int index,
+		 dim3 blockId,
+		 int blockDimX
+		)
+{
+	//int index  = threadIdx.x;
+
+
+	while(index < CellExtent*CellExtent*CellExtent)
+	{
+//		if(index < 125) {
+
+		copyCellDouble(c_ex,c->Ex,index,blockId);
+		copyCellDouble(c_ey,c->Ey,index,blockId);
+		copyCellDouble(c_ez,c->Ez,index,blockId);
+
+		copyCellDouble(c_hx,c->Hx,index,blockId);
+		copyCellDouble(c_hy,c->Hy,index,blockId);
+		copyCellDouble(c_hz,c->Hz,index,blockId);
+
+
+		//}
+		index += blockDimX;
+	}
+
+	__syncthreads();
+
+}
+
+
+__device__ void copyFieldsToSharedMemory(
 		 CellDouble *c_jx,
 		 CellDouble *c_jy,
 		 CellDouble *c_jz,
@@ -658,6 +696,35 @@ __device__ void copyFieldsToSharedMemory(
 		copyCellDouble(c_hx,c->Hx,index,blockId);
 		copyCellDouble(c_hy,c->Hy,index,blockId);
 		copyCellDouble(c_hz,c->Hz,index,blockId);
+
+		copyCellDouble(c_jx,c->Jx,index,blockId);
+		copyCellDouble(c_jy,c->Jy,index,blockId);
+		copyCellDouble(c_jz,c->Jz,index,blockId);
+		//}
+		index += blockDimX;
+	}
+
+	__syncthreads();
+
+}
+
+__device__ void copyCurrentsToSharedMemory(
+		 CellDouble *c_jx,
+		 CellDouble *c_jy,
+		 CellDouble *c_jz,
+		 Cell *c,
+		 int index,
+		 dim3 blockId,
+		 int blockDimX
+		)
+{
+	//int index  = threadIdx.x;
+
+
+	while(index < CellExtent*CellExtent*CellExtent)
+	{
+//		if(index < 125) {
+
 
 		copyCellDouble(c_jx,c->Jx,index,blockId);
 		copyCellDouble(c_jy,c->Jy,index,blockId);
@@ -961,9 +1028,10 @@ __global__ void GPU_CurrentsAllCells(GPUCell  **cells,int nt)
 	assignSharedWithLocal(&c_jx,&c_jy,&c_jz,&c_ex,&c_ey,&c_ez,&c_hx,&c_hy,&c_hz,fd);
 
 
+	copyCurrentsToSharedMemory(c_jx,c_jy,c_jz,c,
+				threadIdx.x,blockIdx,blockDim.x);
 
-
-	copyFieldsToSharedMemory(c_jx,c_jy,c_jz,c_ex,c_ey,c_ez,c_hx,c_hy,c_hz,c,
+	copyFieldsToSharedMemory(c_ex,c_ey,c_ez,c_hx,c_hy,c_hz,c,
 			threadIdx.x,blockIdx,blockDim.x);
 
 	set_cell_double_arrays_to_zero(m_c_jx,m_c_jy,m_c_jz,CURRENT_SUM_BUFFER_LENGTH,
