@@ -978,7 +978,45 @@ __device__ void AccumulateCurrentWithParticlesInCell(
 
 }
 
+__device__ void AccumulateCurrentWithParticlesInCell_single(
+									 CellDouble *c_jx,
+									 int CellDouble_array_dim,
+									 Cell  *c,
+		                             int index,
+		                             int blockDimX,
+		                             int nt,
+		                             int component
+		                             )
+{
+	CurrentTensor t1,t2;
+	DoubleCurrentTensor dt,dt1;;
+    int pqr2;
 
+
+    while(index < c->number_of_particles)
+    {
+        c->AccumulateCurrentSingleParticle    (index,&pqr2,&dt);
+        if(component == 0)
+        {
+           writeCurrentComponent(&(c_jx[index%CellDouble_array_dim]),&(dt.t1.Jx),&(dt.t2.Jx),pqr2);
+        }
+
+        if(component == 1)
+        {
+           writeCurrentComponent(&(c_jx[index%CellDouble_array_dim]),&(dt.t1.Jy),&(dt.t2.Jy),pqr2);
+        }
+
+        if(component == 2)
+        {
+           writeCurrentComponent(&(c_jx[index%CellDouble_array_dim]),&(dt.t1.Jz),&(dt.t2.Jz),pqr2);
+        }
+
+        index += blockDimX;
+    }
+    __syncthreads();
+
+
+}
 
 
 
@@ -1093,6 +1131,14 @@ __global__ void GPU_CurrentsAllCells(GPUCell  **cells,int nt)
 
 	AccumulateCurrentWithParticlesInCell(m_c_jx,CURRENT_SUM_BUFFER_LENGTH,m_c_jy,m_c_jz,
 		  					 c,threadIdx.x,blockDim.x,nt);
+//	AccumulateCurrentWithParticlesInCell_single(m_c_jx,CURRENT_SUM_BUFFER_LENGTH,
+//		 c,threadIdx.x,blockDim.x,nt,0);
+//	AccumulateCurrentWithParticlesInCell_single(m_c_jy,CURRENT_SUM_BUFFER_LENGTH,
+//				 c,threadIdx.x,blockDim.x,nt,1);
+//	AccumulateCurrentWithParticlesInCell_single(m_c_jz,CURRENT_SUM_BUFFER_LENGTH,
+//			     c,threadIdx.x,blockDim.x,nt,2);
+
+
 
 	addCellDouble(c_jx,&(m_c_jx[0]),threadIdx.x,blockIdx,CURRENT_SUM_BUFFER_LENGTH);
 	addCellDouble(c_jy,&(m_c_jy[0]),threadIdx.x,blockIdx,CURRENT_SUM_BUFFER_LENGTH);
