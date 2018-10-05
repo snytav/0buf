@@ -960,7 +960,7 @@ __device__ void AccumulateCurrentWithParticlesInCell(
 		                             )
 {
 	CurrentTensor t1,t2;
-	DoubleCurrentTensor dt,dt1;;
+	DoubleCurrentTensor dt,dt1;
     int pqr2;
 
 
@@ -974,7 +974,18 @@ __device__ void AccumulateCurrentWithParticlesInCell(
         index += blockDimX;
     }
     __syncthreads();
+//
+//    while(index < c->number_of_particles)
+//        {
+//            c->AccumulateCurrentSingleParticle    (index,&pqr2,&dt);
+////            writeCurrentComponent(&(c_jx[index%CellDouble_array_dim]),&(dt.t1.Jx),&(dt.t2.Jx),pqr2);
+//            writeCurrentComponent(&(c_jy[index%CellDouble_array_dim]),&(dt.t1.Jy),&(dt.t2.Jy),pqr2);
+//            writeCurrentComponent(&(c_jz[index%CellDouble_array_dim]),&(dt.t1.Jz),&(dt.t2.Jz),pqr2);
+//
+//            index += blockDimX;
+//        }
 
+    __syncthreads();
 
 }
 
