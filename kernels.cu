@@ -603,10 +603,45 @@ __global__ void GPU_GetCellNumbers(Cell **cells,
 		numbers[blockIdx.x] = (*c).number_of_particles;
 }
 
-__device__ void assignSharedWithLocal(
+__device__ void assignSharedWithLocalCurrents(
 		                         CellDouble **c_jx,
 		                         CellDouble **c_jy,
 		                         CellDouble **c_jz,
+		                         CellDouble *fd)
+{
+	*c_jx = &(fd[6]);
+	*c_jy = &(fd[7]);
+	*c_jz = &(fd[8]);
+}
+
+__device__ void assignSharedWithLocal(
+		                         CellDouble **c_jx,
+				                 CellDouble **c_jy,
+				                 CellDouble **c_jz,
+		                         CellDouble **c_ex,
+		                         CellDouble **c_ey,
+		                         CellDouble **c_ez,
+		                         CellDouble **c_hx,
+		                         CellDouble **c_hy,
+		                         CellDouble **c_hz,
+
+
+		                         CellDouble *fd)
+{
+	*c_ex = &(fd[0]);
+	*c_ey = &(fd[1]);
+	*c_ez = &(fd[2]);
+
+	*c_hx = &(fd[3]);
+	*c_hy = &(fd[4]);
+	*c_hz = &(fd[5]);
+
+	*c_jx = &(fd[6]);
+	*c_jy = &(fd[7]);
+	*c_jz = &(fd[8]);
+}
+
+__device__ void assignSharedWithLocalFields(
 		                         CellDouble **c_ex,
 		                         CellDouble **c_ey,
 		                         CellDouble **c_ez,
@@ -622,10 +657,6 @@ __device__ void assignSharedWithLocal(
 	*c_hx = &(fd[3]);
 	*c_hy = &(fd[4]);
 	*c_hz = &(fd[5]);
-
-	*c_jx = &(fd[6]);
-	*c_jy = &(fd[7]);
-	*c_jz = &(fd[8]);
 }
 
 __device__ void copyFieldsToSharedMemory(
@@ -1051,7 +1082,8 @@ __global__ void GPU_CurrentsAllCells(GPUCell  **cells,int nt)
 
 	c = cells[ c0->getGlobalCellNumber(blockIdx.x,blockIdx.y,blockIdx.z)];
 
-	assignSharedWithLocal(&c_jx,&c_jy,&c_jz,&c_ex,&c_ey,&c_ez,&c_hx,&c_hy,&c_hz,fd);
+	assignSharedWithLocalFields(&c_ex,&c_ey,&c_ez,&c_hx,&c_hy,&c_hz,fd);
+	assignSharedWithLocalCurrents(&c_jx,&c_jy,&c_jz,fd);
 
 
 	copyCurrentsToSharedMemory(c_jx,c->Jx,c,threadIdx.x,blockIdx,blockDim.x);
