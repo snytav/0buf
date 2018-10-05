@@ -614,6 +614,14 @@ __device__ void assignSharedWithLocalCurrents(
 	*c_jz = &(fd[8]);
 }
 
+__device__ void assignSharedWithLocalCurrents(
+		                         CellDouble **c_jx,
+
+		                         CellDouble *fd,int n)
+{
+	*c_jx = &(fd[n]);
+}
+
 __device__ void assignSharedWithLocal(
 		                         CellDouble **c_jx,
 				                 CellDouble **c_jy,
