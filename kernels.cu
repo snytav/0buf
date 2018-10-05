@@ -971,25 +971,6 @@ __device__ void AccumulateCurrentWithParticlesInCell(
         writeCurrentComponent(&(c_jy[index%CellDouble_array_dim]),&(dt.t1.Jy),&(dt.t2.Jy),pqr2);
         writeCurrentComponent(&(c_jz[index%CellDouble_array_dim]),&(dt.t1.Jz),&(dt.t2.Jz),pqr2);
 
-//        if(index%2 == 0)
-//        {
-//
-//        }
-//        else
-//        {
-//        	if(index%2 == 1)
-//        	{
-//        		writeCurrentComponent(&(c_jx[1]),&(dt.t1.Jx),&(dt.t2.Jx),pqr2);
-//        	}
-//        	else
-//        	{
-//        		writeCurrentComponent(&(c_jx[2]),&(dt.t1.Jx),&(dt.t2.Jx),pqr2);
-//        	}
-//        }
-
-//        writeCurrentComponent(c_jy,&(dt.t1.Jy),&(dt.t2.Jy),pqr2);
-        //writeCurrentComponent(c_jz,&(dt.t1.Jz),&(dt.t2.Jz),pqr2);
-
         index += blockDimX;
     }
     __syncthreads();
