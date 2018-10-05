@@ -825,6 +825,27 @@ __device__ void set_cell_double_arrays_to_zero(
 
 }
 
+__device__ void set_cell_double_arrays_to_zero_single(
+		 CellDouble *m_c_jx,
+
+		 int size,
+		 int index,
+		 int blockDimX
+		)
+{
+
+	for(int i = 0;i < size;i++)
+	        {
+	setCellDoubleToZero(&(m_c_jx[i]),index);
+
+	        }
+
+	__syncthreads();
+
+
+
+}
+
 __device__ void set_cell_double_array_to_zero(CurrentTensorComponent *ca,int length)
 {
      for(int i = 0; i<= 100;i++)
@@ -1085,8 +1106,12 @@ __global__ void GPU_CurrentsAllCells(GPUCell  **cells,int nt)
 	copyCurrentsToSharedMemory(c_jy,c->Jy,c,threadIdx.x,blockIdx,blockDim.x);
 	copyCurrentsToSharedMemory(c_jz,c->Jz,c,threadIdx.x,blockIdx,blockDim.x);
 
-	set_cell_double_arrays_to_zero(m_c_jx,m_c_jy,m_c_jz,CURRENT_SUM_BUFFER_LENGTH,
-			threadIdx.x,blockDim.x);
+//	set_cell_double_arrays_to_zero(m_c_jx,m_c_jy,m_c_jz,CURRENT_SUM_BUFFER_LENGTH,
+//			threadIdx.x,blockDim.x);
+
+	set_cell_double_arrays_to_zero_single(m_c_jx,CURRENT_SUM_BUFFER_LENGTH,threadIdx.x,blockDim.x);
+	set_cell_double_arrays_to_zero_single(m_c_jy,CURRENT_SUM_BUFFER_LENGTH,threadIdx.x,blockDim.x);
+	set_cell_double_arrays_to_zero_single(m_c_jz,CURRENT_SUM_BUFFER_LENGTH,threadIdx.x,blockDim.x);
 
 	AccumulateCurrentWithParticlesInCell(m_c_jx,CURRENT_SUM_BUFFER_LENGTH,m_c_jy,m_c_jz,
 		  					 c,threadIdx.x,blockDim.x,nt);
