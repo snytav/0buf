@@ -811,30 +811,17 @@ __device__ void set_cell_double_arrays_to_zero(
 		 int blockDimX
 		)
 {
-	//int index  = threadIdx.x;
+
 	for(int i = 0;i < size;i++)
 	        {
 	setCellDoubleToZero(&(m_c_jx[i]),index);
 	setCellDoubleToZero(&(m_c_jy[i]),index);
 	setCellDoubleToZero(&(m_c_jz[i]),index);
 	        }
-//	setCellDoubleToZero(&(m_c_jx[1]),index,blockId);
-//	setCellDoubleToZero(&(m_c_jx[0]),index,blockId);
-//	setCellDoubleToZero(&(m_c_jx[0]),index,blockId);
-
-	while(index < CellExtent*CellExtent*CellExtent)
-	{
-//		if(index < 125) {
-        for(int i = 0;i < size;i++)
-        {
-//		    setCellDoubleToZero(&(m_c_jx[i]),index,blockId);
-//		    setCellDoubleToZero(&(m_c_jy[i]),index,blockId);
-//		    setCellDoubleToZero(&(m_c_jz[i]),index,blockId);
-        }
-		index += blockDimX;
-	}
 
 	__syncthreads();
+
+
 
 }
 
@@ -1090,8 +1077,6 @@ __global__ void GPU_CurrentsAllCells(GPUCell  **cells,int nt)
 
 	c = cells[ c0->getGlobalCellNumber(blockIdx.x,blockIdx.y,blockIdx.z)];
 
-//	assignSharedWithLocalFields(&c_ex,&c_ey,&c_ez,&c_hx,&c_hy,&c_hz,fd);
-//	assignSharedWithLocalCurrents(&c_jx,&c_jy,&c_jz,fd);
 	assignSharedWithLocalCurrents(&c_jx,fd,6);
 	assignSharedWithLocalCurrents(&c_jy,fd,7);
 	assignSharedWithLocalCurrents(&c_jz,fd,8);
