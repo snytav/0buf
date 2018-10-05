@@ -1154,10 +1154,13 @@ __global__ void GPU_CurrentsAllCells(GPUCell  **cells,int nt)
 	__shared__ CellDouble m_c_jz[CURRENT_SUM_BUFFER_LENGTH];
 
 
-//	CurrentsAllCells_prepare(c,nt,fd,c_jx,c_jy,c_jz,m_c_jx,m_c_jy,m_c_jz);
+
 	c = cells[ c0->getGlobalCellNumber(blockIdx.x,blockIdx.y,blockIdx.z)];
 
-	assignSharedWithLocalCurrents(&c_jx,fd,6);
+
+	CurrentsAllCells_prepare(c,nt,fd,c_jx,c_jy,c_jz,m_c_jx,m_c_jy,m_c_jz);
+
+		assignSharedWithLocalCurrents(&c_jx,fd,6);
 	assignSharedWithLocalCurrents(&c_jy,fd,7);
 	assignSharedWithLocalCurrents(&c_jz,fd,8);
 
