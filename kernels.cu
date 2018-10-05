@@ -1090,9 +1090,11 @@ __global__ void GPU_CurrentsAllCells(GPUCell  **cells,int nt)
 
 	c = cells[ c0->getGlobalCellNumber(blockIdx.x,blockIdx.y,blockIdx.z)];
 
-	assignSharedWithLocalFields(&c_ex,&c_ey,&c_ez,&c_hx,&c_hy,&c_hz,fd);
-	assignSharedWithLocalCurrents(&c_jx,&c_jy,&c_jz,fd);
-
+//	assignSharedWithLocalFields(&c_ex,&c_ey,&c_ez,&c_hx,&c_hy,&c_hz,fd);
+//	assignSharedWithLocalCurrents(&c_jx,&c_jy,&c_jz,fd);
+	assignSharedWithLocalCurrents(&c_jx,fd,6);
+	assignSharedWithLocalCurrents(&c_jy,fd,7);
+	assignSharedWithLocalCurrents(&c_jz,fd,8);
 
 	copyCurrentsToSharedMemory(c_jx,c->Jx,c,threadIdx.x,blockIdx,blockDim.x);
 	copyCurrentsToSharedMemory(c_jy,c->Jy,c,threadIdx.x,blockIdx,blockDim.x);
