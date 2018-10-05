@@ -1140,10 +1140,10 @@ __global__ void GPU_CurrentsAllCells(GPUCell  **cells,int nt)
 
 
 
-	prepare_currents(&c_jx,&c_jz,&c_jz,fd);
+	prepare_currents(&c_jx,&c_jy,fd);
 //    assignSharedWithLocalCurrents(&c_jx,fd,6);
 
-	assignSharedWithLocalCurrents(,fd,8);
+	assignSharedWithLocalCurrents(&c_jz,fd,8);
 
 	copyCurrentsToSharedMemory(c_jx,c->Jx,c,threadIdx.x,blockIdx,blockDim.x);
 	copyCurrentsToSharedMemory(c_jy,c->Jy,c,threadIdx.x,blockIdx,blockDim.x);
