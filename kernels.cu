@@ -967,9 +967,9 @@ __device__ void AccumulateCurrentWithParticlesInCell(
     while(index < c->number_of_particles)
     {
         c->AccumulateCurrentSingleParticle    (index,&pqr2,&dt);
-        writeCurrentComponent(&(c_jx[index%CellDouble_array_dim]),&(dt.t1.Jx),&(dt.t2.Jx),pqr2);
-        writeCurrentComponent(&(c_jy[index%CellDouble_array_dim]),&(dt.t1.Jy),&(dt.t2.Jy),pqr2);
-        writeCurrentComponent(&(c_jz[index%CellDouble_array_dim]),&(dt.t1.Jz),&(dt.t2.Jz),pqr2);
+        writeCurrentComponent(&(c_jx[0]),&(dt.t1.Jx),&(dt.t2.Jx),pqr2);
+        writeCurrentComponent(&(c_jy[0]),&(dt.t1.Jy),&(dt.t2.Jy),pqr2);
+        writeCurrentComponent(&(c_jz[0]),&(dt.t1.Jz),&(dt.t2.Jz),pqr2);
 
         index += blockDimX;
     }
@@ -1150,8 +1150,6 @@ __global__ void GPU_CurrentsAllCells(GPUCell  **cells,int nt)
 
 
 
-	c = cells[ c0->getGlobalCellNumber(blockIdx.x,blockIdx.y,blockIdx.z)];
-
 
 
 
@@ -1162,16 +1160,18 @@ __global__ void GPU_CurrentsAllCells(GPUCell  **cells,int nt)
 
 
 
+	c = cells[ c0->getGlobalCellNumber(blockIdx.x,blockIdx.y,blockIdx.z)];
 
 
-	AccumulateCurrentWithParticlesInCell(m_c_jx,CURRENT_SUM_BUFFER_LENGTH,m_c_jy,m_c_jz,
+
+	AccumulateCurrentWithParticlesInCell(c_jx,CURRENT_SUM_BUFFER_LENGTH,c_jy,c_jz,
 		  					 c,threadIdx.x,blockDim.x,nt);
 
 
-
-	addCellDouble(c_jx,&(m_c_jx[0]),threadIdx.x,blockIdx,CURRENT_SUM_BUFFER_LENGTH);
-	addCellDouble(c_jy,&(m_c_jy[0]),threadIdx.x,blockIdx,CURRENT_SUM_BUFFER_LENGTH);
-	addCellDouble(c_jz,&(m_c_jz[0]),threadIdx.x,blockIdx,CURRENT_SUM_BUFFER_LENGTH);
+//
+//	addCellDouble(c_jx,&(m_c_jx[0]),threadIdx.x,blockIdx,CURRENT_SUM_BUFFER_LENGTH);
+//	addCellDouble(c_jy,&(m_c_jy[0]),threadIdx.x,blockIdx,CURRENT_SUM_BUFFER_LENGTH);
+//	addCellDouble(c_jz,&(m_c_jz[0]),threadIdx.x,blockIdx,CURRENT_SUM_BUFFER_LENGTH);
 
     copyFromSharedMemoryToCell(c->Jx,c_jx,c,threadIdx.x,blockDim.x,blockIdx);
     copyFromSharedMemoryToCell(c->Jy,c_jy,c,threadIdx.x,blockDim.x,blockIdx);
