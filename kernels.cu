@@ -1145,9 +1145,9 @@ __global__ void GPU_CurrentsAllCells(GPUCell  **cells,int nt)
 	Cell  *c,*c0 = cells[0];
 	__shared__  CellDouble fd[9];
 	CellDouble *c_jx,*c_jy,*c_jz;//,*c_ex,*c_ey,*c_ez,*c_hx,*c_hy,*c_hz;
-	__shared__ CellDouble m_c_jx[CURRENT_SUM_BUFFER_LENGTH];
-	__shared__ CellDouble m_c_jy[CURRENT_SUM_BUFFER_LENGTH];
-	__shared__ CellDouble m_c_jz[CURRENT_SUM_BUFFER_LENGTH];
+//	__shared__ CellDouble m_c_jx[CURRENT_SUM_BUFFER_LENGTH];
+//	__shared__ CellDouble m_c_jy[CURRENT_SUM_BUFFER_LENGTH];
+//	__shared__ CellDouble m_c_jz[CURRENT_SUM_BUFFER_LENGTH];
 
 
 
