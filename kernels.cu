@@ -1125,6 +1125,8 @@ __device__ void  prepare_currents(CellDouble **c_jx,CellDouble **c_jy,CellDouble
 	assignSharedWithLocalCurrents(c_jz,fd,8);
 
 	copyCurrentsToSharedMemory(*c_jx,c->Jx,c,threadIdx.x,blockIdx,blockDim.x);
+	copyCurrentsToSharedMemory(*c_jy,c->Jy,c,threadIdx.x,blockIdx,blockDim.x);
+	copyCurrentsToSharedMemory(*c_jz,c->Jz,c,threadIdx.x,blockIdx,blockDim.x);
 }
 
 
