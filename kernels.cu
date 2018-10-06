@@ -1140,8 +1140,8 @@ __device__ void  prepare_currents(CellDouble **c_jx,CellDouble **c_jy,CellDouble
 __global__ void GPU_CurrentsAllCells(GPUCell  **cells,int nt)
 {
 	Cell  *c,*c0 = cells[0];
-	__shared__  CellDouble fd[9];
-	CellDouble *c_jx,*c_jy,*c_jz;
+//	__shared__  CellDouble fd[9];
+//	CellDouble *c_jx,*c_jy,*c_jz;
 
 //	prepare_currents(&c_jx,&c_jy,&c_jz,fd,cells);
 
