@@ -1140,10 +1140,7 @@ __device__ void  prepare_currents(CellDouble **c_jx,CellDouble **c_jy,CellDouble
 __global__ void GPU_CurrentsAllCells(GPUCell  **cells,int nt)
 {
 	Cell  *c,*c0 = cells[0];
-//	__shared__  CellDouble fd[9];
-//	CellDouble *c_jx,*c_jy,*c_jz;
 
-//	prepare_currents(&c_jx,&c_jy,&c_jz,fd,cells);
 
 	c = cells[ c0->getGlobalCellNumber(blockIdx.x,blockIdx.y,blockIdx.z)];
 
@@ -1153,9 +1150,7 @@ __global__ void GPU_CurrentsAllCells(GPUCell  **cells,int nt)
 		  					 c,threadIdx.x,blockDim.x,nt);
 
 
-//    copyFromSharedMemoryToCell(c->Jx,c_jx,c,threadIdx.x,blockDim.x,blockIdx);
-//    copyFromSharedMemoryToCell(c->Jy,c_jy,c,threadIdx.x,blockDim.x,blockIdx);
-//    copyFromSharedMemoryToCell(c->Jz,c_jz,c,threadIdx.x,blockDim.x,blockIdx);
+
 
 }
 
