@@ -1117,8 +1117,8 @@ __global__ void GPU_StepAllCells(GPUCell  **cells//,
 
 __device__ void  prepare_currents(CellDouble **c_jx,CellDouble **c_jy,CellDouble **c_jz,
 		CellDouble *fd,
-		Cell *c
-		)
+		Cell *c,
+		CellDouble *m_c_jx,CellDouble *m_c_jy,CellDouble *m_c_jz)
 {
 	assignSharedWithLocalCurrents(c_jx,fd,6);
 	assignSharedWithLocalCurrents(c_jy,fd,7);
@@ -1127,6 +1127,10 @@ __device__ void  prepare_currents(CellDouble **c_jx,CellDouble **c_jy,CellDouble
 	copyCurrentsToSharedMemory(*c_jx,c->Jx,c,threadIdx.x,blockIdx,blockDim.x);
 	copyCurrentsToSharedMemory(*c_jy,c->Jy,c,threadIdx.x,blockIdx,blockDim.x);
 	copyCurrentsToSharedMemory(*c_jz,c->Jz,c,threadIdx.x,blockIdx,blockDim.x);
+
+	set_cell_double_arrays_to_zero_single(m_c_jx,CURRENT_SUM_BUFFER_LENGTH,threadIdx.x,blockDim.x);
+	set_cell_double_arrays_to_zero_single(m_c_jy,CURRENT_SUM_BUFFER_LENGTH,threadIdx.x,blockDim.x);
+	set_cell_double_arrays_to_zero_single(m_c_jz,CURRENT_SUM_BUFFER_LENGTH,threadIdx.x,blockDim.x);
 }
 
 
@@ -1148,16 +1152,14 @@ __global__ void GPU_CurrentsAllCells(GPUCell  **cells,int nt)
 
 
 
-	prepare_currents(&c_jx,&c_jy,&c_jz,fd,c);
+	prepare_currents(&c_jx,&c_jy,&c_jz,fd,c,m_c_jx,m_c_jy,m_c_jz);
 //    assignSharedWithLocalCurrents(&c_jx,fd,6);
 
 
 
 
 
-	set_cell_double_arrays_to_zero_single(m_c_jx,CURRENT_SUM_BUFFER_LENGTH,threadIdx.x,blockDim.x);
-	set_cell_double_arrays_to_zero_single(m_c_jy,CURRENT_SUM_BUFFER_LENGTH,threadIdx.x,blockDim.x);
-	set_cell_double_arrays_to_zero_single(m_c_jz,CURRENT_SUM_BUFFER_LENGTH,threadIdx.x,blockDim.x);
+
 
 	AccumulateCurrentWithParticlesInCell(m_c_jx,CURRENT_SUM_BUFFER_LENGTH,m_c_jy,m_c_jz,
 		  					 c,threadIdx.x,blockDim.x,nt);
