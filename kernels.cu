@@ -971,7 +971,7 @@ __device__ void AccumulateCurrentWithParticlesInCell(
         writeCurrentComponent(&(c_jy[0]),&(dt.t1.Jy),&(dt.t2.Jy),pqr2);
         writeCurrentComponent(&(c_jz[0]),&(dt.t1.Jz),&(dt.t2.Jz),pqr2);
 
-        index += blockDimX;
+        index += 512;//blockDimX;
     }
     __syncthreads();
 //
@@ -1145,10 +1145,11 @@ __global__ void GPU_CurrentsAllCells(GPUCell  **cells,int nt)
 	c = cells[ c0->getGlobalCellNumber(blockIdx.x,blockIdx.y,blockIdx.z)];
 
 
-
-	AccumulateCurrentWithParticlesInCell(c->Jx,CURRENT_SUM_BUFFER_LENGTH,c->Jy,c->Jz,
-		  					 c,threadIdx.x,blockDim.x,nt);
-
+    for(int i = 0;i < 512;i++)
+    {
+	    AccumulateCurrentWithParticlesInCell(c->Jx,CURRENT_SUM_BUFFER_LENGTH,c->Jy,c->Jz,
+		  					 c,i,blockDim.x,nt);
+    }
 
 
 
