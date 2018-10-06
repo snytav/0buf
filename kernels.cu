@@ -1117,8 +1117,9 @@ __global__ void GPU_StepAllCells(GPUCell  **cells//,
 
 __device__ void  prepare_currents(CellDouble **c_jx,CellDouble **c_jy,CellDouble **c_jz,
 		CellDouble *fd,
-		GPUCell  **cells,
-		CellDouble *m_c_jx,CellDouble *m_c_jy,CellDouble *m_c_jz)
+		GPUCell  **cells
+//		,CellDouble *m_c_jx,CellDouble *m_c_jy,CellDouble *m_c_jz
+		)
 {
 	Cell  *c,*c0 = cells[0];
 	c = cells[ c0->getGlobalCellNumber(blockIdx.x,blockIdx.y,blockIdx.z)];
@@ -1153,7 +1154,7 @@ __global__ void GPU_CurrentsAllCells(GPUCell  **cells,int nt)
 
 
 
-	prepare_currents(&c_jx,&c_jy,&c_jz,fd,cells,m_c_jx,m_c_jy,m_c_jz);
+	prepare_currents(&c_jx,&c_jy,&c_jz,fd,cells);//,m_c_jx,m_c_jy,m_c_jz);
 //    assignSharedWithLocalCurrents(&c_jx,fd,6);
 
 
