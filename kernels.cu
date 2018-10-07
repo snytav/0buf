@@ -511,7 +511,7 @@ __device__ double checkCurrentComponentImpact(
 
 __device__ void add(CellDouble *J ,int i,int l,int k,double t)
 {
-	cuda_atomicAdd(&(J->M[i][l][k]),t);
+	J->M[i][l][k] += t;
 }
 
 
@@ -520,16 +520,16 @@ __device__ void writeCurrentComponent(CellDouble *J,
 {
 //    J->M[t1->i11][t1->i12][t1->i13] += t1->t[0];
     add(J,t1->i11,t1->i12,t1->i13,t1->t[0]);
-    cuda_atomicAdd(&(J->M[t1->i21][t1->i22][t1->i23]),t1->t[1]);
-    cuda_atomicAdd(&(J->M[t1->i31][t1->i32][t1->i33]),t1->t[2]);
-    cuda_atomicAdd(&(J->M[t1->i41][t1->i42][t1->i43]),t1->t[3]);
+    add(J,t1->i21,t1->i22,t1->i23,t1->t[1]);
+    add(J,t1->i31,t1->i32,t1->i33,t1->t[2]);
+    add(J,t1->i41,t1->i42,t1->i43,t1->t[3]);
 
     if(pqr2 == 2)
     {
-        cuda_atomicAdd(&(J->M[t2->i11][t2->i12][t2->i13]),t2->t[0]);
-        cuda_atomicAdd(&(J->M[t2->i21][t2->i22][t2->i23]),t2->t[1]);
-        cuda_atomicAdd(&(J->M[t2->i31][t2->i32][t2->i33]),t2->t[2]);
-        cuda_atomicAdd(&(J->M[t2->i41][t2->i42][t2->i43]),t2->t[3]);
+        add(J,t2->i11,t2->i12,t2->i13,t2->t[0]);
+        add(J,t2->i21,t2->i22,t2->i23,t2->t[1]);
+        add(J,t2->i31,t2->i32,t2->i33,t2->t[2]);
+        add(J,t2->i41,t2->i42,t2->i43,t2->t[3]);
     }
 
 }
