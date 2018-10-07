@@ -508,10 +508,14 @@ __device__ double checkCurrentComponentImpact(
     return res;
 }
 
+__device__ double check_thread(int i,int l,int k)
+{
+	return (((i == threadIdx.x) && (l == threadIdx.y) && (k == threadIdx.z)) ? 1.0 : 1.0);
+}
 
 __device__ void add(CellDouble *J ,int i,int l,int k,double t)
 {
-	J->M[i][l][k] += t;
+	J->M[i][l][k] += t*check_thread(i,l,k);
 }
 
 
