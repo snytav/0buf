@@ -970,7 +970,7 @@ __device__ void AccumulateCurrentWithParticlesInCell(
 	DoubleCurrentTensor dt,dt1;
     int pqr2;
 
-
+    index = 0;
     while(index < c->number_of_particles)
     {
         c->AccumulateCurrentSingleParticle    (index,&pqr2,&dt);
@@ -978,7 +978,7 @@ __device__ void AccumulateCurrentWithParticlesInCell(
         writeCurrentComponent(&(c_jy[0]),&(dt.t1.Jy),&(dt.t2.Jy),pqr2);
         writeCurrentComponent(&(c_jz[0]),&(dt.t1.Jz),&(dt.t2.Jz),pqr2);
 
-        index += 512;//blockDimX;
+        index += 1;//512;//blockDimX;
     }
     __syncthreads();
 //
@@ -1152,11 +1152,11 @@ __global__ void GPU_CurrentsAllCells(GPUCell  **cells,int nt)
 	c = cells[ c0->getGlobalCellNumber(blockIdx.x,blockIdx.y,blockIdx.z)];
 
 
-    for(int i = 0;i < 512;i++)
-    {
+//    for(int i = 0;i < 512;i++)
+//    {
 	    AccumulateCurrentWithParticlesInCell(c->Jx,CURRENT_SUM_BUFFER_LENGTH,c->Jy,c->Jz,
-		  					 c,i,blockDim.x,nt);
-    }
+		  					 c,0,blockDim.x,nt);
+//    }
 
 
 
