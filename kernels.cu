@@ -509,11 +509,17 @@ __device__ double checkCurrentComponentImpact(
 }
 
 
+__device__ void add(CellDouble *J ,int i,int l,int k,double t)
+{
+	cuda_atomicAdd(&(J->M[i][l][k]),t);
+}
+
+
 __device__ void writeCurrentComponent(CellDouble *J,
 		CurrentTensorComponent *t1,CurrentTensorComponent *t2,int pqr2)
 {
-    J->M[t1->i11][t1->i12][t1->i13] += t1->t[0];
-
+//    J->M[t1->i11][t1->i12][t1->i13] += t1->t[0];
+    add(J,t1->i11,t1->i12,t1->i13,t1->t[0]);
     cuda_atomicAdd(&(J->M[t1->i21][t1->i22][t1->i23]),t1->t[1]);
     cuda_atomicAdd(&(J->M[t1->i31][t1->i32][t1->i33]),t1->t[2]);
     cuda_atomicAdd(&(J->M[t1->i41][t1->i42][t1->i43]),t1->t[3]);
