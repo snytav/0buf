@@ -524,7 +524,7 @@ __device__ void add(CellDouble *J ,int i,int l,int k,double t)
 
 	if(blockIdx.x == 80 && blockIdx.y == 3 && blockIdx.z == 3)
 	{
-	   printf("cell (%3d,%2d,%2d)  ilk ( %d,%d,%d )\n",blockIdx.x,blockIdx.y,blockIdx.z,i,l,k);
+	   printf("cell (%3d,%2d,%2d)  ilk ( %d,%d,%d ) t %10.3e J %10.3e \n",blockIdx.x,blockIdx.y,blockIdx.z,i,l,k,t,J->M[i][l][k]);
 	}
 }
 
