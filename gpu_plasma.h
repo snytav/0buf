@@ -640,14 +640,14 @@ int readStartPoint(int nt)
 		        		           (void *)&d_Ey,
 		        		           (void *)&d_Ez,
 		        		           0};
-		          cudaError_t cudaStatus = cudaLaunchKernel(
-		          	            (const void*)GPU_getCellEnergy, // pointer to kernel func.
-		          	            dimGrid,                       // grid
-		          	            dimBlockOne,                      // block
-		          	            args,                          // arguments
-		          	            0,
-		          	            0
-		          	            );
+//		          cudaError_t cudaStatus = cudaLaunchKernel(
+//		          	            (const void*)GPU_getCellEnergy, // pointer to kernel func.
+//		          	            dimGrid,                       // grid
+//		          	            dimBlockOne,                      // block
+//		          	            args,                          // arguments
+//		          	            0,
+//		          	            0
+//		          	            );
 
 
         MemoryCopy(&ee,d_ee,sizeof(double),DEVICE_TO_HOST);
@@ -1781,7 +1781,7 @@ int StepAllCells(int nt,double mass,double q_mass)
 
 
        std::cout<<"GPU_StepAllCells returns "<<cudaStatus<<std::endl;
-	   dim3 dimBlock1(CellExtent,5,2),dimBlockExt(CellExtent,CellExtent,CellExtent);
+	   dim3 dimBlock1(CellExtent,5,1),dimBlockExt(CellExtent,CellExtent,CellExtent);
 	   void *args1[] = { (void* )&d_CellArray,&nt,0};
 	   cudaStatus = cudaFuncSetCacheConfig((const void*)GPU_CurrentsAllCells,cudaFuncCachePreferShared);
 	   std::cout<<"cudaFuncSetCacheConfig returns "<<cudaStatus<<" "<<cudaGetErrorString(cudaStatus)<<std::endl;
@@ -1798,6 +1798,7 @@ int StepAllCells(int nt,double mass,double q_mass)
 	            		     		                 //mass,q_mass);
 	   puts("end step");
 	   cudaDeviceSynchronize();
+
 
 	   puts("end step-12");
 
@@ -1944,7 +1945,7 @@ int MakeParticleList(int nt,int *stage,int *stage1,int **d_stage,int **d_stage1)
 
     printf("end MakeParticleList %d\n", __LINE__);
 
-    exit(0);
+   // exit(0);
 
     return (int)err;
 }
@@ -2019,12 +2020,12 @@ int reallyPassParticlesToAnotherCells(int nt,int *stage1,int *d_stage1)
             cudaDeviceSynchronize();
 #endif
 
-	err = MemoryCopy(stage1,d_stage1,sizeof(int)*(Nx+2)*(Ny+2)*(Nz+2),DEVICE_TO_HOST);
-	if(err != cudaSuccess)
-	{
-	   puts("copy error");
-	   exit(0);
-	}
+//	err = MemoryCopy(stage1,d_stage1,sizeof(int)*(Nx+2)*(Ny+2)*(Nz+2),DEVICE_TO_HOST);
+//	if(err != cudaSuccess)
+//	{
+//	   puts("copy error");
+//	   exit(0);
+//	}
 	ListAllParticles(nt,"aArrangeFlights");
 
 

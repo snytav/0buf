@@ -13,6 +13,26 @@
 #include <stdlib.h>
 #include "archAPI.h"
 
+int getRank()
+{
+    int rank;
+
+
+    MPI_Comm_rank(MPI_COMM_WORLD,&rank);
+
+    return rank;
+}
+
+int getSize()
+{
+    int rank;
+
+
+    MPI_Comm_size(MPI_COMM_WORLD,&rank);
+
+    return rank;
+}
+
 int InitMPI(int argc,char *argv[])
 {
 	MPI_Init(&argc,&argv);
@@ -23,6 +43,8 @@ int sumMPI(int size,double *d_jx,double *d_jy,double *d_jz)
     double *snd,*rcv,*jx,*jy,*jz;
     int i;
     
+    if(getSize() == 1) return 0;
+
     jx = (double *)malloc(size*sizeof(double));
     jy = (double *)malloc(size*sizeof(double));
     jz = (double *)malloc(size*sizeof(double));
@@ -74,25 +96,6 @@ int sumMPIenergy(double *e)
 }
 
 
-int getRank()
-{
-    int rank;
-    
-    
-    MPI_Comm_rank(MPI_COMM_WORLD,&rank);
-    
-    return rank;
-}
-
-int getSize()
-{
-    int rank;
-
-
-    MPI_Comm_size(MPI_COMM_WORLD,&rank);
-
-    return rank;
-}
 
 int  CloseMPI()
 {
