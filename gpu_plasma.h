@@ -1873,7 +1873,7 @@ int MakeParticleList(int nt,int *stage,int *stage1,int **d_stage,int **d_stage1)
 
     printf("before_MakeDepartureLists-2 %d %s blockdim %d %d %d\n",before_MakeDepartureLists,
       cudaGetErrorString(before_MakeDepartureLists),dimGrid.x,dimGrid.y,dimGrid.z);
-    exit(0);
+
 //    GPU_MakeDepartureLists//<<<dimGrid, dimBlockOne>>>(d_CellArray,nt,*d_stage);
 
     void* args[] = {
@@ -1891,10 +1891,11 @@ int MakeParticleList(int nt,int *stage,int *stage1,int **d_stage,int **d_stage1)
                  );
 
         after_MakeDepartureLists = cudaGetLastError();
-          if(after_MakeDepartureLists != cudaSuccess)
-          {
+//          if(after_MakeDepartureLists != cudaSuccess)
+//          {
              printf("after_MakeDepartureLists %d %s\n",after_MakeDepartureLists,cudaGetErrorString(after_MakeDepartureLists));
-          }
+//          }
+             exit(0);
 
 //          cudaDeviceSynchronize();
 
