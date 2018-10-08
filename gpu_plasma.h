@@ -1893,9 +1893,9 @@ int MakeParticleList(int nt,int *stage,int *stage1,int **d_stage,int **d_stage1)
         after_MakeDepartureLists = cudaGetLastError();
 //          if(after_MakeDepartureLists != cudaSuccess)
 //          {
-             printf("after_MakeDepartureLists %d %s\n",after_MakeDepartureLists,cudaGetErrorString(after_MakeDepartureLists));
+             printf("after_MakeDepartureLists %d %s %d\n",after_MakeDepartureLists,cudaGetErrorString(after_MakeDepartureLists),__LINE__);
 //          }
-//             exit(0);
+            exit(0);
 
 //          cudaDeviceSynchronize();
 
@@ -1948,6 +1948,10 @@ int MakeParticleList(int nt,int *stage,int *stage1,int **d_stage,int **d_stage1)
        printf("after_remove error %d %s\n",err,getErrorString(err1));
        exit(0);
     }
+
+    printf("end MakeParticleList %d\n", __LINE__);
+
+    exit(0);
 
     return (int)err;
 }
