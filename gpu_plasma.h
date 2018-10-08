@@ -1895,36 +1895,28 @@ int MakeParticleList(int nt,int *stage,int *stage1,int **d_stage,int **d_stage1)
 //          {
              printf("after_MakeDepartureLists %d %s %d\n",after_MakeDepartureLists,cudaGetErrorString(after_MakeDepartureLists),__LINE__);
 //          }
-            exit(0);
+//            exit(0);
 
 //          cudaDeviceSynchronize();
 
               int err = cudaGetLastError();
 
-              if(err != cudaSuccess)
-                  {
+//              if(err != cudaSuccess)
+//                  {
                      printf("MakeParticleList sync error %d %s\n",err,getErrorString(err));
-                  }
+                     exit(0);
+//                  }
               err = MemoryCopy(stage,*d_stage,sizeof(int)*(Nx+2)*(Ny+2)*(Nz+2),DEVICE_TO_HOST);
 
-              if(err != cudaSuccess)
-              {
+//              if(err != cudaSuccess)
+//              {
                  printf("MakeParticleList error %d %s\n",err,getErrorString(err));
                  exit(0);
-              }
+//              }
 
-
-
-
-
-//                cudaError_t cudaStatus1 = cudaLaunchKernel(
-//                             (const void*)GPU_RemoveDepartureParticles, // pointer to kernel func.
-//                             dimGrid,                       // grid
-//                             dimBlockOne,                   // block
-//                             args,                          // arguments
-//                             16000,
-//                             0
-//                         );
+              printf("after_MakeDepartureLists-2 %d %s %d\n",after_MakeDepartureLists,cudaGetErrorString(after_MakeDepartureLists),__LINE__);
+             //          }
+                         exit(0);
 
 
     cudaError_t after_remove = cudaGetLastError();
