@@ -1781,7 +1781,7 @@ int StepAllCells(int nt,double mass,double q_mass)
 
 
        std::cout<<"GPU_StepAllCells returns "<<cudaStatus<<std::endl;
-	   dim3 dimBlock1(CellExtent,5,1),dimBlockExt(CellExtent,CellExtent,CellExtent);
+	   dim3 dimBlock1(CellExtent,5,2),dimBlockExt(CellExtent,CellExtent,CellExtent);
 	   void *args1[] = { (void* )&d_CellArray,&nt,0};
 	   cudaStatus = cudaFuncSetCacheConfig((const void*)GPU_CurrentsAllCells,cudaFuncCachePreferShared);
 	   std::cout<<"cudaFuncSetCacheConfig returns "<<cudaStatus<<" "<<cudaGetErrorString(cudaStatus)<<std::endl;
@@ -1871,6 +1871,9 @@ int MakeParticleList(int nt,int *stage,int *stage1,int **d_stage,int **d_stage1)
 
     cudaMalloc(d_stage1,sizeof(int)*(Nx+2)*(Ny+2)*(Nz+2));
 
+    printf("before_MakeDepartureLists-2 %d %s blockdim %d %d %d\n",before_MakeDepartureLists,
+      cudaGetErrorString(before_MakeDepartureLists),dimGrid.x,dimGrid.y,dimGrid.z);
+    exit(0);
 //    GPU_MakeDepartureLists//<<<dimGrid, dimBlockOne>>>(d_CellArray,nt,*d_stage);
 
     void* args[] = {
