@@ -521,6 +521,11 @@ __device__ double check_thread(int i,int l,int k)
 __device__ void add(CellDouble *J ,int i,int l,int k,double t)
 {
 	J->M[i][l][k] += t*check_thread(i,l,k);
+
+	if(blockIdx.x == 80 && blockIdx.y == 3 && blockIdx.z == 3)
+	{
+	   printf("cell (%3d,%2d,%2d)  ilk ( %d,%d,%d )\n",blockIdx.x,blockIdx.y,blockIdx.z,i,l,k);
+	}
 }
 
 
