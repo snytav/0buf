@@ -1904,19 +1904,19 @@ int MakeParticleList(int nt,int *stage,int *stage1,int **d_stage,int **d_stage1)
 //              if(err != cudaSuccess)
 //                  {
                      printf("MakeParticleList sync error %d %s\n",err,getErrorString(err));
-                     exit(0);
+                  //   exit(0);
 //                  }
-              err = MemoryCopy(stage,*d_stage,sizeof(int)*(Nx+2)*(Ny+2)*(Nz+2),DEVICE_TO_HOST);
+//              err = MemoryCopy(stage,*d_stage,sizeof(int)*(Nx+2)*(Ny+2)*(Nz+2),DEVICE_TO_HOST);
 
 //              if(err != cudaSuccess)
 //              {
                  printf("MakeParticleList error %d %s\n",err,getErrorString(err));
-                 exit(0);
+                // exit(0);
 //              }
 
               printf("after_MakeDepartureLists-2 %d %s %d\n",after_MakeDepartureLists,cudaGetErrorString(after_MakeDepartureLists),__LINE__);
              //          }
-                         exit(0);
+//                         exit(0);
 
 
     cudaError_t after_remove = cudaGetLastError();
@@ -1929,11 +1929,12 @@ int MakeParticleList(int nt,int *stage,int *stage1,int **d_stage,int **d_stage1)
 
     int err1 = cudaGetLastError();
 
-    if(err1 != cudaSuccess)
-        {
+//    if(err1 != cudaSuccess)
+//        {
            printf("after_remove sync error %d %s\n",err1,getErrorString(err1));
-        }
-    err1 = MemoryCopy(stage,*d_stage,sizeof(int)*(Nx+2)*(Ny+2)*(Nz+2),DEVICE_TO_HOST);
+//        }
+
+//    err1 = MemoryCopy(stage,*d_stage,sizeof(int)*(Nx+2)*(Ny+2)*(Nz+2),DEVICE_TO_HOST);
 
     if(err1 != cudaSuccess)
     {
