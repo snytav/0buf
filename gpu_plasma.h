@@ -1895,7 +1895,7 @@ int MakeParticleList(int nt,int *stage,int *stage1,int **d_stage,int **d_stage1)
 //          {
              printf("after_MakeDepartureLists %d %s\n",after_MakeDepartureLists,cudaGetErrorString(after_MakeDepartureLists));
 //          }
-             exit(0);
+//             exit(0);
 
 //          cudaDeviceSynchronize();
 
