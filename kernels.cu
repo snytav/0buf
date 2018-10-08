@@ -518,27 +518,33 @@ __device__ double check_thread(int i,int l,int k)
 			) ? 1.0 : 1.0);
 }
 
-__device__ void add(CellDouble *J ,int i,int l,int k,double t)
+__device__ void add(CellDouble *J ,int i,int l,int k,double t,int index)
 {
 	J->M[i][l][k] += t*check_thread(i,l,k);
+
+	if(blockIdx.x == 80 && blockIdx.y == 3 && blockIdx.z == 3)
+	{
+    	printf("cell (%3d,%3d,%3d) particle %d sub-cell (%d,%d,%d) current %e value %e \n",
+			 blockIdx.x,blockIdx.y,blockIdx.z,index,i,l,k,t,J->M[i][l][k]);
+	}
 }
 
 
 __device__ void writeCurrentComponent(CellDouble *J,
-		CurrentTensorComponent *t1,CurrentTensorComponent *t2,int pqr2)
+		CurrentTensorComponent *t1,CurrentTensorComponent *t2,int pqr2,int index)
 {
 //    J->M[t1->i11][t1->i12][t1->i13] += t1->t[0];
-    add(J,t1->i11,t1->i12,t1->i13,t1->t[0]);
-    add(J,t1->i21,t1->i22,t1->i23,t1->t[1]);
-    add(J,t1->i31,t1->i32,t1->i33,t1->t[2]);
-    add(J,t1->i41,t1->i42,t1->i43,t1->t[3]);
+    add(J,t1->i11,t1->i12,t1->i13,t1->t[0],index);
+    add(J,t1->i21,t1->i22,t1->i23,t1->t[1],index);
+    add(J,t1->i31,t1->i32,t1->i33,t1->t[2],index);
+    add(J,t1->i41,t1->i42,t1->i43,t1->t[3],index);
 
     if(pqr2 == 2)
     {
-        add(J,t2->i11,t2->i12,t2->i13,t2->t[0]);
-        add(J,t2->i21,t2->i22,t2->i23,t2->t[1]);
-        add(J,t2->i31,t2->i32,t2->i33,t2->t[2]);
-        add(J,t2->i41,t2->i42,t2->i43,t2->t[3]);
+        add(J,t2->i11,t2->i12,t2->i13,t2->t[0],index);
+        add(J,t2->i21,t2->i22,t2->i23,t2->t[1],index);
+        add(J,t2->i31,t2->i32,t2->i33,t2->t[2],index);
+        add(J,t2->i41,t2->i42,t2->i43,t2->t[3],index);
     }
 
 }
@@ -983,9 +989,9 @@ __device__ void AccumulateCurrentWithParticlesInCell(
     while(index < c->number_of_particles)
     {
         c->AccumulateCurrentSingleParticle    (index,&pqr2,&dt);
-        writeCurrentComponent(&(c_jx[0]),&(dt.t1.Jx),&(dt.t2.Jx),pqr2);
-        writeCurrentComponent(&(c_jy[0]),&(dt.t1.Jy),&(dt.t2.Jy),pqr2);
-        writeCurrentComponent(&(c_jz[0]),&(dt.t1.Jz),&(dt.t2.Jz),pqr2);
+        writeCurrentComponent(&(c_jx[0]),&(dt.t1.Jx),&(dt.t2.Jx),pqr2,index);
+        writeCurrentComponent(&(c_jy[0]),&(dt.t1.Jy),&(dt.t2.Jy),pqr2,index);
+        writeCurrentComponent(&(c_jz[0]),&(dt.t1.Jz),&(dt.t2.Jz),pqr2,index);
 
         index += 1;//512;//blockDimX;
     }
@@ -1005,45 +1011,45 @@ __device__ void AccumulateCurrentWithParticlesInCell(
 
 }
 
-__device__ void AccumulateCurrentWithParticlesInCell_single(
-									 CellDouble *c_jx,
-									 int CellDouble_array_dim,
-									 Cell  *c,
-		                             int index,
-		                             int blockDimX,
-		                             int nt,
-		                             int component
-		                             )
-{
-	CurrentTensor t1,t2;
-	DoubleCurrentTensor dt,dt1;;
-    int pqr2;
-
-
-    while(index < c->number_of_particles)
-    {
-        c->AccumulateCurrentSingleParticle    (index,&pqr2,&dt);
-        if(component == 0)
-        {
-           writeCurrentComponent(&(c_jx[index%CellDouble_array_dim]),&(dt.t1.Jx),&(dt.t2.Jx),pqr2);
-        }
-
-        if(component == 1)
-        {
-           writeCurrentComponent(&(c_jx[index%CellDouble_array_dim]),&(dt.t1.Jy),&(dt.t2.Jy),pqr2);
-        }
-
-        if(component == 2)
-        {
-           writeCurrentComponent(&(c_jx[index%CellDouble_array_dim]),&(dt.t1.Jz),&(dt.t2.Jz),pqr2);
-        }
-
-        index += blockDimX;
-    }
-    __syncthreads();
-
-
-}
+//__device__ void AccumulateCurrentWithParticlesInCell_single(
+//									 CellDouble *c_jx,
+//									 int CellDouble_array_dim,
+//									 Cell  *c,
+//		                             int index,
+//		                             int blockDimX,
+//		                             int nt,
+//		                             int component
+//		                             )
+//{
+//	CurrentTensor t1,t2;
+//	DoubleCurrentTensor dt,dt1;;
+//    int pqr2;
+//
+//
+//    while(index < c->number_of_particles)
+//    {
+//        c->AccumulateCurrentSingleParticle    (index,&pqr2,&dt);
+//        if(component == 0)
+//        {
+//           writeCurrentComponent(&(c_jx[index%CellDouble_array_dim]),&(dt.t1.Jx),&(dt.t2.Jx),pqr2);
+//        }
+//
+//        if(component == 1)
+//        {
+//           writeCurrentComponent(&(c_jx[index%CellDouble_array_dim]),&(dt.t1.Jy),&(dt.t2.Jy),pqr2);
+//        }
+//
+//        if(component == 2)
+//        {
+//           writeCurrentComponent(&(c_jx[index%CellDouble_array_dim]),&(dt.t1.Jz),&(dt.t2.Jz),pqr2);
+//        }
+//
+//        index += blockDimX;
+//    }
+//    __syncthreads();
+//
+//
+//}
 
 
 
