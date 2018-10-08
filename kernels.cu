@@ -512,10 +512,10 @@ __device__ double check_thread(int i,int l,int k)
 {
 	return (
 			(
-			 ( ((i == threadIdx.x) && (blockDim.x > 1 )) || (blockDim.x == 0)) &&
-			 ( ((l == threadIdx.y) && (blockDim.y > 1 )) || (blockDim.y == 0)) &&
-			 ( ((k == threadIdx.z) && (blockDim.z > 1 )) || (blockDim.z == 0))
-			) ? 1.0 : 1.0);
+			 ( ((i == threadIdx.x) && (blockDim.x > 1 )) || (blockDim.x == 1)) &&
+			 ( ((l == threadIdx.y) && (blockDim.y > 1 )) || (blockDim.y == 1)) &&
+			 ( ((k == threadIdx.z) && (blockDim.z > 1 )) || (blockDim.z == 1))
+			) ? 1.0 : 0.0);
 }
 
 __device__ void add(CellDouble *J ,int i,int l,int k,double t)
