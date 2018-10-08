@@ -1929,7 +1929,7 @@ int MakeParticleList(int nt,int *stage,int *stage1,int **d_stage,int **d_stage1)
        printf("after_remove %d %s\n",after_remove,cudaGetErrorString(after_remove));
     }
 
-    cudaDeviceSynchronize();
+//    cudaDeviceSynchronize();
 
     int err1 = cudaGetLastError();
 
