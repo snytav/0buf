@@ -508,7 +508,7 @@ __device__ double checkCurrentComponentImpact(
     return res;
 }
 
-__device__ double check_thread(int index,int i,int l,int k)
+__device__ double check_thread(int index,int i,int l,int k,int3 sub_cell_index)
 {
 	int thread_index,num_threads;
 
@@ -518,16 +518,16 @@ __device__ double check_thread(int index,int i,int l,int k)
 
 	return (
 			(
-		     ( ((index % num_threads) == thread_index)                       ) &&
-			 ( ((i == threadIdx.x) && (blockDim.x > 1 )) || (blockDim.x == 1)) &&
-			 ( ((l == threadIdx.y) && (blockDim.y > 1 )) || (blockDim.y == 1)) &&
-			 ( ((k == threadIdx.z) && (blockDim.z > 1 )) || (blockDim.z == 1))
+		     ( ((index % num_threads) == thread_index)                       ) //&&
+//			 (  (i == sub_cell_index.x) )  &&
+//			 (  (l == sub_cell_index.y) )  &&
+//			 (  (k == sub_cell_index.z) )
 			) ? 1.0 : 0.0);
 }
 
-__device__ void add(CellDouble *J ,int i,int l,int k,double t,int index,int pqr2,int component,int nt)
+__device__ void add(CellDouble *J ,int i,int l,int k,double t,int index,int pqr2,int component,int nt,int3 sub_cell_index)
 {
-	J->M[i][l][k] += t*check_thread(index,i,l,k);
+	J->M[i][l][k] += t*check_thread(index,i,l,k,sub_cell_index);
 
 	if(blockIdx.x == 80 && blockIdx.y == 3 && blockIdx.z == 3)
 	{
@@ -543,20 +543,20 @@ __device__ void add(CellDouble *J ,int i,int l,int k,double t,int index,int pqr2
 
 
 __device__ void writeCurrentComponent(CellDouble *J,
-		CurrentTensorComponent *t1,CurrentTensorComponent *t2,int pqr2,int index,int component,int nt)
+		CurrentTensorComponent *t1,CurrentTensorComponent *t2,int pqr2,int index,int component,int nt,int3 sub_cell_index)
 {
 //    J->M[t1->i11][t1->i12][t1->i13] += t1->t[0];
-    add(J,t1->i11,t1->i12,t1->i13,t1->t[0],index,pqr2,component,nt);
-    add(J,t1->i21,t1->i22,t1->i23,t1->t[1],index,pqr2,component,nt);
-    add(J,t1->i31,t1->i32,t1->i33,t1->t[2],index,pqr2,component,nt);
-    add(J,t1->i41,t1->i42,t1->i43,t1->t[3],index,pqr2,component,nt);
+    add(J,t1->i11,t1->i12,t1->i13,t1->t[0],index,pqr2,component,nt,sub_cell_index);
+    add(J,t1->i21,t1->i22,t1->i23,t1->t[1],index,pqr2,component,nt,sub_cell_index);
+    add(J,t1->i31,t1->i32,t1->i33,t1->t[2],index,pqr2,component,nt,sub_cell_index);
+    add(J,t1->i41,t1->i42,t1->i43,t1->t[3],index,pqr2,component,nt,sub_cell_index);
 
     if(pqr2 == 2)
     {
-        add(J,t2->i11,t2->i12,t2->i13,t2->t[0],index,pqr2,component,nt);
-        add(J,t2->i21,t2->i22,t2->i23,t2->t[1],index,pqr2,component,nt);
-        add(J,t2->i31,t2->i32,t2->i33,t2->t[2],index,pqr2,component,nt);
-        add(J,t2->i41,t2->i42,t2->i43,t2->t[3],index,pqr2,component,nt);
+        add(J,t2->i11,t2->i12,t2->i13,t2->t[0],index,pqr2,component,nt,sub_cell_index);
+        add(J,t2->i21,t2->i22,t2->i23,t2->t[1],index,pqr2,component,nt,sub_cell_index);
+        add(J,t2->i31,t2->i32,t2->i33,t2->t[2],index,pqr2,component,nt,sub_cell_index);
+        add(J,t2->i41,t2->i42,t2->i43,t2->t[3],index,pqr2,component,nt,sub_cell_index);
     }
 
 }
@@ -990,7 +990,8 @@ __device__ void AccumulateCurrentWithParticlesInCell(
 									 Cell  *c,
 		                             int index,
 		                             int blockDimX,
-		                             int nt
+		                             int nt,
+		                             int3 sub_cell_index
 		                             )
 {
 	CurrentTensor t1,t2;
@@ -1001,9 +1002,9 @@ __device__ void AccumulateCurrentWithParticlesInCell(
     while(index < c->number_of_particles)
     {
         c->AccumulateCurrentSingleParticle    (index,&pqr2,&dt);
-        writeCurrentComponent(&(c_jx[0]),&(dt.t1.Jx),&(dt.t2.Jx),pqr2,index,0,nt);
-        writeCurrentComponent(&(c_jy[0]),&(dt.t1.Jy),&(dt.t2.Jy),pqr2,index,1,nt);
-        writeCurrentComponent(&(c_jz[0]),&(dt.t1.Jz),&(dt.t2.Jz),pqr2,index,2,nt);
+        writeCurrentComponent(&(c_jx[0]),&(dt.t1.Jx),&(dt.t2.Jx),pqr2,index,0,nt,sub_cell_index);
+        writeCurrentComponent(&(c_jy[0]),&(dt.t1.Jy),&(dt.t2.Jy),pqr2,index,1,nt,sub_cell_index);
+        writeCurrentComponent(&(c_jz[0]),&(dt.t1.Jz),&(dt.t2.Jz),pqr2,index,2,nt,sub_cell_index);
 
         index += 1;//512;//blockDimX;
     }
@@ -1174,17 +1175,30 @@ __device__ void  prepare_currents(CellDouble **c_jx,CellDouble **c_jy,CellDouble
 __global__ void GPU_CurrentsAllCells(GPUCell  **cells,int nt)
 {
 	Cell  *c,*c0 = cells[0];
+	int3 sub_cell_index;
 
 
 	c = cells[ c0->getGlobalCellNumber(blockIdx.x,blockIdx.y,blockIdx.z)];
 
 
 //    for(int i = 0;i < 512;i++)
-//    {
-	    AccumulateCurrentWithParticlesInCell(c->Jx,CURRENT_SUM_BUFFER_LENGTH,c->Jy,c->Jz,
-		  					 c,0,blockDim.x,nt);
-//    }
 
+//      for(int i = 0; i< CellExtent;i++)
+//      {
+//    	  for(int l = 0; i< CellExtent;i++)
+//    	  {
+//    		  for(int k = 0;k < CellExtent;k++)
+//    		  {
+//
+//    			sub_cell_index.x = i;
+//    			sub_cell_index.y = l;
+//    			sub_cell_index.z = k;
+
+        	    AccumulateCurrentWithParticlesInCell(c->Jx,CURRENT_SUM_BUFFER_LENGTH,c->Jy,c->Jz,
+		  					 c,0,blockDim.x,nt,sub_cell_index);
+//    		  }
+//    	  }
+//      }
 
 
 }
