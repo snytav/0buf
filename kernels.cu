@@ -510,9 +510,15 @@ __device__ double checkCurrentComponentImpact(
 
 __device__ double check_thread(int index,int i,int l,int k)
 {
+	int thread_index,num_threads;
+
+	num_threads = blockDim.x*blockDim.y*blockDim.z;
+
+	thread_index = threadIdx.x*blockDim.y*blockDim.z + threadIdx.y*blockDim.z + threadIdx.z;
+
 	return (
 			(
-		     ( ((index % blockDim.x) == threadIdx.x)                          ) &&
+		     ( ((index % num_threads) == thread_index)                       ) &&
 			 ( ((i == threadIdx.x) && (blockDim.x > 1 )) || (blockDim.x == 1)) &&
 			 ( ((l == threadIdx.y) && (blockDim.y > 1 )) || (blockDim.y == 1)) &&
 			 ( ((k == threadIdx.z) && (blockDim.z > 1 )) || (blockDim.z == 1))
