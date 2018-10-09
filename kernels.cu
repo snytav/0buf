@@ -976,6 +976,29 @@ __device__ void set_cell_double_array_to_zero(CellDouble *arr,int size)
 	}
 }
 
+__device__ void writeCurrentComponents(
+		                                     CellDouble *c_jx,
+		                                     DoubleCurrentTensor *dt,
+		                                     int pqr2,
+											 CellDouble *c_jy,
+											 CellDouble *c_jz,
+											 Cell  *c,
+				                             int index,
+				                             int blockDimX,
+				                             int nt
+
+		)
+{
+
+
+
+
+	        writeCurrentComponent(&(c_jx[0]),&(dt->t1.Jx),&(dt->t2.Jx),pqr2,index,0,nt);
+	        writeCurrentComponent(&(c_jy[0]),&(dt->t1.Jy),&(dt->t2.Jy),pqr2,index,1,nt);
+	        writeCurrentComponent(&(c_jz[0]),&(dt->t1.Jz),&(dt->t2.Jz),pqr2,index,2,nt);
+}
+
+
 __device__ void AccumulateCurrentWithParticlesInCell(
 									 CellDouble *c_jx,
 									 int CellDouble_array_dim,
@@ -987,17 +1010,21 @@ __device__ void AccumulateCurrentWithParticlesInCell(
 		                             int nt
 		                             )
 {
-	CurrentTensor t1,t2;
-	DoubleCurrentTensor dt,dt1;
-    int pqr2;
+
+	DoubleCurrentTensor dt;
+	int pqr2;
+
 
     index = 0;
     while(index < c->number_of_particles)
     {
         c->AccumulateCurrentSingleParticle    (index,&pqr2,&dt);
-        writeCurrentComponent(&(c_jx[0]),&(dt.t1.Jx),&(dt.t2.Jx),pqr2,index,0,nt);
-        writeCurrentComponent(&(c_jy[0]),&(dt.t1.Jy),&(dt.t2.Jy),pqr2,index,1,nt);
-        writeCurrentComponent(&(c_jz[0]),&(dt.t1.Jz),&(dt.t2.Jz),pqr2,index,2,nt);
+        writeCurrentComponents(c_jx,&dt,pqr2,c_jy,c_jz,c,index,blockDimX,nt);
+
+
+//        writeCurrentComponent(&(c_jx[0]),&(dt.t1.Jx),&(dt.t2.Jx),pqr2,index,0,nt);
+//        writeCurrentComponent(&(c_jy[0]),&(dt.t1.Jy),&(dt.t2.Jy),pqr2,index,1,nt);
+//        writeCurrentComponent(&(c_jz[0]),&(dt.t1.Jz),&(dt.t2.Jz),pqr2,index,2,nt);
 
         index += 1;//512;//blockDimX;
     }
