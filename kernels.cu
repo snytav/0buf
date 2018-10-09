@@ -508,10 +508,11 @@ __device__ double checkCurrentComponentImpact(
     return res;
 }
 
-__device__ double check_thread(int i,int l,int k)
+__device__ double check_thread(int index,int i,int l,int k)
 {
 	return (
 			(
+		     ( ((index % blockDim.x) == threadIdx.x)                          ) &&
 			 ( ((i == threadIdx.x) && (blockDim.x > 1 )) || (blockDim.x == 1)) &&
 			 ( ((l == threadIdx.y) && (blockDim.y > 1 )) || (blockDim.y == 1)) &&
 			 ( ((k == threadIdx.z) && (blockDim.z > 1 )) || (blockDim.z == 1))
@@ -520,7 +521,7 @@ __device__ double check_thread(int i,int l,int k)
 
 __device__ void add(CellDouble *J ,int i,int l,int k,double t,int index,int pqr2,int component,int nt)
 {
-	J->M[i][l][k] += t*check_thread(i,l,k);
+	J->M[i][l][k] += t*check_thread(index,i,l,k);
 
 	if(blockIdx.x == 80 && blockIdx.y == 3 && blockIdx.z == 3)
 	{
