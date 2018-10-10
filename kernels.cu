@@ -518,8 +518,8 @@ __device__ double check_thread(int index,int i,int l,int k,int3 sub_cell_index)
 
 	return (
 			(
-		     ( ((index % num_threads) == thread_index)                       ) //&&
-//			 (  (i == sub_cell_index.x) )  &&
+		     ( ((index % num_threads) == thread_index)                       ) &&
+			 (  (i == sub_cell_index.x) ) // &&
 //			 (  (l == sub_cell_index.y) )  &&
 //			 (  (k == sub_cell_index.z) )
 			) ? 1.0 : 0.0);
@@ -1169,6 +1169,53 @@ __device__ void  prepare_currents(CellDouble **c_jx,CellDouble **c_jy,CellDouble
 
 }
 
+__global__ void GPU_CurrentsAllCells_new(GPUCell  **cells,int nt)
+{
+	Cell  *c,*c0 = cells[0];
+	int3 sub_cell_index;
+	DoubleCurrentTensor dt;
+	int pqr2;
+
+
+	c = cells[ c0->getGlobalCellNumber(blockIdx.x,blockIdx.y,blockIdx.z)];
+
+
+	for(int np = 0;np < c->number_of_particles;np++)
+	{
+		 c->AccumulateCurrentSingleParticle    (np,&pqr2,&dt);
+
+		 c->Jx->M[threadIdx.x][threadIdx.y][threadIdx.z] +=  dt.t1.Jx.t[0]*( ( (dt.t1.Jx.i11 == threadIdx.x) && (dt.t1.Jx.i12 == threadIdx.y) && (dt.t1.Jx.i13 == threadIdx.z) ) ? 1.0: 0.0)
+	                                                     	+dt.t1.Jx.t[1]*( ( (dt.t1.Jx.i21 == threadIdx.x) && (dt.t1.Jx.i22 == threadIdx.y) && (dt.t1.Jx.i23 == threadIdx.z) ) ? 1.0: 0.0)
+	                                                     	+dt.t1.Jx.t[2]*( ( (dt.t1.Jx.i31 == threadIdx.x) && (dt.t1.Jx.i32 == threadIdx.y) && (dt.t1.Jx.i33 == threadIdx.z) ) ? 1.0: 0.0)
+	                                                     	+dt.t1.Jx.t[3]*( ( (dt.t1.Jx.i41 == threadIdx.x) && (dt.t1.Jx.i42 == threadIdx.y) && (dt.t1.Jx.i43 == threadIdx.z) ) ? 1.0: 0.0)
+	                       	+( (pqr2 == 2) ? 1.0 : 0.0 )*(
+	                       			                         dt.t2.Jx.t[0]*( ( (dt.t2.Jx.i11 == threadIdx.x) && (dt.t2.Jx.i12 == threadIdx.y) && (dt.t2.Jx.i13 == threadIdx.z) ) ? 1.0: 0.0)
+	                       				                    +dt.t2.Jx.t[1]*( ( (dt.t2.Jx.i21 == threadIdx.x) && (dt.t2.Jx.i22 == threadIdx.y) && (dt.t2.Jx.i23 == threadIdx.z) ) ? 1.0: 0.0)
+	                       				                    +dt.t2.Jx.t[2]*( ( (dt.t2.Jx.i31 == threadIdx.x) && (dt.t2.Jx.i32 == threadIdx.y) && (dt.t2.Jx.i33 == threadIdx.z) ) ? 1.0: 0.0)
+	                       				                    +dt.t2.Jx.t[3]*( ( (dt.t2.Jx.i41 == threadIdx.x) && (dt.t2.Jx.i42 == threadIdx.y) && (dt.t2.Jx.i43 == threadIdx.z) ) ? 1.0: 0.0));
+
+		 c->Jy->M[threadIdx.x][threadIdx.y][threadIdx.z] +=  dt.t1.Jy.t[0]*( ( (dt.t1.Jy.i11 == threadIdx.x) && (dt.t1.Jy.i12 == threadIdx.y) && (dt.t1.Jy.i13 == threadIdx.z) ) ? 1.0: 0.0)
+		 	                                               	+dt.t1.Jy.t[1]*( ( (dt.t1.Jy.i21 == threadIdx.x) && (dt.t1.Jy.i22 == threadIdx.y) && (dt.t1.Jy.i23 == threadIdx.z) ) ? 1.0: 0.0)
+		 	                                               	+dt.t1.Jy.t[2]*( ( (dt.t1.Jy.i31 == threadIdx.x) && (dt.t1.Jy.i32 == threadIdx.y) && (dt.t1.Jy.i33 == threadIdx.z) ) ? 1.0: 0.0)
+		 	                                               	+dt.t1.Jy.t[3]*( ( (dt.t1.Jy.i41 == threadIdx.x) && (dt.t1.Jy.i42 == threadIdx.y) && (dt.t1.Jy.i43 == threadIdx.z) ) ? 1.0: 0.0)
+		 	                       	+( (pqr2 == 2) ? 1.0 : 0.0 )*(
+		 	                       			                 dt.t2.Jy.t[0]*( ( (dt.t2.Jy.i11 == threadIdx.x) && (dt.t2.Jy.i12 == threadIdx.y) && (dt.t2.Jy.i13 == threadIdx.z) ) ? 1.0: 0.0)
+		 	                       				            +dt.t2.Jy.t[1]*( ( (dt.t2.Jy.i21 == threadIdx.x) && (dt.t2.Jy.i22 == threadIdx.y) && (dt.t2.Jy.i23 == threadIdx.z) ) ? 1.0: 0.0)
+		 	                       				            +dt.t2.Jy.t[2]*( ( (dt.t2.Jy.i31 == threadIdx.x) && (dt.t2.Jy.i32 == threadIdx.y) && (dt.t2.Jy.i33 == threadIdx.z) ) ? 1.0: 0.0)
+		 	                       				            +dt.t2.Jy.t[3]*( ( (dt.t2.Jy.i41 == threadIdx.x) && (dt.t2.Jy.i42 == threadIdx.y) && (dt.t2.Jy.i43 == threadIdx.z) ) ? 1.0: 0.0));
+
+		 c->Jz->M[threadIdx.x][threadIdx.y][threadIdx.z] +=  dt.t1.Jz.t[0]*( ( (dt.t1.Jz.i11 == threadIdx.x) && (dt.t1.Jz.i12 == threadIdx.y) && (dt.t1.Jz.i13 == threadIdx.z) ) ? 1.0: 0.0)
+		 	                                               	+dt.t1.Jz.t[1]*( ( (dt.t1.Jz.i21 == threadIdx.x) && (dt.t1.Jz.i22 == threadIdx.y) && (dt.t1.Jz.i23 == threadIdx.z) ) ? 1.0: 0.0)
+		 	                                               	+dt.t1.Jz.t[2]*( ( (dt.t1.Jz.i31 == threadIdx.x) && (dt.t1.Jz.i32 == threadIdx.y) && (dt.t1.Jz.i33 == threadIdx.z) ) ? 1.0: 0.0)
+		 	                                               	+dt.t1.Jz.t[3]*( ( (dt.t1.Jz.i41 == threadIdx.x) && (dt.t1.Jz.i42 == threadIdx.y) && (dt.t1.Jz.i43 == threadIdx.z) ) ? 1.0: 0.0)
+		 	                       	+( (pqr2 == 2) ? 1.0 : 0.0 )*(
+		 	                       			                 dt.t2.Jz.t[0]*( ( (dt.t2.Jz.i11 == threadIdx.x) && (dt.t2.Jz.i12 == threadIdx.y) && (dt.t2.Jz.i13 == threadIdx.z) ) ? 1.0: 0.0)
+		 	                       				            +dt.t2.Jz.t[1]*( ( (dt.t2.Jz.i21 == threadIdx.x) && (dt.t2.Jz.i22 == threadIdx.y) && (dt.t2.Jz.i23 == threadIdx.z) ) ? 1.0: 0.0)
+		 	                       				            +dt.t2.Jz.t[2]*( ( (dt.t2.Jz.i31 == threadIdx.x) && (dt.t2.Jz.i32 == threadIdx.y) && (dt.t2.Jz.i33 == threadIdx.z) ) ? 1.0: 0.0)
+		 	                       				            +dt.t2.Jz.t[3]*( ( (dt.t2.Jz.i41 == threadIdx.x) && (dt.t2.Jz.i42 == threadIdx.y) && (dt.t2.Jz.i43 == threadIdx.z) ) ? 1.0: 0.0));
+	}
+
+}
 
 
 
@@ -1183,22 +1230,22 @@ __global__ void GPU_CurrentsAllCells(GPUCell  **cells,int nt)
 
 //    for(int i = 0;i < 512;i++)
 
-//      for(int i = 0; i< CellExtent;i++)
-//      {
+      for(int i = 0; i< CellExtent;i++)
+      {
 //    	  for(int l = 0; i< CellExtent;i++)
 //    	  {
 //    		  for(int k = 0;k < CellExtent;k++)
 //    		  {
 //
-//    			sub_cell_index.x = i;
-//    			sub_cell_index.y = l;
-//    			sub_cell_index.z = k;
+    			sub_cell_index.x = i;
+    			sub_cell_index.y = 0;
+    			sub_cell_index.z = 0;
 
         	    AccumulateCurrentWithParticlesInCell(c->Jx,CURRENT_SUM_BUFFER_LENGTH,c->Jy,c->Jz,
 		  					 c,0,blockDim.x,nt,sub_cell_index);
 //    		  }
 //    	  }
-//      }
+      }
 
 
 }

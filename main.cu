@@ -9,7 +9,7 @@ int main(int argc,char*argv[])
 
    InitMPI(argc,argv);
 
-   printf("begin Particle size %d \n", sizeof(Particle));
+   printf("begin Particle size %ld \n", sizeof(Particle));
 
    plasma = new Plasma(100,4,4,1.1424,0.05,0.05,1.0,2000,1.0,0.001);
 
