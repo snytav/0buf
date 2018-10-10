@@ -103,11 +103,16 @@ __global__ void GPU_WriteAllCurrents(GPUCell **cells,int n0,
 		         int3 i3 = c->getCellTripletNumber(n);
 
 
-		         cuda_atomicAdd(&(jx[n]),t_x);
+		         atomicAdd(&(jx[n]),t_x);
+		         t_y= c->Jy->M[i1][l1][k1];
+		         atomicAdd(&(jy[n]),t_y);
+		         t = c->Jz->M[i1][l1][k1];
+		         atomicAdd(&(jz[n]),t);
+/*		         cuda_atomicAdd(&(jx[n]),t_x);
 		         t_y= c->Jy->M[i1][l1][k1];
 		         cuda_atomicAdd(&(jy[n]),t_y);
 		         t = c->Jz->M[i1][l1][k1];
-		         cuda_atomicAdd(&(jz[n]),t);
+		         cuda_atomicAdd(&(jz[n]),t);*/
 
 }
 
@@ -520,9 +525,15 @@ __device__ double check_thread(int i,int l,int k)
 
 __device__ void add(CellDouble *J ,int i,int l,int k,double t,int index,int pqr2,int component,int nt)
 {
-	J->M[i][l][k] += t*check_thread(i,l,k);
+	if((i == threadIdx.x && l == threadIdx.y && k == threadIdx.z) ||
+	   (blockDim.x == 1 && blockDim.y == 1 && blockDim.z == 1)	)
+	{
+		J->M[i][l][k] += t;
+	}
 
-	if(blockIdx.x == 80 && blockIdx.y == 3 && blockIdx.z == 3)
+//	J->M[i][l][k] += t*check_thread(i,l,k);
+
+/*	if(blockIdx.x == 80 && blockIdx.y == 3 && blockIdx.z == 3)
 	{
 	   printf("index %5d cell (%3d,%2d,%2d)  ilk ( %d,%d,%d ) thread ( %d,%d,%d ) t %10.3e J %10.3e cmp %2d pqr2 %2d nt %5d\n",
 			   index,
@@ -531,7 +542,7 @@ __device__ void add(CellDouble *J ,int i,int l,int k,double t,int index,int pqr2
 			   threadIdx.x,threadIdx.y,threadIdx.z,
 			   t,J->M[i][l][k],
 			   component,pqr2,nt);
-	}
+	}*/
 }
 
 
@@ -1000,7 +1011,7 @@ __device__ void AccumulateCurrentWithParticlesInCell(
 
         index += 1;//512;//blockDimX;
     }
-    __syncthreads();
+//    __syncthreads();
 //
 //    while(index < c->number_of_particles)
 //        {
@@ -1012,7 +1023,7 @@ __device__ void AccumulateCurrentWithParticlesInCell(
 //            index += blockDimX;
 //        }
 
-    __syncthreads();
+ //   __syncthreads();
 
 }
 

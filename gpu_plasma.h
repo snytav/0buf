@@ -1791,7 +1791,7 @@ int StepAllCells(int nt,double mass,double q_mass)
 	                                            dimGrid,                       // grid
 	                                            dimBlock1,                      // block
 	                                            args1,                          // arguments
-	                                            4000,
+	                                            0,
 	                                            0
 	                                           );
 	   std::cout<<"GPU_CurrentsAllCells returns "<<cudaStatus<<" "<<cudaGetErrorString(cudaStatus)<<std::endl;

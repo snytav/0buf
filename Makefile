@@ -5,9 +5,9 @@ CPP=g++
 CUDA=/usr/local/cuda
 CUDALIB=$(CUDA)/lib64
 
-LDFLAGS= -lm -L$(CUDALIB) -arch=sm_52
+LDFLAGS= -lm -L$(CUDALIB) -arch=sm_61
 #CUDAFLAGS= --maxrregcount=128  -arch=sm_35 --ptxas-options=-v -I/usr/local/cuda-7.5/include/
-CUDAFLAGS= -arch=sm_52 -lineinfo --maxrregcount=128 -g -I$(CUDA)/include/ #--relocatable-device-code=true
+CUDAFLAGS= -arch=sm_61 -lineinfo --maxrregcount=128 -g -I$(CUDA)/include/ #--relocatable-device-code=true
 CUDALIBS=  -g -L$(CUDALIB) -lcuda -lcudart #-lthrust 
 MPIFLAGS=
 CFLAGS=
