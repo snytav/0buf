@@ -201,9 +201,10 @@ __global__ void GPU_MakeDepartureLists(GPUCell  **cells,int nt,int *d_stage)
                     	d_stage[1] = c->i;
                     	d_stage[2] = c->l;
                     	d_stage[3] = c->k;
-                    	d_stage[1] = ix;
-                    	d_stage[2] = iy;
-                    	d_stage[3] = iz;
+                    	d_stage[4] = ix;
+                    	d_stage[5] = iy;
+                    	d_stage[6] = iz;
+                    	d_stage[7] = c->departureListLength;
                     	return;
                     }
 					c->departureListLength++;
@@ -529,20 +530,21 @@ __device__ void add(CellDouble *J ,int i,int l,int k,double t,int index,int pqr2
 	   (blockDim.x == 1 && blockDim.y == 1 && blockDim.z == 1)	)
 	{
 		J->M[i][l][k] += t;
-	}
+
 
 //	J->M[i][l][k] += t*check_thread(i,l,k);
 
-/*	if(blockIdx.x == 80 && blockIdx.y == 3 && blockIdx.z == 3)
-	{
-	   printf("index %5d cell (%3d,%2d,%2d)  ilk ( %d,%d,%d ) thread ( %d,%d,%d ) t %10.3e J %10.3e cmp %2d pqr2 %2d nt %5d\n",
-			   index,
-			   blockIdx.x,blockIdx.y,blockIdx.z,
-			   i,l,k,
-			   threadIdx.x,threadIdx.y,threadIdx.z,
-			   t,J->M[i][l][k],
-			   component,pqr2,nt);
-	}*/
+		if(blockIdx.x == 80 && blockIdx.y == 3 && blockIdx.z == 3)
+		{
+		   printf("FLY index %5d cell (%3d,%2d,%2d)  ilk ( %d,%d,%d ) thread ( %d,%d,%d ) t %10.3e J %10.3e cmp %2d pqr2 %2d nt %5d\n",
+				   index,
+				   blockIdx.x,blockIdx.y,blockIdx.z,
+				   i,l,k,
+				   threadIdx.x,threadIdx.y,threadIdx.z,
+				   t,J->M[i][l][k],
+				   component,pqr2,nt);
+		}
+	}
 }
 
 

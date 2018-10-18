@@ -1789,7 +1789,7 @@ int StepAllCells(int nt,double mass,double q_mass)
 	   cudaStatus = cudaLaunchKernel(
 	                                            (const void*)GPU_CurrentsAllCells, // pointer to kernel func.
 	                                            dimGrid,                       // grid
-	                                            dimBlock1,                      // block
+	                                            dimBlockExt,                      // block
 	                                            args1,                          // arguments
 	                                            0,
 	                                            0
@@ -1952,8 +1952,8 @@ int inter_stage_diagnostic(int *stage,int nt)
 {
 	   if(stage[0] == TOO_MANY_PARTICLES)
 	    {
-	       printf("too many particles flying to (%d,%d,%d) from (%d,%d,%d) \n",
-		          stage[1],stage[2],stage[3],stage[4],stage[5],stage[6]);
+	       printf("too many particles flying to (%d,%d,%d) from (%d,%d,%d) too many: %d \n",
+		          stage[1],stage[2],stage[3],stage[4],stage[5],stage[6],stage[7]);
 	       exit(0);
 	    }
 
