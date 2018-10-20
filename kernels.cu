@@ -549,8 +549,21 @@ __device__ void add(CellDouble *J ,int i,int l,int k,double t,int index,int pqr2
 
 
 __device__ void writeCurrentComponent(CellDouble *J,
-		CurrentTensorComponent *t1,CurrentTensorComponent *t2,int pqr2,int index,int component,int nt)
+		CurrentTensorComponent *t1,CurrentTensorComponent *t2,int pqr2,int index,int component,int nt,int sort)
 {
+
+	if(blockIdx.x == 80 && blockIdx.y == 3 && blockIdx.z == 3 && component == 0)
+			{
+			   printf("FLY-cur index %5d cell (%3d,%2d,%2d)  ilk ( %d,%d,%d ) thread ( %d,%d,%d ) cmp %2d pqr2 %2d nt %5d %10.3e %10.3e %10.3e %10.3e sort %d\n",
+					   index,
+					   blockIdx.x,blockIdx.y,blockIdx.z,
+					   t1->i11,t1->i12,t1->i13,
+					   threadIdx.x,threadIdx.y,threadIdx.z,
+					   component,pqr2,nt,
+					   t1->t[0],t1->t[1],t1->t[2],t1->t[3],
+					   sort
+					   );
+			}
 //    J->M[t1->i11][t1->i12][t1->i13] += t1->t[0];
     add(J,t1->i11,t1->i12,t1->i13,t1->t[0],index,pqr2,component,nt);
     add(J,t1->i21,t1->i22,t1->i23,t1->t[1],index,pqr2,component,nt);
@@ -997,19 +1010,20 @@ __device__ void AccumulateCurrentWithParticlesInCell(
 		                             int index,
 		                             int blockDimX,
 		                             int nt
+
 		                             )
 {
 	CurrentTensor t1,t2;
 	DoubleCurrentTensor dt,dt1;
-    int pqr2;
+    int pqr2,sort;
 
     index = 0;
     while(index < c->number_of_particles)
     {
-        c->AccumulateCurrentSingleParticle    (index,&pqr2,&dt);
-        writeCurrentComponent(&(c_jx[0]),&(dt.t1.Jx),&(dt.t2.Jx),pqr2,index,0,nt);
-        writeCurrentComponent(&(c_jy[0]),&(dt.t1.Jy),&(dt.t2.Jy),pqr2,index,1,nt);
-        writeCurrentComponent(&(c_jz[0]),&(dt.t1.Jz),&(dt.t2.Jz),pqr2,index,2,nt);
+        c->AccumulateCurrentSingleParticle    (index,&pqr2,&dt,&sort);
+        writeCurrentComponent(&(c_jx[0]),&(dt.t1.Jx),&(dt.t2.Jx),pqr2,index,0,nt,sort);
+        writeCurrentComponent(&(c_jy[0]),&(dt.t1.Jy),&(dt.t2.Jy),pqr2,index,1,nt,sort);
+        writeCurrentComponent(&(c_jz[0]),&(dt.t1.Jz),&(dt.t2.Jz),pqr2,index,2,nt,sort);
 
         index += 1;//512;//blockDimX;
     }
