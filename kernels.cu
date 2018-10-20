@@ -1021,6 +1021,23 @@ __device__ void AccumulateCurrentWithParticlesInCell(
     while(index < c->number_of_particles)
     {
         c->AccumulateCurrentSingleParticle    (index,&pqr2,&dt,&sort);
+        if(blockIdx.x == 80 && blockIdx.y == 3 && blockIdx.z == 3)
+        		{
+        		   printf("FLY-acc index %5d cell (%3d,%2d,%2d)  thread ( %d,%d,%d ) nt %5d %10.3e %10.3e %10.3e %10.3e\n",
+        				   index,
+        				   blockIdx.x,blockIdx.y,blockIdx.z,
+        				  // i,l,k,
+        				   threadIdx.x,threadIdx.y,threadIdx.z,
+        				   //t,J->M[i][l][k],
+        				   //component,pqr2,
+        				   nt,
+        				   dt.t1.Jx.t[0],
+        				   dt.t1.Jx.t[1],
+        				   dt.t1.Jx.t[2],
+        				   dt.t1.Jx.t[3]
+        				   );
+        		}
+
         writeCurrentComponent(&(c_jx[0]),&(dt.t1.Jx),&(dt.t2.Jx),pqr2,index,0,nt,sort);
         writeCurrentComponent(&(c_jy[0]),&(dt.t1.Jy),&(dt.t2.Jy),pqr2,index,1,nt,sort);
         writeCurrentComponent(&(c_jz[0]),&(dt.t1.Jz),&(dt.t2.Jz),pqr2,index,2,nt,sort);
