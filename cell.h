@@ -1303,7 +1303,7 @@ double d_sign(double a, double b)
  #ifdef __CUDACC__
  __host__ __device__
  #endif
-void CurrentToMesh(double tau,int *cells,DoubleCurrentTensor *dt,Particle *p)
+void CurrentToMesh(double tau,int *cells,DoubleCurrentTensor *dt,Particle *p,int nt)
 {
       double3 x2;
       double s;
@@ -1414,6 +1414,24 @@ L18:  p->x = p->x1;
       Reflect(p);
 
 //      *dt1 = dt;
+
+      if(blockIdx.x == 80 && blockIdx.y == 3 && blockIdx.z == 3)
+     	         		{
+     	         		   printf("FLY-mesh index %5d cell (%3d,%2d,%2d)  thread ( %d,%d,%d ) nt %5d %10.3e %10.3e %10.3e %10.3e\n",
+     	         				   i,
+     	         				   blockIdx.x,blockIdx.y,blockIdx.z,
+     	         				  // i,l,k,
+     	         				   threadIdx.x,threadIdx.y,threadIdx.z,
+     	         				   //t,J->M[i][l][k],
+     	         				   //component,pqr2,
+     	         				   nt,
+     	         				   dt->t1.Jx.t[0],
+     	         				   dt->t1.Jx.t[1],
+     	         				   dt->t1.Jx.t[2],
+     	         				   dt->t1.Jx.t[3]
+     	         				   );
+     	         		}
+
 
       t = *t1;
       *t1 = t;
@@ -1880,7 +1898,7 @@ void MoveSingleParticle(unsigned int i, CellTotalField cf)
 
 	 p = readParticleFromSurfaceDevice(i);
 	 *sort = p.sort;
-	 CurrentToMesh(tau,cells,dt,&p);
+	 CurrentToMesh(tau,cells,dt,&p,nt);
 
 	 if(blockIdx.x == 80 && blockIdx.y == 3 && blockIdx.z == 3)
 	         		{
