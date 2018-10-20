@@ -1860,7 +1860,7 @@ void MoveSingleParticle(unsigned int i, CellTotalField cf)
 #ifdef __CUDACC__
  __host__ __device__
  #endif
- DoubleCurrentTensor AccumulateCurrentSingleParticle(unsigned int i,int *cells,DoubleCurrentTensor *dt,int *sort)
+ DoubleCurrentTensor AccumulateCurrentSingleParticle(unsigned int i,int *cells,DoubleCurrentTensor *dt,int *sort,int nt)
  {
 	 Particle p;
 //	 DoubleCurrentTensor dt;
@@ -1882,10 +1882,28 @@ void MoveSingleParticle(unsigned int i, CellTotalField cf)
 	 *sort = p.sort;
 	 CurrentToMesh(tau,cells,dt,&p);
 
+	 if(blockIdx.x == 80 && blockIdx.y == 3 && blockIdx.z == 3)
+	         		{
+	         		   printf("FLY-ctm index %5d cell (%3d,%2d,%2d)  thread ( %d,%d,%d ) nt %5d %10.3e %10.3e %10.3e %10.3e\n",
+	         				   i,
+	         				   blockIdx.x,blockIdx.y,blockIdx.z,
+	         				  // i,l,k,
+	         				   threadIdx.x,threadIdx.y,threadIdx.z,
+	         				   //t,J->M[i][l][k],
+	         				   //component,pqr2,
+	         				   nt,
+	         				   dt->t1.Jx.t[0],
+	         				   dt->t1.Jx.t[1],
+	         				   dt->t1.Jx.t[2],
+	         				   dt->t1.Jx.t[3]
+	         				   );
+	         		}
+
      writeParticleToSurface(i,&p);
 
 //     dt.t1 = *t1;
 //     dt.t2 = *t2;
+
 
      return (*dt);
 }

@@ -1020,7 +1020,7 @@ __device__ void AccumulateCurrentWithParticlesInCell(
     index = 0;
     while(index < c->number_of_particles)
     {
-        c->AccumulateCurrentSingleParticle    (index,&pqr2,&dt,&sort);
+        c->AccumulateCurrentSingleParticle    (index,&pqr2,&dt,&sort,nt);
         if(blockIdx.x == 80 && blockIdx.y == 3 && blockIdx.z == 3)
         		{
         		   printf("FLY-acc index %5d cell (%3d,%2d,%2d)  thread ( %d,%d,%d ) nt %5d %10.3e %10.3e %10.3e %10.3e\n",
