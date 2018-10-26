@@ -1340,6 +1340,24 @@ void CurrentToMesh(double tau,int *cells,DoubleCurrentTensor *dt,Particle *p,int
       k=abs(i2.z-i1.z);
       m=4*i+2*l+k;
 
+      if(blockIdx.x == 80 && blockIdx.y == 3 && blockIdx.z == 3)
+      {
+         printf("FLY-ilkm index %5d cell (%3d,%2d,%2d)  thread ( %d,%d,%d ) nt %5d %10.3e %10.3e %10.3e %10.3e ilk %d,%d,%d m %d\n",
+        		   index,
+        		   blockIdx.x,blockIdx.y,blockIdx.z,
+             	  // i,l,k,
+          	       threadIdx.x,threadIdx.y,threadIdx.z,
+          	       //t,J->M[i][l][k],
+				   //component,pqr2,
+				   nt,
+				   dt->t1.Jx.t[0],
+				   dt->t1.Jx.t[1],
+				   dt->t1.Jx.t[2],
+				   dt->t1.Jx.t[3],
+				   i,l,k,m
+				   );
+       }
+
 
 	switch (m) {
 	    case 1:  goto L1;
@@ -1351,8 +1369,45 @@ void CurrentToMesh(double tau,int *cells,DoubleCurrentTensor *dt,Particle *p,int
 	    case 7:  goto L7;
 	}
 
+	if(blockIdx.x == 80 && blockIdx.y == 3 && blockIdx.z == 3)
+	{
+	   printf("FLY-0mesh index %5d cell (%3d,%2d,%2d)  thread ( %d,%d,%d ) nt %5d %10.3e %10.3e %10.3e %10.3e ilk %d,%d,%d x2 %10.3e x1 %10.3e x %10.3e\n",
+			   index,
+			   blockIdx.x,blockIdx.y,blockIdx.z,
+			  // i,l,k,
+			   threadIdx.x,threadIdx.y,threadIdx.z,
+			   //t,J->M[i][l][k],
+			   //component,pqr2,
+			   nt,
+			   dt->t1.Jx.t[0],
+			   dt->t1.Jx.t[1],
+			   dt->t1.Jx.t[2],
+			   dt->t1.Jx.t[3],
+			   i,l,k,
+			   x2,x1,x
+			   );
+	}
+     pqr(i1,x,x1,mass,tau,t1,0,p);
+	 if(blockIdx.x == 80 && blockIdx.y == 3 && blockIdx.z == 3)
+	     	         		{
+	     	         		   printf("FLY-1mesh index %5d cell (%3d,%2d,%2d)  thread ( %d,%d,%d ) nt %5d %10.3e %10.3e %10.3e %10.3e ilk %d,%d,%d x2 %10.3e x1 %10.3e x %10.3e\n",
+	     	         				   index,
+	     	         				   blockIdx.x,blockIdx.y,blockIdx.z,
+	     	         				  // i,l,k,
+	     	         				   threadIdx.x,threadIdx.y,threadIdx.z,
+	     	         				   //t,J->M[i][l][k],
+	     	         				   //component,pqr2,
+	     	         				   nt,
+	     	         				   dt->t1.Jx.t[0],
+	     	         				   dt->t1.Jx.t[1],
+	     	         				   dt->t1.Jx.t[2],
+	     	         				   dt->t1.Jx.t[3],
+	     	         				   i,l,k,
+	     	         				   x2,x1,x
+	     	         				   );
+	     	         		}
 
-	pqr(i1,x,x1,mass,tau,t1,0,p);
+
 	goto L18;
 L1:
 	x2.z = getCellTransitAverage(hz,i1.z,i2.z,z0);                   //hz * ((i1.z + i2.z) * .5 - 1.);
