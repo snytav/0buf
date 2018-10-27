@@ -1980,11 +1980,11 @@ void MoveSingleParticle(unsigned int i, CellTotalField cf)
 
 	 p = readParticleFromSurfaceDevice(i);
 	 *sort = p.sort;
-	 CurrentToMesh(tau,cells,dt,&p,nt,i);
+	// CurrentToMesh(tau,cells,dt,&p,nt,i);
 
 	 if(blockIdx.x == 80 && blockIdx.y == 3 && blockIdx.z == 3)
 	         		{
-	         		   printf("FLY-ctm index %5d cell (%3d,%2d,%2d)  thread ( %d,%d,%d ) nt %5d %10.3e %10.3e %10.3e %10.3e ilk %d,%d,%d x2 %10.3e x1 %10.3e x %10.3e\n",
+	         		   printf("FLY-ctm index %5d cell (%3d,%2d,%2d)  thread ( %d,%d,%d ) nt %5d %10.3e %10.3e %10.3e %10.3e ilk %d,%d,%d x %10.3e\n",
 	         				   i,
 	         				   blockIdx.x,blockIdx.y,blockIdx.z,
 	         				  // i,l,k,
@@ -1995,12 +1995,14 @@ void MoveSingleParticle(unsigned int i, CellTotalField cf)
 	         				   dt->t1.Jx.t[0],
 	         				   dt->t1.Jx.t[1],
 	         				   dt->t1.Jx.t[2],
-	         				   dt->t1.Jx.t[3]
+	         				   dt->t1.Jx.t[3],
+                                                   p.x
 
 	         				   );
 	         		}
+       CurrentToMesh(tau,cells,dt,&p,nt,i);
 
-     writeParticleToSurface(i,&p);
+ //    writeParticleToSurface(i,&p);
 
 //     dt.t1 = *t1;
 //     dt.t2 = *t2;
