@@ -1,0 +1,12 @@
+FLY index  1028 cell ( 80, 3, 3)  ilk ( 3,3,2 ) thread ( 0,0,0 ) t  3.096e-07 J  3.096e-07 cmp  0 pqr2  1 nt     1
+FLY index  1028 cell ( 80, 3, 3)  ilk ( 3,3,3 ) thread ( 0,0,0 ) t  4.578e-07 J  8.676e-07 cmp  0 pqr2  1 nt     1
+FLY index  1028 cell ( 80, 3, 3)  ilk ( 3,4,2 ) thread ( 0,0,0 ) t  4.585e-09 J  4.585e-09 cmp  0 pqr2  1 nt     1
+FLY index  1028 cell ( 80, 3, 3)  ilk ( 3,4,3 ) thread ( 0,0,0 ) t  6.780e-09 J  8.475e-08 cmp  0 pqr2  1 nt     1
+FLY index  1028 cell ( 80, 3, 3)  ilk ( 3,3,2 ) thread ( 0,0,0 ) t -9.029e-08 J -9.030e-08 cmp  1 pqr2  1 nt     1
+FLY index  1028 cell ( 80, 3, 3)  ilk ( 3,3,3 ) thread ( 0,0,0 ) t -1.335e-07 J -1.335e-07 cmp  1 pqr2  1 nt     1
+FLY index  1028 cell ( 80, 3, 3)  ilk ( 4,3,2 ) thread ( 0,0,0 ) t -1.378e-09 J -1.378e-09 cmp  1 pqr2  1 nt     1
+FLY index  1028 cell ( 80, 3, 3)  ilk ( 4,3,3 ) thread ( 0,0,0 ) t -2.038e-09 J -2.038e-09 cmp  1 pqr2  1 nt     1
+FLY index  1028 cell ( 80, 3, 3)  ilk ( 3,3,2 ) thread ( 0,0,0 ) t  6.217e-08 J  6.215e-08 cmp  2 pqr2  1 nt     1
+FLY index  1028 cell ( 80, 3, 3)  ilk ( 3,4,2 ) thread ( 0,0,0 ) t  9.207e-10 J  9.299e-10 cmp  2 pqr2  1 nt     1
+FLY index  1028 cell ( 80, 3, 3)  ilk ( 4,3,2 ) thread ( 0,0,0 ) t  9.490e-10 J  9.490e-10 cmp  2 pqr2  1 nt     1
+FLY index  1028 cell ( 80, 3, 3)  ilk ( 4,4,2 ) thread ( 0,0,0 ) t  1.406e-11 J  1.406e-11 cmp  2 pqr2  1 nt     1

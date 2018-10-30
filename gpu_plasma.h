@@ -1789,7 +1789,7 @@ int StepAllCells(int nt,double mass,double q_mass)
 	   cudaStatus = cudaLaunchKernel(
 	                                            (const void*)GPU_CurrentsAllCells, // pointer to kernel func.
 	                                            dimGrid,                       // grid
-	                                            dimBlock1,                      // block
+	                                            dimBlockExt,                      // block
 	                                            args1,                          // arguments
 	                                            0,
 	                                            0
