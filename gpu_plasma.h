@@ -480,7 +480,7 @@ void ElectricFieldEvaluate(double *locEx,double *locEy,double *locEz,
                    0,1,Ny,0,Nz,Nx,
                    1,0,Nx+1,0,Nz,Ny);
 
-      checkControlPoint(550,nt,0);
+//      checkControlPoint(550,nt,0);
 
 
       ElectricFieldComponentEvaluatePeriodic(
@@ -1172,12 +1172,12 @@ void checkControlPoint(int num,int nt,int check_part)
 	 double t_ex,t_ey,t_ez,t_hx,t_hy,t_hz,t_jx,t_jy,t_jz;
 	 double t_qx,t_qy,t_qz;//,t_njx,t_njy,t_njz;
 
-	 if((nt != TOTAL_STEPS) || (num != 600))
-	 {
+//	 if((nt != TOTAL_STEPS) || (num != 600))
+//	 {
 #ifndef CONTROL_POINT_CHECK
 	     return;
 #endif
-	 }
+//	 }
 
 	 FILE *f;
 	 char fn_copy[100];
