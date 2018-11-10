@@ -359,6 +359,10 @@ int checkFields_afterMagneticStageOne(double *t_Hx,double *t_Hy,double *t_Hz,
 
 
 			 checkControlPoint(50,nt,0);
+                         if(nt == TOTAL_STEPS)
+                         {
+                            exit(0);
+                         }
 			 memory_monitor("afterComputeField_FirstHalfStep",nt);
 
 	return 0;
