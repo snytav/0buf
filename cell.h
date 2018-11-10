@@ -1314,7 +1314,7 @@ void CurrentToMesh(double tau,int *cells,DoubleCurrentTensor *dt,Particle *p,int
       
       if(blockIdx.x == 80 && blockIdx.y == 3 && blockIdx.z == 3)
         {
-           printf("FLY-x index %5d cell (%3d,%2d,%2d)  thread ( %d,%d,%d ) nt %5d x %10.3e\n",
+           printf("FLY-x index %5d cell (%3d,%2d,%2d)  thread ( %d,%d,%d ) nt %5d x %22.15e\n",
                            index,
                            blockIdx.x,blockIdx.y,blockIdx.z,
                           // i,l,k,
@@ -1367,7 +1367,7 @@ void CurrentToMesh(double tau,int *cells,DoubleCurrentTensor *dt,Particle *p,int
 
       if(blockIdx.x == 80 && blockIdx.y == 3 && blockIdx.z == 3)
       {
-         printf("FLY-ilkm index %5d cell (%3d,%2d,%2d)  thread ( %d,%d,%d ) nt %5d %10.3e %10.3e %10.3e %10.3e ilk %d,%d,%d m %d\n",
+         printf("FLY-ilkm index %5d cell (%3d,%2d,%2d)  thread ( %d,%d,%d ) nt %5d %22.15e %22.15e %22.15e %22.15e ilk %d,%d,%d m %d\n",
         		   index,
         		   blockIdx.x,blockIdx.y,blockIdx.z,
              	  // i,l,k,
@@ -1396,7 +1396,7 @@ void CurrentToMesh(double tau,int *cells,DoubleCurrentTensor *dt,Particle *p,int
 
 	if(blockIdx.x == 80 && blockIdx.y == 3 && blockIdx.z == 3)
 	{
-	   printf("FLY-0mesh index %5d cell (%3d,%2d,%2d)  thread ( %d,%d,%d ) nt %5d %10.3e %10.3e %10.3e %10.3e ilk %d,%d,%d x2 %10.3e x1 %10.3e x %10.3e\n",
+	   printf("FLY-0mesh index %5d cell (%3d,%2d,%2d)  thread ( %d,%d,%d ) nt %5d %22.15e %22.15e %22.15e %22.15e ilk %d,%d,%d x2 %22.15e x1 %22.15e x %22.15e\n",
 			   index,
 			   blockIdx.x,blockIdx.y,blockIdx.z,
 			  // i,l,k,
@@ -1415,7 +1415,7 @@ void CurrentToMesh(double tau,int *cells,DoubleCurrentTensor *dt,Particle *p,int
      pqr(i1,x,x1,mass,tau,t1,0,p);
 	 if(blockIdx.x == 80 && blockIdx.y == 3 && blockIdx.z == 3)
 	     	         		{
-	     	         		   printf("FLY-1mesh index %5d cell (%3d,%2d,%2d)  thread ( %d,%d,%d ) nt %5d %10.3e %10.3e %10.3e %10.3e ilk %d,%d,%d x2 %10.3e x1 %10.3e x %10.3e\n",
+	     	         		   printf("FLY-1mesh index %5d cell (%3d,%2d,%2d)  thread ( %d,%d,%d ) nt %5d %22.15e %22.15e %22.15e %22.15e ilk %d,%d,%d x2 %22.15e x1 %22.15e x %22.15e\n",
 	     	         				   index,
 	     	         				   blockIdx.x,blockIdx.y,blockIdx.z,
 	     	         				  // i,l,k,
@@ -1497,7 +1497,7 @@ L18:  p->x = p->x1;
 
       if(blockIdx.x == 80 && blockIdx.y == 3 && blockIdx.z == 3)
      	         		{
-     	         		   printf("FLY-mesh index %5d cell (%3d,%2d,%2d)  thread ( %d,%d,%d ) nt %5d %10.3e %10.3e %10.3e %10.3e ilk %d,%d,%d x2 %10.3e x1 %10.3e x %10.3e\n",
+     	         		   printf("FLY-mesh index %5d cell (%3d,%2d,%2d)  thread ( %d,%d,%d ) nt %5d %22.15e %22.15e %22.15e %22.15e ilk %d,%d,%d x2 %22.15e x1 %22.15e x %22.15e\n",
      	         				   index,
      	         				   blockIdx.x,blockIdx.y,blockIdx.z,
      	         				  // i,l,k,
@@ -1984,7 +1984,7 @@ void MoveSingleParticle(unsigned int i, CellTotalField cf)
 
 	 if(blockIdx.x == 80 && blockIdx.y == 3 && blockIdx.z == 3)
 	         		{
-	         		   printf("FLY-ctm index %5d cell (%3d,%2d,%2d)  thread ( %d,%d,%d ) nt %5d %10.3e %10.3e %10.3e %10.3e ilk %d,%d,%d x %10.3e\n",
+	         		   printf("FLY-ctm index %5d cell (%3d,%2d,%2d)  thread ( %d,%d,%d ) nt %5d %22.15e %22.15e %22.15e %22.15e ilk %d,%d,%d x %22.15e\n",
 	         				   i,
 	         				   blockIdx.x,blockIdx.y,blockIdx.z,
 	         				  // i,l,k,

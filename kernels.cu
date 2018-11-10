@@ -536,7 +536,7 @@ __device__ void add(CellDouble *J ,int i,int l,int k,double t,int index,int pqr2
 
 		if(blockIdx.x == 80 && blockIdx.y == 3 && blockIdx.z == 3)
 		{
-		   printf("FLY index %5d cell (%3d,%2d,%2d)  ilk ( %d,%d,%d ) thread ( %d,%d,%d ) t %10.3e J %10.3e cmp %2d pqr2 %2d nt %5d\n",
+		   printf("FLY index %5d cell (%3d,%2d,%2d)  ilk ( %d,%d,%d ) thread ( %d,%d,%d ) t %22.15e J %22.15e cmp %2d pqr2 %2d nt %5d\n",
 				   index,
 				   blockIdx.x,blockIdx.y,blockIdx.z,
 				   i,l,k,
@@ -554,7 +554,7 @@ __device__ void writeCurrentComponent(CellDouble *J,
 
 	if(blockIdx.x == 80 && blockIdx.y == 3 && blockIdx.z == 3 && component == 0)
 			{
-			   printf("FLY-cur index %5d cell (%3d,%2d,%2d)  ilk ( %d,%d,%d ) thread ( %d,%d,%d ) cmp %2d pqr2 %2d nt %5d %10.3e %10.3e %10.3e %10.3e sort %d\n",
+			   printf("FLY-cur index %5d cell (%3d,%2d,%2d)  ilk ( %d,%d,%d ) thread ( %d,%d,%d ) cmp %2d pqr2 %2d nt %5d %22.15e %22.15e %22.15e %22.15e sort %d\n",
 					   index,
 					   blockIdx.x,blockIdx.y,blockIdx.z,
 					   t1->i11,t1->i12,t1->i13,
@@ -1023,7 +1023,7 @@ __device__ void AccumulateCurrentWithParticlesInCell(
         c->AccumulateCurrentSingleParticle    (index,&pqr2,&dt,&sort,nt);
         if(blockIdx.x == 80 && blockIdx.y == 3 && blockIdx.z == 3)
         		{
-        		   printf("FLY-acc index %5d cell (%3d,%2d,%2d)  thread ( %d,%d,%d ) nt %5d %10.3e %10.3e %10.3e %10.3e\n",
+        		   printf("FLY-acc index %5d cell (%3d,%2d,%2d)  thread ( %d,%d,%d ) nt %5d %22.15e %22.15e %22.15e %22.15e\n",
         				   index,
         				   blockIdx.x,blockIdx.y,blockIdx.z,
         				  // i,l,k,

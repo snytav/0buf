@@ -480,7 +480,7 @@ void ElectricFieldEvaluate(double *locEx,double *locEy,double *locEz,
                    0,1,Ny,0,Nz,Nx,
                    1,0,Nx+1,0,Nz,Ny);
 
-      checkControlPoint(550,nt,0);
+     // checkControlPoint(550,nt,0);
 
 
       ElectricFieldComponentEvaluatePeriodic(
@@ -565,6 +565,7 @@ int PushParticles(int nt)
 	//checkParticleAttributes(nt);
 
 	checkControlPoint(270,nt,1);
+	
 
 	return 0;
 }

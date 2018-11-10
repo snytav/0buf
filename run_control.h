@@ -65,7 +65,7 @@
 
 //#define PARTICLE_TRACE
 
-//#define CONTROL_POINT_CHECK
+#define CONTROL_POINT_CHECK
 
 //#define checkControlPointParticles_PRINTS
 
