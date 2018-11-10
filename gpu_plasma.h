@@ -1173,7 +1173,7 @@ void checkControlPoint(int num,int nt,int check_part)
 	 double t_ex,t_ey,t_ez,t_hx,t_hy,t_hz,t_jx,t_jy,t_jz;
 	 double t_qx,t_qy,t_qz;//,t_njx,t_njy,t_njz;
 
-	 if((nt != TOTAL_STEPS) || (num != 600))
+	 if((nt != TOTAL_STEPS) || (num != 50))
 	 {
 #ifndef CONTROL_POINT_CHECK
 	     return;
