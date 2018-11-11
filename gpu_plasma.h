@@ -618,7 +618,7 @@ int readStartPoint(int nt)
 		ComputeField_SecondHalfStep(nt);
 		puts("field computed-2");
 
-		sumMPI((Nx+2)*(Ny+2)*(Nz+2),d_Jx,d_Jy,d_Jz);
+		//sumMPI((Nx+2)*(Ny+2)*(Nz+2),d_Jx,d_Jy,d_Jz);
 
 		 Diagnose(nt);
 
@@ -1196,6 +1196,9 @@ void checkControlPoint(int num,int nt,int check_part)
 
 	 readControlPoint(&f,fn_copy,num,nt,1,0,dbgEx,dbgEy,dbgEz,dbgHx,dbgHy,dbgHz,dbgJx,dbgJy,dbgJz,dbg_Qx,dbg_Qy,dbg_Qz,
                      dbg_x,dbg_y,dbg_z,dbg_px,dbg_py,dbg_pz);
+          
+         printf("checkControlPoint nt %5d num %3d #####################################################\n",nt,num);
+
 
 	 memory_monitor("checkControlPoint3",nt);
 
