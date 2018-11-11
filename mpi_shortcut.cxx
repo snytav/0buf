@@ -42,7 +42,7 @@ int sumMPI(int size,double *d_jx,double *d_jy,double *d_jz)
         snd[i + 2*size] = jz[i];
     }
 
-    MPI_Allreduce(snd,rcv,size,MPI_DOUBLE_PRECISION,MPI_SUM,MPI_COMM_WORLD);
+    MPI_Allreduce(snd,rcv,3*size,MPI_DOUBLE_PRECISION,MPI_SUM,MPI_COMM_WORLD);
     
     for(i = 0;i < size;i++)
     {   

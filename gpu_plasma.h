@@ -618,7 +618,7 @@ int readStartPoint(int nt)
 		ComputeField_SecondHalfStep(nt);
 		puts("field computed-2");
 
-		//sumMPI((Nx+2)*(Ny+2)*(Nz+2),d_Jx,d_Jy,d_Jz);
+		sumMPI((Nx+2)*(Ny+2)*(Nz+2),d_Jx,d_Jy,d_Jz);
 
 		 Diagnose(nt);
 
