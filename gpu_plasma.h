@@ -359,6 +359,7 @@ int checkFields_afterMagneticStageOne(double *t_Hx,double *t_Hy,double *t_Hz,
 
 
 			 checkControlPoint(50,nt,0);
+
 			 memory_monitor("afterComputeField_FirstHalfStep",nt);
 
 	return 0;
@@ -565,6 +566,11 @@ int PushParticles(int nt)
 	//checkParticleAttributes(nt);
 
 	checkControlPoint(270,nt,1);
+	                         if(nt == TOTAL_STEPS)
+	                         {
+	                            exit(0);
+	                         }
+	
 
 	return 0;
 }
@@ -1172,12 +1178,12 @@ void checkControlPoint(int num,int nt,int check_part)
 	 double t_ex,t_ey,t_ez,t_hx,t_hy,t_hz,t_jx,t_jy,t_jz;
 	 double t_qx,t_qy,t_qz;//,t_njx,t_njy,t_njz;
 
-	 if((nt != TOTAL_STEPS) || (num != 600))
-	 {
+//	 if((nt != TOTAL_STEPS) || (num != 600))
+//	 {
 #ifndef CONTROL_POINT_CHECK
 	     return;
 #endif
-	 }
+//	 }
 
 	 FILE *f;
 	 char fn_copy[100];
@@ -1191,6 +1197,9 @@ void checkControlPoint(int num,int nt,int check_part)
 
 	 readControlPoint(&f,fn_copy,num,nt,1,0,dbgEx,dbgEy,dbgEz,dbgHx,dbgHy,dbgHz,dbgJx,dbgJy,dbgJz,dbg_Qx,dbg_Qy,dbg_Qz,
                      dbg_x,dbg_y,dbg_z,dbg_px,dbg_py,dbg_pz);
+          
+         printf("checkControlPoint nt %5d num %3d #####################################################\n",nt,num);
+
 
 	 memory_monitor("checkControlPoint3",nt);
 

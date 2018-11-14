@@ -7,7 +7,7 @@
 
 #define FORTRAN_NUMBER_OF_SMALL_STEPS 1
 
-#define TOTAL_STEPS  5
+#define TOTAL_STEPS  2
 
 #define FREE_RAM_MONITOR
 
@@ -65,7 +65,7 @@
 
 //#define PARTICLE_TRACE
 
-//#define CONTROL_POINT_CHECK
+#define CONTROL_POINT_CHECK
 
 //#define checkControlPointParticles_PRINTS
 
