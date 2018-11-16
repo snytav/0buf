@@ -1843,6 +1843,7 @@ int WriteCurrentsFromCellsToArrays(int nt)
     		         (void *)&d_Jy,
     		         (void *)&d_Jz,
     		         (void *)&d_Rho,
+    		         &nt,
     		         0};
         cudaError_t cudaStatus = cudaLaunchKernel(
                      (const void*)GPU_WriteAllCurrents, // pointer to kernel func.
