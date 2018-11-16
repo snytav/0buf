@@ -1,0 +1,8 @@
+WRI cell ( 80, 3, 3)  ilk ( 2,2,2 ) thread ( 2,2,2 ) Jx  6.566e-08 Jy  2.258e-08 Jz  4.704e-10 nt     2
+WRI cell ( 80, 3, 3)  ilk ( 2,2,3 ) thread ( 2,2,3 ) Jx  5.475e-07 Jy  1.480e-07 Jz  1.057e-08 nt     2
+WRI cell ( 80, 3, 3)  ilk ( 2,3,2 ) thread ( 2,3,2 ) Jx  4.396e-07 Jy -3.788e-08 Jz  9.185e-08 nt     2
+WRI cell ( 80, 3, 3)  ilk ( 2,3,3 ) thread ( 2,3,3 ) Jx  2.714e-06 Jy  8.257e-08 Jz -3.818e-08 nt     2
+WRI cell ( 80, 3, 3)  ilk ( 3,2,2 ) thread ( 3,2,2 ) Jx -6.511e-08 Jy -4.546e-08 Jz -2.590e-08 nt     2
+WRI cell ( 80, 3, 3)  ilk ( 3,2,3 ) thread ( 3,2,3 ) Jx -5.486e-07 Jy -1.531e-07 Jz  2.446e-07 nt     2
+WRI cell ( 80, 3, 3)  ilk ( 3,3,2 ) thread ( 3,3,2 ) Jx -4.404e-07 Jy -2.470e-07 Jz  9.988e-08 nt     2
+WRI cell ( 80, 3, 3)  ilk ( 3,3,3 ) thread ( 3,3,3 ) Jx -2.711e-06 Jy -8.545e-09 Jz -4.989e-07 nt     2

@@ -359,10 +359,7 @@ int checkFields_afterMagneticStageOne(double *t_Hx,double *t_Hy,double *t_Hz,
 
 
 			 checkControlPoint(50,nt,0);
-//                         if(nt == TOTAL_STEPS)
-//                         {
-//                            exit(0);
-//                         }
+
 			 memory_monitor("afterComputeField_FirstHalfStep",nt);
 
 	return 0;
@@ -569,6 +566,10 @@ int PushParticles(int nt)
 	//checkParticleAttributes(nt);
 
 	checkControlPoint(270,nt,1);
+	                         if(nt == TOTAL_STEPS)
+	                         {
+	                            exit(0);
+	                         }
 	
 
 	return 0;
@@ -1177,12 +1178,12 @@ void checkControlPoint(int num,int nt,int check_part)
 	 double t_ex,t_ey,t_ez,t_hx,t_hy,t_hz,t_jx,t_jy,t_jz;
 	 double t_qx,t_qy,t_qz;//,t_njx,t_njy,t_njz;
 
-	 if((nt != TOTAL_STEPS) || (num != 50))
-	 {
+//	 if((nt != TOTAL_STEPS) || (num != 50))
+//	 {
 #ifndef CONTROL_POINT_CHECK
 	     return;
 #endif
-	 }
+//	 }
 
 	 FILE *f;
 	 char fn_copy[100];
@@ -1842,6 +1843,7 @@ int WriteCurrentsFromCellsToArrays(int nt)
     		         (void *)&d_Jy,
     		         (void *)&d_Jz,
     		         (void *)&d_Rho,
+    		         &nt,
     		         0};
         cudaError_t cudaStatus = cudaLaunchKernel(
                      (const void*)GPU_WriteAllCurrents, // pointer to kernel func.

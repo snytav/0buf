@@ -81,7 +81,7 @@ double CheckArraySize(double* a, double* dbg_a,int size)
 
 
 __global__ void GPU_WriteAllCurrents(GPUCell **cells,int n0,
-		      double *jx,double *jy,double *jz,double *rho)
+		      double *jx,double *jy,double *jz,double *rho,int nt)
 {
 	unsigned int nx = blockIdx.x;
 	unsigned int ny = blockIdx.y;
@@ -100,10 +100,22 @@ __global__ void GPU_WriteAllCurrents(GPUCell **cells,int n0,
     	         if (n < 0 ) n = -n;
         		 double t,t_x,t_y;
 		         t_x = c->Jx->M[i1][l1][k1];
+		         if(blockIdx.x == 80 && blockIdx.y == 3 && blockIdx.z == 3)
+		         		{
+		                   printf("WRI cell (%3d,%2d,%2d)  ilk ( %d,%d,%d ) thread ( %d,%d,%d ) Jx %10.3e Jy %10.3e Jz %10.3e nt %5d\n",
+		                		   c->i,c->l,c->k,
+		                		   i1,l1,k1,
+		                		   threadIdx.x,threadIdx.y,threadIdx.z,
+		                		   c->Jx->M[i1][l1][k1],
+		                		   c->Jy->M[i1][l1][k1],
+		                		   c->Jz->M[i1][l1][k1],nt);
+		         		}
+
 		         int3 i3 = c->getCellTripletNumber(n);
 
 
 		         atomicAdd(&(jx[n]),t_x);
+
 		         t_y= c->Jy->M[i1][l1][k1];
 		         atomicAdd(&(jy[n]),t_y);
 		         t = c->Jz->M[i1][l1][k1];
@@ -536,7 +548,7 @@ __device__ void add(CellDouble *J ,int i,int l,int k,double t,int index,int pqr2
 
 		if(blockIdx.x == 80 && blockIdx.y == 3 && blockIdx.z == 3)
 		{
-		   printf("FLY index %5d cell (%3d,%2d,%2d)  ilk ( %d,%d,%d ) thread ( %d,%d,%d ) t %22.15e J %22.15e cmp %2d pqr2 %2d nt %5d\n",
+		   printf("FLY index %5d cell (%3d,%2d,%2d)  ilk ( %d,%d,%d ) thread ( %d,%d,%d ) t %10.3e J %10.3e cmp %2d pqr2 %2d nt %5d\n",
 				   index,
 				   blockIdx.x,blockIdx.y,blockIdx.z,
 				   i,l,k,
