@@ -1860,7 +1860,7 @@ void MoveSingleParticle(unsigned int i, CellTotalField cf)
 #ifdef __CUDACC__
  __host__ __device__
  #endif
- DoubleCurrentTensor AccumulateCurrentSingleParticle(unsigned int i,int *cells,DoubleCurrentTensor *dt)
+ DoubleCurrentTensor AccumulateCurrentSingleParticle(unsigned int i,int *cells,DoubleCurrentTensor *dt,int *sort)
  {
 	 Particle p;
 //	 DoubleCurrentTensor dt;
@@ -1882,6 +1882,7 @@ void MoveSingleParticle(unsigned int i, CellTotalField cf)
 	 CurrentToMesh(tau,cells,dt,&p);
 
      writeParticleToSurface(i,&p);
+     *sort = p.sort;
 
 //     dt.t1 = *t1;
 //     dt.t2 = *t2;
