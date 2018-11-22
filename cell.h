@@ -1844,7 +1844,7 @@ int WriteParticleToCell(Particle *p, int i,double3 x1)
 #ifdef VIRTUAL_FUNCTIONS
 virtual
 #endif
-void MoveSingleParticle(unsigned int i, CellTotalField cf)
+void MoveSingleParticle(unsigned int i, CellTotalField cf,int nt)
 {
      Particle p;
      Field fd;
@@ -1853,14 +1853,27 @@ void MoveSingleParticle(unsigned int i, CellTotalField cf)
      p = readParticleFromSurfaceDevice(i);
 	 fd = GetField(&p,cf);
 
-	 p.Move(fd,tau);
+     p.Move(fd,tau);
+
+	 if(blockIdx.x == 80 && blockIdx.y == 3 && blockIdx.z == 3)
+	 		{
+	 		   printf("MOVE index %5d cell (%3d,%2d,%2d) thread ( %d,%d,%d ) nt %5d sort %2u x %22.15e x1 %22.15e \n",
+	 				   i,
+	 				   blockIdx.x,blockIdx.y,blockIdx.z,
+	 				   threadIdx.x,threadIdx.y,threadIdx.z,nt,
+	 				   (unsigned int)p.sort,
+	 				   p.x,
+	 				   p.x1
+	 				   );
+	 		}
+
 	 writeParticleToSurface(i,&p);
 }
 
 #ifdef __CUDACC__
  __host__ __device__
  #endif
- DoubleCurrentTensor AccumulateCurrentSingleParticle(unsigned int i,int *cells,DoubleCurrentTensor *dt,int *sort)
+ DoubleCurrentTensor AccumulateCurrentSingleParticle(unsigned int i,int *cells,DoubleCurrentTensor *dt)
  {
 	 Particle p;
 //	 DoubleCurrentTensor dt;
@@ -1882,7 +1895,7 @@ void MoveSingleParticle(unsigned int i, CellTotalField cf)
 	 CurrentToMesh(tau,cells,dt,&p);
 
      writeParticleToSurface(i,&p);
-     *sort = p.sort;
+//     *sort = p.sort;
 
 //     dt.t1 = *t1;
 //     dt.t2 = *t2;

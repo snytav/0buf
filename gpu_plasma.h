@@ -1774,7 +1774,7 @@ int StepAllCells(int nt,double mass,double q_mass)
 //	   GPU_StepAllCells//<<<dimGrid, dimBlock,16000>>>(d_CellArray);//,d_Jx);
 //	            		     		                 mass,q_mass);
 
-	   void* args[] = { (void* )&d_CellArray,0};
+	   void* args[] = { (void* )&d_CellArray,&nt,0};
 //	   void *d_args;
 //	   cudaError_t err = cudaMalloc(&d_args,sizeof(d_CellArray)+sizeof(d_Jx));
 //	   cudaError_t err1 = cudaMemcpy(d_args,args,sizeof(d_CellArray)+sizeof(d_Jx),cudaMemcpyHostToDevice);
