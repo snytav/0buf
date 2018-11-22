@@ -102,7 +102,7 @@ __global__ void GPU_WriteAllCurrents(GPUCell **cells,int n0,
 		         t_x = c->Jx->M[i1][l1][k1];
 		         if(blockIdx.x == 80 && blockIdx.y == 3 && blockIdx.z == 3)
 		         		{
-		                   printf("WRI cell (%3d,%2d,%2d)  ilk ( %d,%d,%d ) thread ( %d,%d,%d ) Jx %10.3e Jy %10.3e Jz %10.3e nt %5d\n",
+		                   printf("WRI cell (%3d,%2d,%2d)  ilk ( %d,%d,%d ) thread ( %d,%d,%d ) Jx %25.15e Jy %10.3e Jz %10.3e nt %5d\n",
 		                		   c->i,c->l,c->k,
 		                		   i1,l1,k1,
 		                		   threadIdx.x,threadIdx.y,threadIdx.z,
@@ -536,7 +536,7 @@ __device__ double check_thread(int i,int l,int k)
 			) ? 1.0 : 0.0);
 }
 
-__device__ void add(CellDouble *J ,int i,int l,int k,double t,int index,int pqr2,int component,int nt)
+__device__ void add(CellDouble *J ,int i,int l,int k,double t,int index,int pqr2,int component,int nt,Particle *p)
 {
 	if((i == threadIdx.x && l == threadIdx.y && k == threadIdx.z) ||
 	   (blockDim.x == 1 && blockDim.y == 1 && blockDim.z == 1)	)
@@ -548,20 +548,31 @@ __device__ void add(CellDouble *J ,int i,int l,int k,double t,int index,int pqr2
 
 		if(blockIdx.x == 80 && blockIdx.y == 3 && blockIdx.z == 3)
 		{
-		   printf("FLY index %5d cell (%3d,%2d,%2d)  ilk ( %d,%d,%d ) thread ( %d,%d,%d ) t %10.3e J %10.3e cmp %2d pqr2 %2d nt %5d\n",
+		   printf("FLY index %5d cell (%3d,%2d,%2d)  ilk ( %d,%d,%d ) thread ( %d,%d,%d ) t %25.15e J %25.15e cmp %2d pqr2 %2d nt %5d sort %2d x %22.15e x1 %22.15e \n",
 				   index,
 				   blockIdx.x,blockIdx.y,blockIdx.z,
 				   i,l,k,
 				   threadIdx.x,threadIdx.y,threadIdx.z,
 				   t,J->M[i][l][k],
-				   component,pqr2,nt);
+				   component,pqr2,nt,
+				   p->sort,
+				   p->x,
+				   p->x1
+				   );
 		}
 	}
 }
 
 
 __device__ void writeCurrentComponent(CellDouble *J,
-		CurrentTensorComponent *t1,CurrentTensorComponent *t2,int pqr2,int index,int component,int nt,int sort)
+		CurrentTensorComponent *t1,
+		CurrentTensorComponent *t2,
+		int pqr2,
+		int index,
+		int component,
+		int nt,
+		int sort,
+		Particle *p)
 {
 
 	if(blockIdx.x == 80 && blockIdx.y == 3 && blockIdx.z == 3 && component == 0)
@@ -577,17 +588,17 @@ __device__ void writeCurrentComponent(CellDouble *J,
 					   );
 			}
 //    J->M[t1->i11][t1->i12][t1->i13] += t1->t[0];
-    add(J,t1->i11,t1->i12,t1->i13,t1->t[0],index,pqr2,component,nt);
-    add(J,t1->i21,t1->i22,t1->i23,t1->t[1],index,pqr2,component,nt);
-    add(J,t1->i31,t1->i32,t1->i33,t1->t[2],index,pqr2,component,nt);
-    add(J,t1->i41,t1->i42,t1->i43,t1->t[3],index,pqr2,component,nt);
+    add(J,t1->i11,t1->i12,t1->i13,t1->t[0],index,pqr2,component,nt,p);
+    add(J,t1->i21,t1->i22,t1->i23,t1->t[1],index,pqr2,component,nt,p);
+    add(J,t1->i31,t1->i32,t1->i33,t1->t[2],index,pqr2,component,nt,p);
+    add(J,t1->i41,t1->i42,t1->i43,t1->t[3],index,pqr2,component,nt,p);
 
     if(pqr2 == 2)
     {
-        add(J,t2->i11,t2->i12,t2->i13,t2->t[0],index,pqr2,component,nt);
-        add(J,t2->i21,t2->i22,t2->i23,t2->t[1],index,pqr2,component,nt);
-        add(J,t2->i31,t2->i32,t2->i33,t2->t[2],index,pqr2,component,nt);
-        add(J,t2->i41,t2->i42,t2->i43,t2->t[3],index,pqr2,component,nt);
+        add(J,t2->i11,t2->i12,t2->i13,t2->t[0],index,pqr2,component,nt,p);
+        add(J,t2->i21,t2->i22,t2->i23,t2->t[1],index,pqr2,component,nt,p);
+        add(J,t2->i31,t2->i32,t2->i33,t2->t[2],index,pqr2,component,nt,p);
+        add(J,t2->i41,t2->i42,t2->i43,t2->t[3],index,pqr2,component,nt,p);
     }
 
 }
@@ -930,7 +941,8 @@ __device__ void MoveParticlesInCell(
 									 CellDouble *c_hz,
 									 Cell  *c,
 		                             int index,
-		                             int blockDimX//,
+		                             int blockDimX,
+		                             int nt
 //		                             double mass,
 //		                             double q_mass
 		                             )
@@ -949,7 +961,7 @@ __device__ void MoveParticlesInCell(
     	cf.Hy = c->Hy;
     	cf.Hz = c->Hz;
 
-        c->MoveSingleParticle(index,cf);
+        c->MoveSingleParticle(index,cf,nt);
 
 
         index += blockDimX;
@@ -1028,11 +1040,13 @@ __device__ void AccumulateCurrentWithParticlesInCell(
 	CurrentTensor t1,t2;
 	DoubleCurrentTensor dt,dt1;
     int pqr2,sort;
+    Particle p;
 
     index = 0;
     while(index < c->number_of_particles)
     {
         c->AccumulateCurrentSingleParticle    (index,&pqr2,&dt,&sort,nt);
+        p = c->readParticleFromSurfaceDevice(index);
         if(blockIdx.x == 80 && blockIdx.y == 3 && blockIdx.z == 3)
         		{
         		   printf("FLY-acc index %5d cell (%3d,%2d,%2d)  thread ( %d,%d,%d ) nt %5d %22.15e %22.15e %22.15e %22.15e\n",
@@ -1050,9 +1064,9 @@ __device__ void AccumulateCurrentWithParticlesInCell(
         				   );
         		}
 
-        writeCurrentComponent(&(c_jx[0]),&(dt.t1.Jx),&(dt.t2.Jx),pqr2,index,0,nt,sort);
-        writeCurrentComponent(&(c_jy[0]),&(dt.t1.Jy),&(dt.t2.Jy),pqr2,index,1,nt,sort);
-        writeCurrentComponent(&(c_jz[0]),&(dt.t1.Jz),&(dt.t2.Jz),pqr2,index,2,nt,sort);
+        writeCurrentComponent(&(c_jx[0]),&(dt.t1.Jx),&(dt.t2.Jx),pqr2,index,0,nt,sort,&p);
+        writeCurrentComponent(&(c_jy[0]),&(dt.t1.Jy),&(dt.t2.Jy),pqr2,index,1,nt,sort,&p);
+        writeCurrentComponent(&(c_jz[0]),&(dt.t1.Jz),&(dt.t2.Jz),pqr2,index,2,nt,sort,&p);
 
         index += 1;//512;//blockDimX;
     }
@@ -1158,7 +1172,7 @@ __device__ void copyFromSharedMemoryToCell(
 
 
 
-__global__ void GPU_StepAllCells(GPUCell  **cells//,
+__global__ void GPU_StepAllCells(GPUCell  **cells,int nt//,
 //		                         int i,
 //		                         double *global_jx
 //		                         double mass,
@@ -1184,7 +1198,7 @@ __global__ void GPU_StepAllCells(GPUCell  **cells//,
 
 
 	MoveParticlesInCell(c_ex,c_ey,c_ez,c_hx,c_hy,c_hz,
-						 c,threadIdx.x,blockDim.x);//,mass,q_mass);
+						 c,threadIdx.x,blockDim.x,nt);//,mass,q_mass);
 //	MoveAccCurrent(c_ex,c_ey,c_ez,c_hx,c_hy,c_hz,c_jx,c_jy,c_jz,
 //							 c,threadIdx.x,blockDim.x,mass,q_mass);
 

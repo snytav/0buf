@@ -378,7 +378,7 @@ void
    	p.sort = (particle_sorts)ParticleArrayRead(n,11);
    	p.direction = (char)ParticleArrayRead(n,12);
 
-   	return p;
+    return p;
 }
 
 
@@ -1944,16 +1944,29 @@ int WriteParticleToCell(Particle *p, int i,double3 x1)
 #ifdef VIRTUAL_FUNCTIONS
 virtual
 #endif
-void MoveSingleParticle(unsigned int i, CellTotalField cf)
+void MoveSingleParticle(unsigned int i, CellTotalField cf,int nt)
 {
      Particle p;
      Field fd;
 
      if(i >= number_of_particles) return;
      p = readParticleFromSurfaceDevice(i);
-	 fd = GetField(&p,cf);
+     fd = GetField(&p,cf);
 
-	 p.Move(fd,tau);
+     p.Move(fd,tau);
+
+	 if(blockIdx.x == 80 && blockIdx.y == 3 && blockIdx.z == 3)
+	 		{
+	 		   printf("MOVE index %5d cell (%3d,%2d,%2d) thread ( %d,%d,%d ) nt %5d sort %2u x %22.15e x1 %22.15e \n",
+	 				   i,
+	 				   blockIdx.x,blockIdx.y,blockIdx.z,
+	 				   threadIdx.x,threadIdx.y,threadIdx.z,nt,
+	 				   (unsigned int)p.sort,
+	 				   p.x,
+	 				   p.x1
+	 				   );
+	 		}
+
 	 writeParticleToSurface(i,&p);
 }
 
