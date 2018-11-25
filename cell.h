@@ -1857,13 +1857,14 @@ void MoveSingleParticle(unsigned int i, CellTotalField cf,int nt)
 
 	 if(blockIdx.x == 80 && blockIdx.y == 3 && blockIdx.z == 3)
 	 		{
-	 		   printf("MOVE index %5d cell (%3d,%2d,%2d) thread ( %d,%d,%d ) nt %5d sort %2u x %22.15e x1 %22.15e \n",
+	 		   printf("CHE050 index %5d  nt %5d sort %2u x %22.15e x1 %22.15e cell (%3d,%2d,%2d) thread ( %d,%d,%d )\n",
 	 				   i,
-	 				   blockIdx.x,blockIdx.y,blockIdx.z,
-	 				   threadIdx.x,threadIdx.y,threadIdx.z,nt,
+	 				   nt,
 	 				   (unsigned int)p.sort,
 	 				   p.x,
-	 				   p.x1
+	 				   p.x1,
+	 				   blockIdx.x,blockIdx.y,blockIdx.z,
+	 				   threadIdx.x,threadIdx.y,threadIdx.z
 	 				   );
 	 		}
 
