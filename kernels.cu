@@ -102,7 +102,7 @@ __global__ void GPU_WriteAllCurrents(GPUCell **cells,int n0,
 		         t_x = c->Jx->M[i1][l1][k1];
 		         if(blockIdx.x == 80 && blockIdx.y == 3 && blockIdx.z == 3)
 		         		{
-		                   printf("WRI cell (%3d,%2d,%2d)  ilk ( %d,%d,%d ) thread ( %d,%d,%d ) Jx %25.15e Jy %10.3e Jz %10.3e nt %5d\n",
+		                   printf("CHE-W cell (%3d,%2d,%2d)  ilk ( %d,%d,%d ) thread ( %d,%d,%d ) Jx %25.15e Jy %10.3e Jz %10.3e nt %5d\n",
 		                		   c->i,c->l,c->k,
 		                		   i1,l1,k1,
 		                		   threadIdx.x,threadIdx.y,threadIdx.z,
@@ -963,6 +963,23 @@ __device__ void MoveParticlesInCell(
 
         c->MoveSingleParticle(index,cf,nt);
 
+        if(blockIdx.x == 80 && blockIdx.y == 3 && blockIdx.z == 3)
+        	 		{
+        	           Particle p;
+
+        	           p = c->readParticleFromSurfaceDevice(index);
+
+        	 		   printf("CHE075 index %5d  nt %5d sort %2u x %22.15e x1 %22.15e cell (%3d,%2d,%2d) thread ( %d,%d,%d )\n",
+        	 				   index,
+        	 				   nt,
+        	 				   (unsigned int)p.sort,
+        	 				   p.x,
+        	 				   p.x1,
+        	 				   blockIdx.x,blockIdx.y,blockIdx.z,
+        	 				   threadIdx.x,threadIdx.y,threadIdx.z
+        	 				   );
+        	 		}
+
 
         index += blockDimX;
     }
@@ -1171,6 +1188,29 @@ __device__ void copyFromSharedMemoryToCell(
 }
 
 
+__device__ void print_all_particles(int where,Cell *c,int nt)
+{
+	if((threadIdx.x == 0 && threadIdx.y == 0 && threadIdx.z == 0) &&
+		   (blockIdx.x == 80 && blockIdx.y == 3 &&  blockIdx.z == 3))
+		{
+		   int p_index = 102;
+		   Particle p1;
+		   for(p_index = 0;p_index < c->number_of_particles;p_index++)
+		   {
+
+		       p1 = c->readParticleFromSurfaceDevice(p_index);
+
+
+		          printf("CHE%03d index %5d  nt %5d sort %2u x %22.15e x1 %22.15e \n",
+                                       where,
+		    		                   p_index,nt,
+		        	 			//	   blockIdx.x,blockIdx.y,blockIdx.z,
+		        	 				   (unsigned int)p1.sort,p1.x,p1.x1
+		        	 				   );
+		   }
+		}
+}
+
 
 __global__ void GPU_StepAllCells(GPUCell  **cells,int nt//,
 //		                         int i,
@@ -1198,7 +1238,29 @@ __global__ void GPU_StepAllCells(GPUCell  **cells,int nt//,
 
 
 	MoveParticlesInCell(c_ex,c_ey,c_ez,c_hx,c_hy,c_hz,
-						 c,threadIdx.x,blockDim.x,nt);//,mass,q_mass);
+						 c,threadIdx.x,blockDim.x,nt);
+
+	print_all_particles(100,c,nt);
+
+//	if((threadIdx.x == 0 && threadIdx.y == 0 && threadIdx.z == 0) &&
+//	   (blockIdx.x == 80 && blockIdx.y == 3 &&  blockIdx.z == 3))
+//	{
+//	   int p_index = 102;
+//	   Particle p1;
+//	   for(p_index = 0;p_index < c->number_of_particles;p_index++)
+//	   {
+//
+//	       p1 = c->readParticleFromSurfaceDevice(p_index);
+//
+//	       printf("STEP index %5d  nt %5d sort %2u x %22.15e x1 %22.15e \n",
+//	        	 				   p_index,
+//	        	 			//	   blockIdx.x,blockIdx.y,blockIdx.z,
+//	        	 				   nt,(unsigned int)p1.sort,p1.x,p1.x1
+//	        	 				   );
+//	   }
+//	}
+
+	//,mass,q_mass);
 //	MoveAccCurrent(c_ex,c_ey,c_ez,c_hx,c_hy,c_hz,c_jx,c_jy,c_jz,
 //							 c,threadIdx.x,blockDim.x,mass,q_mass);
 
@@ -1240,7 +1302,7 @@ __global__ void GPU_CurrentsAllCells(GPUCell  **cells,int nt)
 
 
 	c = cells[ c0->getGlobalCellNumber(blockIdx.x,blockIdx.y,blockIdx.z)];
-
+	print_all_particles(200,c,nt);
 
 //    for(int i = 0;i < 512;i++)
 //    {
@@ -1250,6 +1312,17 @@ __global__ void GPU_CurrentsAllCells(GPUCell  **cells,int nt)
 
 
 
+}
+
+__global__ void GPU_Print_Particles(
+		GPUCell  **cells,
+		int where,
+		int nt)
+{
+	Cell  *c,*c0 = cells[0];
+
+	c = cells[ c0->getGlobalCellNumber(blockIdx.x,blockIdx.y,blockIdx.z)];
+	print_all_particles(where,c,nt);
 }
 
 

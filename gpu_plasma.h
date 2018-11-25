@@ -571,6 +571,7 @@ int PushParticles(int nt)
 	                            exit(0);
 	                         }
 	
+	debug_particle_print(350,nt);
 
 	return 0;
 }
@@ -610,11 +611,15 @@ int readStartPoint(int nt)
 
 	void Step(int nt)
 	 {
+		debug_particle_print(0,nt);
+
 		ComputeField_FirstHalfStep(nt);
 
 		PushParticles(nt);
 
 		puts("push ended");
+
+		debug_particle_print(400,nt);
 
 		ComputeField_SecondHalfStep(nt);
 		puts("field computed-2");
@@ -622,6 +627,9 @@ int readStartPoint(int nt)
 		sumMPI((Nx+2)*(Ny+2)*(Nz+2),d_Jx,d_Jy,d_Jz);
 
 		 Diagnose(nt);
+
+
+		 debug_particle_print(500,nt);
 
 	 }
 	virtual double getElectricEnergy()
@@ -1813,6 +1821,25 @@ int StepAllCells(int nt,double mass,double q_mass)
 	   return 0;
 }
 
+int debug_particle_print(int where, int nt)
+{
+	void *args1[] = { (void* )&d_CellArray,&where,&nt,0};
+	dim3 dimGrid(Nx+2,Ny+2,Nz+2);
+	dim3 dimBlock1(1,1,1),dimBlockExt(CellExtent,CellExtent,CellExtent);
+//		   cudaStatus = cudaFuncSetCacheConfig((const void*)GPU_Print_Particles,cudaFuncCachePreferShared);
+//		   std::cout<<"cudaFuncSetCacheConfig returns "<<cudaStatus<<" "<<cudaGetErrorString(cudaStatus)<<std::endl;
+	//	   GPU_CurrentsAllCells//<<<dimGrid, dimBlock,16000>>>(d_CellArray);//,0,d_Jx,
+		   cudaLaunchKernel(
+		                                            (const void*)GPU_Print_Particles, // pointer to kernel func.
+		                                            dimGrid,                       // grid
+		                                            dimBlock1,                     // block
+		                                            args1,                         // arguments
+		                                            0,
+		                                            0
+		                                           );
+}
+
+
 int StepAllCells_post_diagnostic(int nt)
 {
 	  memory_monitor("CellOrder_StepAllCells4",nt);
@@ -2088,12 +2115,13 @@ int SetCurrentsToZero(int nt)
 
     err = cudaGetLastError();
     if(err != cudaSuccess) { printf("%s:%d - error %d %s\n",__FILE__,__LINE__,err,cudaGetErrorString(err)); }
-
+    debug_particle_print(90,nt);
 		Push(nt,mass,q_mass);
+		debug_particle_print(250,nt);
 		puts("Push");
     err = cudaGetLastError();
     if(err != cudaSuccess) { printf("%s:%d - error %d %s\n",__FILE__,__LINE__,err,cudaGetErrorString(err)); }
-
+    debug_particle_print(270,nt);
         WriteCurrentsFromCellsToArrays(nt);
         puts("writeCut2arr");
     err = cudaGetLastError();
@@ -2102,6 +2130,7 @@ int SetCurrentsToZero(int nt)
         reorder_particles(nt);
     err = cudaGetLastError();
     if(err != cudaSuccess) { printf("%s:%d - error %d %s\n",__FILE__,__LINE__,err,cudaGetErrorString(err)); }
+    debug_particle_print(320,nt);
 	}
 
 
