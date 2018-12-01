@@ -357,28 +357,38 @@ void
 
 
  #ifdef __CUDACC__
- __host__ __device__
+ __device__
  #endif
- Particle readParticleFromSurfaceDevice(int n)
+ void readParticleFromSurfaceDevice(int n,Particle *p,int nt)
 {
-    Particle p;
+//    Particle p;
 
-   	p.m = ParticleArrayRead(n,0);
-   	p.x = ParticleArrayRead(n,1);
-   	p.y = ParticleArrayRead(n,2);
-   	p.z = ParticleArrayRead(n,3);
-   	p.pu = ParticleArrayRead(n,4);
-   	p.pv = ParticleArrayRead(n,5);
-   	p.pw = ParticleArrayRead(n,6);
-   	p.q_m = ParticleArrayRead(n,7);
+   	p->m = ParticleArrayRead(n,0);
+   	p->x = ParticleArrayRead(n,1);
+   	p->y = ParticleArrayRead(n,2);
+   	p->z = ParticleArrayRead(n,3);
+   	p->pu = ParticleArrayRead(n,4);
+   	p->pv = ParticleArrayRead(n,5);
+   	p->pw = ParticleArrayRead(n,6);
+   	p->q_m = ParticleArrayRead(n,7);
 
-  	p.x1 = ParticleArrayRead(n,8);
-   	p.y1 = ParticleArrayRead(n,9);
-   	p.z1 = ParticleArrayRead(n,10);
-   	p.sort = (particle_sorts)ParticleArrayRead(n,11);
-   	p.direction = (char)ParticleArrayRead(n,12);
+  	p->x1 = ParticleArrayRead(n,8);
+   	p->y1 = ParticleArrayRead(n,9);
+   	p->z1 = ParticleArrayRead(n,10);
+   	p->sort = (particle_sorts)ParticleArrayRead(n,11);
+   	p->direction = (char)ParticleArrayRead(n,12);
 
-    return p;
+   	if((blockIdx.x == 80 && blockIdx.y == 3 && blockIdx.z == 3) &&
+   	   (threadIdx.x == 2 && threadIdx.y == 3 && threadIdx.z == 3))
+   	        		{
+   	        		   printf("CHER index %5d  nt %5d x %22.15e x1 %22.15e \n",
+   	        				   n,
+   	        				   nt,p->x,p->x1,
+   	        				   blockIdx.x,blockIdx.y,blockIdx.z,
+   	        				  // i,l,k,
+   	        				   threadIdx.x,threadIdx.y,threadIdx.z);
+   	        		}
+
 }
 
 
@@ -386,9 +396,9 @@ public:
 
 
  #ifdef __CUDACC__
- __host__ __device__
+ __device__
  #endif
- void removeParticleFromSurfaceDevice(int n,Particle *p,int *number_of_particles)
+ void removeParticleFromSurfaceDevice(int n,Particle *p,int *number_of_particles,int nt)
 {
     int i,k;
     double b;
@@ -397,7 +407,7 @@ public:
 //    	busy = atomicCAS(&busyParticleArray,0,1);
 //    }while(busy == 1);
 
-	*p = readParticleFromSurfaceDevice(n);
+	readParticleFromSurfaceDevice(n,p,nt);
 
 	i = *number_of_particles-1;
 	if(this->i == 1 && this->l == 0 && this->k == 0)
@@ -444,7 +454,7 @@ void printCellParticles(char *where,int nt)
 
 	for(int i = 0;i < number_of_particles;i++)
 	{
-		p = readParticleFromSurfaceDevice(i);
+		readParticleFromSurfaceDevice(i,&p,nt);
 		printf("%s step %d i %5d sort %d FN %10d c ( %d %d %d ) pointInCell %d x %15.5e y %15.5e z %15.5e m %15.5e q_m %15.5e px %15.5e %15.5e %15.5e \n",where,nt,
 				i,(int)p.sort,p.fortran_number,this->i,this->l,this->k,isPointInCell(p.GetX()),p.x,p.y,p.z, p.m,p.q_m, p.pu,p.pv,p.pw);
 	}
@@ -1314,22 +1324,22 @@ void CurrentToMesh(double tau,int *cells,DoubleCurrentTensor *dt,Particle *p,int
       
       if(blockIdx.x == 80 && blockIdx.y == 3 && blockIdx.z == 3)
         {
-           printf("FLY-x index %5d cell (%3d,%2d,%2d)  thread ( %d,%d,%d ) nt %5d x %22.15e\n",
-                           index,
-                           blockIdx.x,blockIdx.y,blockIdx.z,
-                          // i,l,k,
-                           threadIdx.x,threadIdx.y,threadIdx.z,
-                           //t,J->M[i][l][k],
-                           //component,pqr2,
-                           nt,
-      //                   dt->t1.Jx.t[0],
-      //                   dt->t1.Jx.t[1],
-      //                   dt->t1.Jx.t[2],
-      //                   dt->t1.Jx.t[3],
-        //                 i,l,k,
-//                         x2,x1,
-                            x
-                           );
+//           printf("CHE202 index %5d cell (%3d,%2d,%2d)  thread ( %d,%d,%d ) nt %5d x %22.15e\n",
+//                           index,
+//                           blockIdx.x,blockIdx.y,blockIdx.z,
+//                          // i,l,k,
+//                           threadIdx.x,threadIdx.y,threadIdx.z,
+//                           //t,J->M[i][l][k],
+//                           //component,pqr2,
+//                           nt,
+//      //                   dt->t1.Jx.t[0],
+//      //                   dt->t1.Jx.t[1],
+//      //                   dt->t1.Jx.t[2],
+//      //                   dt->t1.Jx.t[3],
+//        //                 i,l,k,
+////                         x2,x1,
+//                            x
+//                           );
         }
 
 
@@ -1367,20 +1377,20 @@ void CurrentToMesh(double tau,int *cells,DoubleCurrentTensor *dt,Particle *p,int
 
       if(blockIdx.x == 80 && blockIdx.y == 3 && blockIdx.z == 3)
       {
-         printf("FLY-ilkm index %5d cell (%3d,%2d,%2d)  thread ( %d,%d,%d ) nt %5d %22.15e %22.15e %22.15e %22.15e ilk %d,%d,%d m %d\n",
-        		   index,
-        		   blockIdx.x,blockIdx.y,blockIdx.z,
-             	  // i,l,k,
-          	       threadIdx.x,threadIdx.y,threadIdx.z,
-          	       //t,J->M[i][l][k],
-				   //component,pqr2,
-				   nt,
-				   dt->t1.Jx.t[0],
-				   dt->t1.Jx.t[1],
-				   dt->t1.Jx.t[2],
-				   dt->t1.Jx.t[3],
-				   i,l,k,m
-				   );
+//         printf("CHE203 index %5d cell (%3d,%2d,%2d)  thread ( %d,%d,%d ) nt %5d %22.15e %22.15e %22.15e %22.15e ilk %d,%d,%d m %d\n",
+//        		   index,
+//        		   blockIdx.x,blockIdx.y,blockIdx.z,
+//             	  // i,l,k,
+//          	       threadIdx.x,threadIdx.y,threadIdx.z,
+//          	       //t,J->M[i][l][k],
+//				   //component,pqr2,
+//				   nt,
+//				   dt->t1.Jx.t[0],
+//				   dt->t1.Jx.t[1],
+//				   dt->t1.Jx.t[2],
+//				   dt->t1.Jx.t[3],
+//				   i,l,k,m
+//				   );
        }
 
 
@@ -1396,41 +1406,38 @@ void CurrentToMesh(double tau,int *cells,DoubleCurrentTensor *dt,Particle *p,int
 
 	if(blockIdx.x == 80 && blockIdx.y == 3 && blockIdx.z == 3)
 	{
-	   printf("FLY-0mesh index %5d cell (%3d,%2d,%2d)  thread ( %d,%d,%d ) nt %5d %22.15e %22.15e %22.15e %22.15e ilk %d,%d,%d x2 %22.15e x1 %22.15e x %22.15e\n",
-			   index,
-			   blockIdx.x,blockIdx.y,blockIdx.z,
-			  // i,l,k,
-			   threadIdx.x,threadIdx.y,threadIdx.z,
-			   //t,J->M[i][l][k],
-			   //component,pqr2,
-			   nt,
-			   dt->t1.Jx.t[0],
-			   dt->t1.Jx.t[1],
-			   dt->t1.Jx.t[2],
-			   dt->t1.Jx.t[3],
-			   i,l,k,
-			   x2,x1,x
-			   );
+//	   printf("CHE204 index %5d cell (%3d,%2d,%2d)  thread ( %d,%d,%d ) nt %5d %22.15e %22.15e %22.15e %22.15e ilk %d,%d,%d x2 %22.15e x1 %22.15e x %22.15e\n",
+//			   index,
+//			   blockIdx.x,blockIdx.y,blockIdx.z,
+//			  // i,l,k,
+//			   threadIdx.x,threadIdx.y,threadIdx.z,
+//			   //t,J->M[i][l][k],
+//			   //component,pqr2,
+//			   nt,
+//			   dt->t1.Jx.t[0],
+//			   dt->t1.Jx.t[1],
+//			   dt->t1.Jx.t[2],
+//			   dt->t1.Jx.t[3],
+//			   i,l,k,
+//			   x2,x1,x
+//			   );
 	}
      pqr(i1,x,x1,mass,tau,t1,0,p);
 	 if(blockIdx.x == 80 && blockIdx.y == 3 && blockIdx.z == 3)
-	     	         		{
-	     	         		   printf("FLY-1mesh index %5d cell (%3d,%2d,%2d)  thread ( %d,%d,%d ) nt %5d %22.15e %22.15e %22.15e %22.15e ilk %d,%d,%d x2 %22.15e x1 %22.15e x %22.15e\n",
-	     	         				   index,
-	     	         				   blockIdx.x,blockIdx.y,blockIdx.z,
-	     	         				  // i,l,k,
-	     	         				   threadIdx.x,threadIdx.y,threadIdx.z,
-	     	         				   //t,J->M[i][l][k],
-	     	         				   //component,pqr2,
-	     	         				   nt,
-	     	         				   dt->t1.Jx.t[0],
-	     	         				   dt->t1.Jx.t[1],
-	     	         				   dt->t1.Jx.t[2],
-	     	         				   dt->t1.Jx.t[3],
-	     	         				   i,l,k,
-	     	         				   x2,x1,x
-	     	         				   );
-	     	         		}
+	 {
+//	   printf("CHE205 index %5d nt %5d x2 %22.15e x1 %22.15e x %22.15e cell (%3d,%2d,%2d)  thread ( %d,%d,%d ) \n",
+//			   index,
+//			   nt,
+//			   x2,x1,x,
+//			   blockIdx.x,blockIdx.y,blockIdx.z,
+//			   threadIdx.x,threadIdx.y,threadIdx.z,
+//			   dt->t1.Jx.t[0],
+//			   dt->t1.Jx.t[1],
+//			   dt->t1.Jx.t[2],
+//			   dt->t1.Jx.t[3],
+//			   i,l,k
+//			   );
+	 }
 
 
 	goto L18;
@@ -1900,23 +1907,23 @@ int checkParticleType(Particle p,double mass,double q_mass)
 	    	    		 (fabs(p.q_m-q_mass) < PARTICLE_MASS_TOLERANCE));
 }
 
-int checkParticleType(int i,double mass,double q_mass)
+int checkParticleType(int i,double mass,double q_mass,int nt)
 {
 	Particle p;
 
-	p = readParticleFromSurfaceDevice(i);
+	readParticleFromSurfaceDevice(i,&p,nt);
 
 	return checkParticleType(p,mass,q_mass);
 }
 
-int getParticleTypeNumber(double mass,double q_mass)
+int getParticleTypeNumber(double mass,double q_mass,int nt)
 {
 	Particle p;
 	int num = 0;
 
 	for(int i = 0; i < number_of_particles;i++)
 	{
-		p = readParticleFromSurfaceDevice(i);
+		readParticleFromSurfaceDevice(i,&p,nt);
 		num += checkParticleType(p,mass,q_mass);
 	}
 	return num;
@@ -1950,7 +1957,7 @@ void MoveSingleParticle(unsigned int i, CellTotalField cf,int nt)
      Field fd;
 
      if(i >= number_of_particles) return;
-     p = readParticleFromSurfaceDevice(i);
+     readParticleFromSurfaceDevice(i,&p,nt);
      fd = GetField(&p,cf);
 
      p.Move(fd,tau);
@@ -1992,28 +1999,11 @@ void MoveSingleParticle(unsigned int i, CellTotalField cf,int nt)
 		 return (*dt);
 	 }
 
-	 p = readParticleFromSurfaceDevice(i);
+	 readParticleFromSurfaceDevice(i,&p,nt);
 	 *sort = p.sort;
 	// CurrentToMesh(tau,cells,dt,&p,nt,i);
 
-	 if(blockIdx.x == 80 && blockIdx.y == 3 && blockIdx.z == 3)
-	         		{
-	         		   printf("FLY-ctm index %5d cell (%3d,%2d,%2d)  thread ( %d,%d,%d ) nt %5d %22.15e %22.15e %22.15e %22.15e ilk %d,%d,%d x %22.15e\n",
-	         				   i,
-	         				   blockIdx.x,blockIdx.y,blockIdx.z,
-	         				  // i,l,k,
-	         				   threadIdx.x,threadIdx.y,threadIdx.z,
-	         				   //t,J->M[i][l][k],
-	         				   //component,pqr2,
-	         				   nt,
-	         				   dt->t1.Jx.t[0],
-	         				   dt->t1.Jx.t[1],
-	         				   dt->t1.Jx.t[2],
-	         				   dt->t1.Jx.t[3],
-                                                   p.x
 
-	         				   );
-	         		}
        CurrentToMesh(tau,cells,dt,&p,nt,i);
 
  //    writeParticleToSurface(i,&p);
@@ -2261,10 +2251,10 @@ thrust::host_vector< Particle >  getFlyList()
      for(int n = 0;n < count;n++)
      {
          Particle p;
-         p  = readParticleFromSurfaceDevice(n);
+//         readParticleFromSurfaceDevice(n,&p);
          if(!isPointInCell(p.GetX()))
 	     {
-	        removeParticleFromSurfaceDevice(n,&p,&number_of_particles);
+//	        removeParticleFromSurfaceDevice(n,&p,&number_of_particles,nt);
 	        fl.push_back(p);
 	     }
      }
@@ -2278,7 +2268,7 @@ thrust::host_vector< Particle >  getFlyList()
 int getFortranParticleNumber(int n)
 {
     Particle p;
-    p = readParticleFromSurfaceDevice(n);
+//    readParticleFromSurfaceDevice(n,&p);
     return p.fortran_number;
 }
 
@@ -2374,7 +2364,7 @@ double compareParticleLists(Cell *c)
        {
     	   Particle p,p1;
 
-    	  p =  readParticleFromSurfaceDevice(i,&p);
+    	   c->readParticleFromSurfaceDevice(i,&p);
     	   c->readParticleFromSurfaceDevice(i,&p1);
 
     	   printf("particle %5d X %10.3e %10.3e Y %10.3e %10.3e Z %10.3e %10.3e \n \
@@ -2471,7 +2461,7 @@ compareToCell(Cell & src)
 }
 
 double checkCellParticles(int check_point_num,double *x,double *y,double *z,
-		                  double *px,double *py,double *pz,double q_m,double m)
+		                  double *px,double *py,double *pz,double q_m,double m,int nt)
 {
 	int i,num = 0,j,num_sort = 0,correct_particle;
 	double t,dm,dqm,dx,dy,dz,dpx,dpy,dpz;
@@ -2484,7 +2474,7 @@ double checkCellParticles(int check_point_num,double *x,double *y,double *z,
 	{
 		Particle p;
 
-		p = readParticleFromSurfaceDevice(i);
+		readParticleFromSurfaceDevice(i,&p,nt);
 
 		j = p.fortran_number - 1;
 		dm  = fabs(p.m   -   m);
@@ -2580,14 +2570,14 @@ void SetControlSystem(int j,double *c)
 #ifdef __CUDACC__
  __host__ __device__
 #endif
-void SetControlSystemToParticles()
+void SetControlSystemToParticles(int nt)
 {
 	Particle p;
     int i;
 
     for(i = 0;i < number_of_particles;i++)
     {
-        p = readParticleFromSurfaceDevice(i);
+        readParticleFromSurfaceDevice(i,&p,nt);
 #ifdef ATTRIBUTES_CHECK
    //     p.SetControlSystem(jmp,d_ctrlParticles);
 #endif

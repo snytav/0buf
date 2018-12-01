@@ -128,7 +128,7 @@ __global__ void GPU_WriteAllCurrents(GPUCell **cells,int n0,
 
 }
 
-__global__ void GPU_WriteControlSystem(Cell **cells)
+__global__ void GPU_WriteControlSystem(Cell **cells,int nt)
 {
 	unsigned int nx = blockIdx.x;
 	unsigned int ny = blockIdx.y;
@@ -146,7 +146,7 @@ __global__ void GPU_WriteControlSystem(Cell **cells)
 
 	 nc = *c;
 
-	 nc.SetControlSystemToParticles();
+	 nc.SetControlSystemToParticles(nt);
 
 }
 
@@ -191,7 +191,7 @@ __global__ void GPU_MakeDepartureLists(GPUCell  **cells,int nt,int *d_stage)
 		c->departureListLength  = 0;
 		for(int num = 0;num < c->number_of_particles; num++)
 			{
-			p = c->readParticleFromSurfaceDevice(num);
+			c->readParticleFromSurfaceDevice(num,&p,nt);
 
 			c->flyDirection(&p,&ix,&iy,&iz);
 			c->writeParticleToSurface(num,&p);
@@ -249,11 +249,11 @@ __global__ void GPU_MakeDepartureLists_rm(GPUCell  **cells,int nt,int *d_stage)
 
 	     	for(int num = 0;num < c->number_of_particles; num++)
 			{
-	     		p = c->readParticleFromSurfaceDevice(num);
+	     		c->readParticleFromSurfaceDevice(num,&p,nt);
 
 				if(p.direction != 13)   //check Paricle = operator !!!!!!!!!!!!!!!!!!!!!!!!!!!
 				{
-					c->removeParticleFromSurfaceDevice(num,&p,&(c->number_of_particles));
+					c->removeParticleFromSurfaceDevice(num,&p,&(c->number_of_particles),nt);
 										num--;
 				}
 			}
@@ -279,12 +279,12 @@ __global__ void GPU_RemoveDepartureParticles(GPUCell  **cells,int nt,int *d_stag
 
 		for(int num = 0;num < c->number_of_particles; num++)
 			{
-			p = c->readParticleFromSurfaceDevice(num);
+			    c->readParticleFromSurfaceDevice(num,&p,nt);
 
 
 				if(!c->isPointInCell(p.GetX()))   //check Paricle = operator !!!!!!!!!!!!!!!!!!!!!!!!!!!
 				{
-					c->removeParticleFromSurfaceDevice(num,&p,&(c->number_of_particles));
+					c->removeParticleFromSurfaceDevice(num,&p,&(c->number_of_particles),nt);
 //					c->flyDirection(&p,&ix,&iy,&iz);
 //
 //					//if(p.direction == 0) printf("Blin-hren'\n");
@@ -355,7 +355,7 @@ __global__ void GPU_ArrangeFlights(GPUCell  **cells,int nt, int *d_stage)
 
 		            for(int j = 0;j < snd_c->number_of_particles;j++)
 		            {
-		            	p1 = snd_c->readParticleFromSurfaceDevice(j);
+		            	snd_c->readParticleFromSurfaceDevice(j,&p1,nt);
 //					snd_ix = ix;
 //					snd_iy = iy;
 //					snd_iz = iz;
@@ -413,7 +413,7 @@ __global__ void GPU_CollectStrayParticles(Cell **cells,int nt
 
 	for(int i = 0;i < c->number_of_particles; i++)
 	{
-		p = c->readParticleFromSurfaceDevice(i);
+		c->readParticleFromSurfaceDevice(i,&p,nt);
 #ifdef STRAY_DEBUG_PRINTS
 		//if((p.fortran_number == 2498) && (p.sort == BEAM_ELECTRON))
 	//	{
@@ -464,7 +464,7 @@ __global__ void GPU_CollectStrayParticles(Cell **cells,int nt
    //         	  }while(busy == 1);
 
             while (atomicCAS(&(c->busyParticleArray),0,1)) {}
-               c->removeParticleFromSurfaceDevice(i,&p,&(c->number_of_particles));
+               c->removeParticleFromSurfaceDevice(i,&p,&(c->number_of_particles),nt);
                //c->busyParticleArray = 0;
               atomicExch(&(c->busyParticleArray),0u);
                i--;
@@ -546,19 +546,24 @@ __device__ void add(CellDouble *J ,int i,int l,int k,double t,int index,int pqr2
 
 //	J->M[i][l][k] += t*check_thread(i,l,k);
 
-		if(blockIdx.x == 80 && blockIdx.y == 3 && blockIdx.z == 3)
+		if((blockIdx.x == 80 && blockIdx.y == 3 && blockIdx.z == 3)
+			&& (threadIdx.x == 2 && threadIdx.y == 3 && threadIdx.z == 3))
 		{
-		   printf("FLY index %5d cell (%3d,%2d,%2d)  ilk ( %d,%d,%d ) thread ( %d,%d,%d ) t %25.15e J %25.15e cmp %2d pqr2 %2d nt %5d sort %2d x %22.15e x1 %22.15e \n",
-				   index,
-				   blockIdx.x,blockIdx.y,blockIdx.z,
-				   i,l,k,
-				   threadIdx.x,threadIdx.y,threadIdx.z,
-				   t,J->M[i][l][k],
-				   component,pqr2,nt,
-				   p->sort,
-				   p->x,
-				   p->x1
-				   );
+			 printf("CHE201 index %5d  nt %5d sort %2d x %22.15e x1 %22.15e \n",
+							   index,
+							   nt,
+							   p->sort,
+							   p->x,
+							   p->x1
+			//				   blockIdx.x,blockIdx.y,blockIdx.z,
+							 //  i,l,k,
+							 //  threadIdx.x,threadIdx.y,threadIdx.z,
+			//				   t,J->M[i][l][k],
+				//			   component
+			//				   p->sort,
+			//				   p->x,
+		//				   p->x1
+							   );
 		}
 	}
 }
@@ -574,19 +579,45 @@ __device__ void writeCurrentComponent(CellDouble *J,
 		int sort,
 		Particle *p)
 {
+    if((blockIdx.x == 80 && blockIdx.y == 3 && blockIdx.z == 3 && component == 0)
+                && (threadIdx.x == 2 && threadIdx.y == 3 && threadIdx.z == 3))
+        {
+                 printf("CHE20a index %5d  nt %5d sort %2d x %22.15e x1 %22.15e block ( %d,%d,%d ) thread ( %d,%d,%d ) cmp %2d\n",
+                                                   index,
+                                                   nt,
+                                                   p->sort,
+                                                   p->x,
+                                                   p->x1,
+                                                   blockIdx.x,blockIdx.y,blockIdx.z,
+//                                                 i,l,k,
+                                                   threadIdx.x,threadIdx.y,threadIdx.z,
+                //                                 t,J->M[i][l][k],
+                                                   component
+                //                                 p->sort,
+                //                                 p->x,
+                //                                 p->x1
+                                                   );
+       }    
 
-	if(blockIdx.x == 80 && blockIdx.y == 3 && blockIdx.z == 3 && component == 0)
-			{
-			   printf("FLY-cur index %5d cell (%3d,%2d,%2d)  ilk ( %d,%d,%d ) thread ( %d,%d,%d ) cmp %2d pqr2 %2d nt %5d %22.15e %22.15e %22.15e %22.15e sort %d\n",
-					   index,
-					   blockIdx.x,blockIdx.y,blockIdx.z,
-					   t1->i11,t1->i12,t1->i13,
-					   threadIdx.x,threadIdx.y,threadIdx.z,
-					   component,pqr2,nt,
-					   t1->t[0],t1->t[1],t1->t[2],t1->t[3],
-					   sort
-					   );
-			}
+	if((blockIdx.x == 80 && blockIdx.y == 3 && blockIdx.z == 3 && component == 0)
+		&& (threadIdx.x == 2 && threadIdx.y == 3 && threadIdx.z == 3))
+	{
+		 printf("CHE20a index %5d  nt %5d sort %2d x %22.15e x1 %22.15e block ( %d,%d,%d ) thread ( %d,%d,%d ) cmp %2d\n",
+						   index,
+						   nt,
+						   p->sort,
+						   p->x,
+						   p->x1,
+						   blockIdx.x,blockIdx.y,blockIdx.z,
+//						   i,l,k,
+						   threadIdx.x,threadIdx.y,threadIdx.z,
+		//				   t,J->M[i][l][k],
+						   component
+		//				   p->sort,
+		//				   p->x,
+		//				   p->x1
+						   );
+	}
 //    J->M[t1->i11][t1->i12][t1->i13] += t1->t[0];
     add(J,t1->i11,t1->i12,t1->i13,t1->t[0],index,pqr2,component,nt,p);
     add(J,t1->i21,t1->i22,t1->i23,t1->t[1],index,pqr2,component,nt,p);
@@ -967,7 +998,7 @@ __device__ void MoveParticlesInCell(
         	 		{
         	           Particle p;
 
-        	           p = c->readParticleFromSurfaceDevice(index);
+        	           c->readParticleFromSurfaceDevice(index,&p,nt);
 
         	 		   printf("CHE075 index %5d  nt %5d sort %2u x %22.15e x1 %22.15e cell (%3d,%2d,%2d) thread ( %d,%d,%d )\n",
         	 				   index,
@@ -1062,8 +1093,29 @@ __device__ void AccumulateCurrentWithParticlesInCell(
     index = 0;
     while(index < c->number_of_particles)
     {
+    	c->readParticleFromSurfaceDevice(index,&p,nt);
+        if((blockIdx.x == 80 && blockIdx.y == 3 && blockIdx.z == 3 ))
+//                && (threadIdx.x == 2 && threadIdx.y == 3 && threadIdx.z == 3))
+        {
+                 printf("CHE20b index %5d  nt %5d sort %2d x %22.15e x1 %22.15e block ( %d,%d,%d ) thread ( %d,%d,%d ) \n",
+                                                   index,
+                                                   nt,
+                                                   p.sort,
+                                                   p.x,
+                                                   p.x1,
+                                                   blockIdx.x,blockIdx.y,blockIdx.z,
+//                                                // i,l,k,
+                                                   threadIdx.x,threadIdx.y,threadIdx.z
+                //                                 t,J->M[i][l][k],
+                //                                   component
+                //                                 p->sort,
+                //                                 p->x,
+                //                                 p->x1
+                                                   );
+       }
+
         c->AccumulateCurrentSingleParticle    (index,&pqr2,&dt,&sort,nt);
-        p = c->readParticleFromSurfaceDevice(index);
+        c->readParticleFromSurfaceDevice(index,&p,nt);
         if(blockIdx.x == 80 && blockIdx.y == 3 && blockIdx.z == 3)
         		{
         		   printf("FLY-acc index %5d cell (%3d,%2d,%2d)  thread ( %d,%d,%d ) nt %5d %22.15e %22.15e %22.15e %22.15e\n",
@@ -1198,7 +1250,7 @@ __device__ void print_all_particles(int where,Cell *c,int nt)
 		   for(p_index = 0;p_index < c->number_of_particles;p_index++)
 		   {
 
-		       p1 = c->readParticleFromSurfaceDevice(p_index);
+		          c->readParticleFromSurfaceDevice(p_index,&p1,nt);
 
 
 		          printf("CHE%03d index %5d  nt %5d sort %2u x %22.15e x1 %22.15e \n",
@@ -1241,6 +1293,7 @@ __global__ void GPU_StepAllCells(GPUCell  **cells,int nt//,
 						 c,threadIdx.x,blockDim.x,nt);
 
 	print_all_particles(100,c,nt);
+//	debug_particle_print(100,nt);
 
 //	if((threadIdx.x == 0 && threadIdx.y == 0 && threadIdx.z == 0) &&
 //	   (blockIdx.x == 80 && blockIdx.y == 3 &&  blockIdx.z == 3))

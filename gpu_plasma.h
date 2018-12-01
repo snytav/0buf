@@ -1784,6 +1784,7 @@ int StepAllCells(int nt,double mass,double q_mass)
 
 	   void* args[] = { (void* )&d_CellArray,&nt,0};
 //	   void *d_args;
+	   debug_particle_print(140,nt);
 //	   cudaError_t err = cudaMalloc(&d_args,sizeof(d_CellArray)+sizeof(d_Jx));
 //	   cudaError_t err1 = cudaMemcpy(d_args,args,sizeof(d_CellArray)+sizeof(d_Jx),cudaMemcpyHostToDevice);
 	   cudaError_t cudaStatus = cudaLaunchKernel(
@@ -1795,8 +1796,10 @@ int StepAllCells(int nt,double mass,double q_mass)
 	                                            0
 	                                           );
 //                mass,q_mass };
+	   debug_particle_print(145,nt);
 
-
+//	   print_all_particles(150,c,nt);
+	   debug_particle_print(150,nt);
        std::cout<<"GPU_StepAllCells returns "<<cudaStatus<<std::endl;
 	   dim3 dimBlock1(1,1,1),dimBlockExt(CellExtent,CellExtent,CellExtent);
 	   void *args1[] = { (void* )&d_CellArray,&nt,0};
@@ -1811,11 +1814,13 @@ int StepAllCells(int nt,double mass,double q_mass)
 	                                            0,
 	                                            0
 	                                           );
+//	   print_all_particles(220,c,nt);
+	   debug_particle_print(220,nt);
 	   std::cout<<"GPU_CurrentsAllCells returns "<<cudaStatus<<" "<<cudaGetErrorString(cudaStatus)<<std::endl;
 	            		     		                 //mass,q_mass);
 	   puts("end step");
 	   cudaDeviceSynchronize();
-
+	   debug_particle_print(160,nt);
 	   puts("end step-12");
 
 	   return 0;
@@ -2085,7 +2090,7 @@ int reorder_particles(int nt)
 int Push(int nt,double mass,double q_mass)
 {
 	StepAllCells_fore_diagnostic(nt);
-
+	debug_particle_print(130,nt);
 	StepAllCells(nt,mass,q_mass);
 	puts("after StepAllCell");
 
@@ -2167,7 +2172,7 @@ double checkControlPointParticlesOneSort(int check_point_num,FILE *f,GPUCell **c
              printf("cell %d particles %20d \n",i,c.number_of_particles);
 #endif
 
-   	 	t += c.checkCellParticles(check_point_num,dbg_x,dbg_y,dbg_z,dbg_px,dbg_py,dbg_pz,q_m,m);
+   	 	t += c.checkCellParticles(check_point_num,dbg_x,dbg_y,dbg_z,dbg_px,dbg_py,dbg_pz,q_m,m,nt);
 //   	 	if(t < 1.0)
 //   	 	{
 //   	 	   t += c.checkCellParticles(check_point_num,dbg_x,dbg_y,dbg_z,dbg_px,dbg_py,dbg_pz,q_m,m);

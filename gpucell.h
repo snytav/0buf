@@ -487,7 +487,7 @@ void freeCopyCellFromDevice(GPUCell *h_dst)
 #ifdef __CUDACC__
 __host__
 #endif
-void printFileCellParticles(FILE *f,GPUCell *h_copy_of_d_src)
+void printFileCellParticles(FILE *f,GPUCell *h_copy_of_d_src,int nt)
 {
 	Particle p;
 	int sorts[3] = {0,0,0};
@@ -505,7 +505,7 @@ void printFileCellParticles(FILE *f,GPUCell *h_copy_of_d_src)
     fprintf(f,"(%3d,%3d,%3d) ========================================================================================== \n",this->i,this->l,this->k);
 	for(int i = 0;i < h_copy_of_d_src->number_of_particles;i++)
 	{
-		p = h_copy_of_d_src->readParticleFromSurfaceDevice(i);
+		h_copy_of_d_src->readParticleFromSurfaceDevice(i,&p,nt);
 		fprintf(f,"(%3d,%3d,%3d) i %3d sort %d FN %10d c  pointInCell %d %15.5e %15.5e %15.5e %15.5e %15.5e %15.5e \n",
 						this->i,this->l,this->k,i,(int)p.sort,p.fortran_number,Cell::isPointInCell(p.GetX()),
 				        p.x,p.y,p.z,p.pu ,p.pv,p.pw);
