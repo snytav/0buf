@@ -357,7 +357,7 @@ void
 
 
  #ifdef __CUDACC__
- __device__
+ __host__ __device__
  #endif
  void readParticleFromSurfaceDevice(int n,Particle *p,int nt)
 {
@@ -378,16 +378,16 @@ void
    	p->sort = (particle_sorts)ParticleArrayRead(n,11);
    	p->direction = (char)ParticleArrayRead(n,12);
 
-   	if((blockIdx.x == 80 && blockIdx.y == 3 && blockIdx.z == 3) &&
-   	   (threadIdx.x == 2 && threadIdx.y == 3 && threadIdx.z == 3))
-   	        		{
+//   	if((blockIdx.x == 80 && blockIdx.y == 3 && blockIdx.z == 3) &&
+//   	   (threadIdx.x == 2 && threadIdx.y == 3 && threadIdx.z == 3))
+//   	        		{
    	        		   printf("CHER index %5d  nt %5d x %22.15e x1 %22.15e \n",
    	        				   n,
-   	        				   nt,p->x,p->x1,
-   	        				   blockIdx.x,blockIdx.y,blockIdx.z,
-   	        				  // i,l,k,
-   	        				   threadIdx.x,threadIdx.y,threadIdx.z);
-   	        		}
+   	        				   nt,p->x,p->x1);
+//   	        				   blockIdx.x,blockIdx.y,blockIdx.z,
+//   	        				  // i,l,k,
+//   	        				   threadIdx.x,threadIdx.y,threadIdx.z);
+//   	        		}
 
 }
 
@@ -445,7 +445,7 @@ public:
 
 
  #ifdef __CUDACC__
- __host__ __device__
+__device__
  #endif
 
 void printCellParticles(char *where,int nt)
