@@ -2172,7 +2172,7 @@ double checkControlPointParticlesOneSort(int check_point_num,FILE *f,GPUCell **c
              printf("cell %d particles %20d \n",i,c.number_of_particles);
 #endif
 
-   	 	t += c.checkCellParticles(check_point_num,dbg_x,dbg_y,dbg_z,dbg_px,dbg_py,dbg_pz,q_m,m,nt);
+//   	 	t += c.checkCellParticles(check_point_num,dbg_x,dbg_y,dbg_z,dbg_px,dbg_py,dbg_pz,q_m,m,nt);
 //   	 	if(t < 1.0)
 //   	 	{
 //   	 	   t += c.checkCellParticles(check_point_num,dbg_x,dbg_y,dbg_z,dbg_px,dbg_py,dbg_pz,q_m,m);
