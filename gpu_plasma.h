@@ -1784,6 +1784,7 @@ int StepAllCells(int nt,double mass,double q_mass)
 
 	   void* args[] = { (void* )&d_CellArray,&nt,0};
 //	   void *d_args;
+	   debug_particle_print(140,nt);
 //	   cudaError_t err = cudaMalloc(&d_args,sizeof(d_CellArray)+sizeof(d_Jx));
 //	   cudaError_t err1 = cudaMemcpy(d_args,args,sizeof(d_CellArray)+sizeof(d_Jx),cudaMemcpyHostToDevice);
 	   cudaError_t cudaStatus = cudaLaunchKernel(
@@ -1795,8 +1796,9 @@ int StepAllCells(int nt,double mass,double q_mass)
 	                                            0
 	                                           );
 //                mass,q_mass };
+	   debug_particle_print(145,nt);
 
-
+           debug_particle_print(150,nt);
        std::cout<<"GPU_StepAllCells returns "<<cudaStatus<<std::endl;
 	   dim3 dimBlock1(1,1,1),dimBlockExt(CellExtent,CellExtent,CellExtent);
 	   void *args1[] = { (void* )&d_CellArray,&nt,0};
@@ -1815,7 +1817,7 @@ int StepAllCells(int nt,double mass,double q_mass)
 	            		     		                 //mass,q_mass);
 	   puts("end step");
 	   cudaDeviceSynchronize();
-
+	   debug_particle_print(160,nt);
 	   puts("end step-12");
 
 	   return 0;
@@ -2085,7 +2087,7 @@ int reorder_particles(int nt)
 int Push(int nt,double mass,double q_mass)
 {
 	StepAllCells_fore_diagnostic(nt);
-
+	debug_particle_print(130,nt);
 	StepAllCells(nt,mass,q_mass);
 	puts("after StepAllCell");
 

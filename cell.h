@@ -1311,6 +1311,28 @@ void CurrentToMesh(double tau,int *cells,DoubleCurrentTensor *dt,Particle *p)
       int  m,i,l,k;
       double3 x   = p->GetX();
       double3 x1  = p->GetX1();
+
+
+//      if(blockIdx.x == 80 && blockIdx.y == 3 && blockIdx.z == 3)
+//        {
+//           printf("CHE202 index %5d cell (%3d,%2d,%2d)  thread ( %d,%d,%d ) nt %5d x %22.15e\n",
+//                           index,
+//                           blockIdx.x,blockIdx.y,blockIdx.z,
+//                          // i,l,k,
+//                           threadIdx.x,threadIdx.y,threadIdx.z,
+//                           //t,J->M[i][l][k],
+//                           //component,pqr2,
+//                           nt,
+//      //                   dt->t1.Jx.t[0],
+//      //                   dt->t1.Jx.t[1],
+//      //                   dt->t1.Jx.t[2],
+//      //                   dt->t1.Jx.t[3],
+//        //                 i,l,k,
+////                         x2,x1,
+//                            x
+//       }                      );
+
+
       double mass = p->m;
       double q_m  = p->q_m;
 //      DoubleCurrentTensor dt;

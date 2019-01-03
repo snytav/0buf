@@ -32,7 +32,7 @@ void GPU_getCellEnergy(
 
 	t = ex*ex+ey*ey+ez*ez;
 
-	atomicAdd(d_ee,t);
+//	catomicAdd(d_ee,t);
 }
 
 
