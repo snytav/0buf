@@ -1111,8 +1111,8 @@ __device__ void AccumulateCurrentWithParticlesInCell(
 
 
         c->AccumulateCurrentSingleParticle    (index,&pqr2,&dt);
- if((blockIdx.x == 80 && blockIdx.y == 3 && blockIdx.z == 3 )
-                       && (threadIdx.x == 2 && threadIdx.y == 3 && threadIdx.z == 3))
+ if((blockIdx.x == 80 && blockIdx.y == 3 && blockIdx.z == 3 ))
+//                       && (threadIdx.x == 2 && threadIdx.y == 3 && threadIdx.z == 3))
                {
                         printf("CHE20bb index %5d nt %5d sort %2d x %22.15e x1 %22.15e block ( %d,%d,%d ) thread ( %d,%d,%d ) \n",
                                                           index,
