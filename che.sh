@@ -29,25 +29,24 @@ echo CONTROL______________________________________
 cat ../111/out |grep CHE20c |grep \ 1020\  |grep nt\ \ \ \ \ 1 
 
 echo 20b ==================================================================================
-cat out |grep CHE20b |grep \ 1020\  |grep nt\ \ \ \ \ 1 |grep 2,3,3
+cat out |grep CHE20b\  |grep \ 1020\  |grep nt\ \ \ \ \ 1 |grep 2,3,3
 echo CONTROL______________________________________
-cat ../111/out |grep CHE20b |grep \ 1020\  |grep nt\ \ \ \ \ 1
+cat ../111/out |grep CHE20b\  |grep \ 1020\  |grep nt\ \ \ \ \ 1
 
-echo FLY-acc ==============================================================================
-cat out |grep FLY-acc |grep \ 1020\  |grep nt\ \ \ \ \ 1 |grep 2,3,3
-echo CONTROL______________________________________
-cat ../111/out |grep FLY-acc |grep \ 1020\  |grep nt\ \ \ \ \ 1
+#echo FLY-acc ==============================================================================
+#cat out |grep FLY-acc |grep \ 1020\  |grep nt\ \ \ \ \ 1 |grep 2,3,3
+#echo CONTROL______________________________________
+#cat ../111/out |grep FLY-acc |grep \ 1020\  |grep nt\ \ \ \ \ 1
 
 echo 20bb ==================================================================================
 cat out |grep CHE20bb |grep \ 1020\  |grep nt\ \ \ \ \ 1 |grep 2,3,3
 echo CONTROL______________________________________
-#cat ../111/out |grep CHE20bb |grep \ 1020\  |grep nt\ \ \ \ \ 1
+cat ../111/out |grep CHE20bb |grep \ 1020\  |grep nt\ \ \ \ \ 1
 
 echo 20ba ==================================================================================
 cat out |grep CHE20ba |grep \ 1020\  |grep nt\ \ \ \ \ 1 |grep 2,3,3
 echo CONTROL______________________________________
-#cat ../111/out |grep CHE20ba |grep \ 1020\  |grep nt\ \ \ \ \ 1
-
+cat ../111/out |grep CHE20ba |grep \ 1020\  |grep nt\ \ \ \ \ 1
 
 echo 20a ==================================================================================
 cat out |grep CHE20a |grep \ 1020\  |grep nt\ \ \ \ \ 1 |grep 2,3,3 |tail -n 1
