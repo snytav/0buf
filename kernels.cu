@@ -1131,6 +1131,26 @@ __device__ void AccumulateCurrentWithParticlesInCell(
                                                           );
               }
         p = c->readParticleFromSurfaceDevice(index);
+        if((blockIdx.x == 80 && blockIdx.y == 3 && blockIdx.z == 3 ))
+       //                && (threadIdx.x == 2 && threadIdx.y == 3 && threadIdx.z == 3))
+               {
+                        printf("CHE20ba index %5d nt %5d sort %2d x %22.15e x1 %22.15e block ( %d,%d,%d ) thread ( %d,%d,%d ) \n",
+                                                          index,
+                                                          nt,
+                                                          p.sort,
+                                                          p.x,
+                                                          p.x1,
+                                                          blockIdx.x,blockIdx.y,blockIdx.z,
+       //                                                // i,l,k,
+                                                          threadIdx.x,threadIdx.y,threadIdx.z
+                       //                                 t,J->M[i][l][k],
+                       //                                   component
+                       //                                 p->sort,
+                       //                                 p->x,
+                       //                                 p->x1
+                                                          );
+              }
+
         writeCurrentComponent(&(c_jx[0]),&(dt.t1.Jx),&(dt.t2.Jx),pqr2,index,0,nt,&p);
         writeCurrentComponent(&(c_jy[0]),&(dt.t1.Jy),&(dt.t2.Jy),pqr2,index,1,nt,&p);
         writeCurrentComponent(&(c_jz[0]),&(dt.t1.Jz),&(dt.t2.Jz),pqr2,index,2,nt,&p);
