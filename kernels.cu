@@ -1110,7 +1110,7 @@ __device__ void AccumulateCurrentWithParticlesInCell(
        }
 
 
-        c->AccumulateCurrentSingleParticle    (index,&pqr2,&dt);
+        c->AccumulateCurrentSingleParticle    (index,&pqr2,&dt,nt);
  if((blockIdx.x == 80 && blockIdx.y == 3 && blockIdx.z == 3 ))
 //                       && (threadIdx.x == 2 && threadIdx.y == 3 && threadIdx.z == 3))
                {
