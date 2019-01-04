@@ -2000,11 +2000,49 @@ void MoveSingleParticle(unsigned int i, CellTotalField cf,int nt)
 	 }
 
 	 readParticleFromSurfaceDevice(i,&p,nt);
+if((blockIdx.x == 80 && blockIdx.y == 3 && blockIdx.z == 3 ))
+	                //&& (threadIdx.x == 2 && threadIdx.y == 3 && threadIdx.z == 3))
+	        {
+	                 printf("CHE20Ac index %5d  nt %5d sort %2d x %22.15e x1 %22.15e block ( %d,%d,%d ) thread ( %d,%d,%d ) \n",
+	                                                   i,
+	                                                   nt,
+	                                                   p.sort,
+	                                                   p.x,
+	                                                   p.x1,
+	                                                   blockIdx.x,blockIdx.y,blockIdx.z,
+	//                                                // i,l,k,
+	                                                   threadIdx.x,threadIdx.y,threadIdx.z
+	                //                                 t,J->M[i][l][k],
+	                //                                   component
+	                //                                 p->sort,
+	                //                                 p->x,
+	                //                                 p->x1
+	                                                   );
+	       }
 	 *sort = p.sort;
 	// CurrentToMesh(tau,cells,dt,&p,nt,i);
 
 
        CurrentToMesh(tau,cells,dt,&p,nt,i);
+       if((blockIdx.x == 80 && blockIdx.y == 3 && blockIdx.z == 3 ))
+       	                //&& (threadIdx.x == 2 && threadIdx.y == 3 && threadIdx.z == 3))
+       	        {
+       	                 printf("CHE20Ad index %5d  nt %5d sort %2d x %22.15e x1 %22.15e block ( %d,%d,%d ) thread ( %d,%d,%d ) \n",
+       	                                                   i,
+       	                                                   nt,
+       	                                                   p.sort,
+       	                                                   p.x,
+       	                                                   p.x1,
+       	                                                   blockIdx.x,blockIdx.y,blockIdx.z,
+       	//                                                // i,l,k,
+       	                                                   threadIdx.x,threadIdx.y,threadIdx.z
+       	                //                                 t,J->M[i][l][k],
+       	                //                                   component
+       	                //                                 p->sort,
+       	                //                                 p->x,
+       	                //                                 p->x1
+       	                                                   );
+       	       }
 
  //    writeParticleToSurface(i,&p);
 

@@ -33,10 +33,16 @@ cat out |grep CHE20b\  |grep \ 1020\  |grep nt\ \ \ \ \ 1 |grep 2,3,3
 echo CONTROL______________________________________
 cat ../111/out |grep CHE20b\  |grep \ 1020\  |grep nt\ \ \ \ \ 1
 
-#echo FLY-acc ==============================================================================
-#cat out |grep FLY-acc |grep \ 1020\  |grep nt\ \ \ \ \ 1 |grep 2,3,3
-#echo CONTROL______________________________________
-#cat ../111/out |grep FLY-acc |grep \ 1020\  |grep nt\ \ \ \ \ 1
+echo CHE20Ac ==============================================================================
+cat out |grep CHE20Ac |grep \ 1020\  |grep nt\ \ \ \ \ 1 |grep 2,3,3
+echo CONTROL______________________________________
+cat ../111/out |grep CHE20Ac |grep \ 1020\  |grep nt\ \ \ \ \ 1
+
+echo CHE20Ad ==============================================================================
+cat out |grep CHE20Ad |grep \ 1020\  |grep nt\ \ \ \ \ 1 |grep 2,3,3
+echo CONTROL______________________________________
+cat ../111/out |grep CHE20Ad |grep \ 1020\  |grep nt\ \ \ \ \ 1
+
 
 echo 20bb ==================================================================================
 cat out |grep CHE20bb |grep \ 1020\  |grep nt\ \ \ \ \ 1 |grep 2,3,3
