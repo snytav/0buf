@@ -2044,7 +2044,7 @@ if((blockIdx.x == 80 && blockIdx.y == 3 && blockIdx.z == 3 ))
        	                                                   );
        	       }
 
- //    writeParticleToSurface(i,&p);
+     writeParticleToSurface(i,&p);
 
 //     dt.t1 = *t1;
 //     dt.t2 = *t2;
