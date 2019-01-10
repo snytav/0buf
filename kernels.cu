@@ -828,7 +828,7 @@ __device__ void AccumulateCurrentWithParticlesInCell(
     {
         c->AccumulateCurrentSingleParticle    (index,&pqr2,&dt);
 //        for(i = 0;i < CellExtent;i++)
-//        	{
+//       	{
 //        		for(l = 0;l < CellExtent;l++)
 //        		{
 //        			for(k = 0;k < CellExtent;k++)
