@@ -505,7 +505,7 @@ __device__ double checkCurrentComponentImpact(
     	if((t2->i31 == i && t2->i32 == l && t2->i33 == k && (fabs(t2->t[2]) > 1e-15))) res = t2->t[2];
     	if((t2->i41 == i && t2->i42 == l && t2->i43 == k && (fabs(t2->t[3]) > 1e-15))) res = t2->t[3];
     }
-    return res;
+    return fabs(res);
 }
 
 
@@ -820,14 +820,26 @@ __device__ void AccumulateCurrentWithParticlesInCell(
 		                             )
 {
 	CurrentTensor t1,t2;
-	DoubleCurrentTensor dt,dt1;;
-    int pqr2;
+	DoubleCurrentTensor dt,dt1;
+    int pqr2,i,l,k;
 
 
     while(index < c->number_of_particles)
     {
         c->AccumulateCurrentSingleParticle    (index,&pqr2,&dt);
-        writeCurrentComponent(&(c_jx[index%CellDouble_array_dim]),&(dt.t1.Jx),&(dt.t2.Jx),pqr2);
+//        for(i = 0;i < CellExtent;i++)
+//        	{
+//        		for(l = 0;l < CellExtent;l++)
+//        		{
+//        			for(k = 0;k < CellExtent;k++)
+//        			{
+//                        if(checkCurrentComponentImpact(&(dt.t1.Jx),&(dt.t2.Jx),i,l,k,pqr2) > 0.0)
+//                        {
+                           writeCurrentComponent(&(c_jx[index%CellDouble_array_dim]),&(dt.t1.Jx),&(dt.t2.Jx),pqr2);
+//                        }
+//        			}
+//        		}
+//        }
         writeCurrentComponent(&(c_jy[index%CellDouble_array_dim]),&(dt.t1.Jy),&(dt.t2.Jy),pqr2);
         writeCurrentComponent(&(c_jz[index%CellDouble_array_dim]),&(dt.t1.Jz),&(dt.t2.Jz),pqr2);
 
