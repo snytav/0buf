@@ -44,7 +44,7 @@
 
 #define START_STEP_NUMBER 1
 
-#define CHECK_ARRAY_OUTPUT
+//#define CHECK_ARRAY_OUTPUT
 
 //#define TOLERANCE 1e-5
 
