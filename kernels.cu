@@ -486,6 +486,14 @@ __global__ void GPU_CollectStrayParticles(Cell **cells,int nt
 
 }
 
+__device__ int checkCurrentTensorComponentNonZero(CurrentTensorComponent *t1)
+{
+	return ((fabs(t1->t[0]) > 1e-15) ||
+			(fabs(t1->t[1]) > 1e-15) ||
+			(fabs(t1->t[2]) > 1e-15) ||
+			(fabs(t1->t[3]) > 1e-15)     );
+}
+
 __device__ double checkCurrentComponentImpact(
 		CurrentTensorComponent *t1,CurrentTensorComponent *t2,
 		int i,int l, int k,int pqr2
@@ -843,7 +851,11 @@ __device__ void AccumulateCurrentWithParticlesInCell(
 //        			{
 //                        if(checkCurrentComponentImpact(&(dt.t1.Jx),&(dt.t2.Jx),i,l,k,pqr2) > 0.0)
 //                        {
+                          if(checkCurrentTensorComponentNonZero(&(dt.t1.Jx)))
+                          {
                            writeCurrentComponentSingle(&(c_jx[index%CellDouble_array_dim]),&(dt.t1.Jx));
+                          }
+
                            if(pqr2 == 2)
                            {
                         	   writeCurrentComponentSingle(&(c_jx[index%CellDouble_array_dim]),&(dt.t2.Jx));
