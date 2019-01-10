@@ -527,6 +527,14 @@ __device__ void writeCurrentComponent(CellDouble *J,
 
 }
 
+__device__ void writeCurrentComponentSingle(CellDouble *J,CurrentTensorComponent *t1)
+{
+    cuda_atomicAdd(&(J->M[t1->i11][t1->i12][t1->i13]),t1->t[0]);
+    cuda_atomicAdd(&(J->M[t1->i21][t1->i22][t1->i23]),t1->t[1]);
+    cuda_atomicAdd(&(J->M[t1->i31][t1->i32][t1->i33]),t1->t[2]);
+    cuda_atomicAdd(&(J->M[t1->i41][t1->i42][t1->i43]),t1->t[3]);
+}
+
 __device__ void copyCellDouble(CellDouble *dst,CellDouble *src,unsigned int n,uint3 block)
 {
 	if(n < CellExtent*CellExtent*CellExtent)
@@ -835,7 +843,11 @@ __device__ void AccumulateCurrentWithParticlesInCell(
 //        			{
 //                        if(checkCurrentComponentImpact(&(dt.t1.Jx),&(dt.t2.Jx),i,l,k,pqr2) > 0.0)
 //                        {
-                           writeCurrentComponent(&(c_jx[index%CellDouble_array_dim]),&(dt.t1.Jx),&(dt.t2.Jx),pqr2);
+                           writeCurrentComponentSingle(&(c_jx[index%CellDouble_array_dim]),&(dt.t1.Jx));
+                           if(pqr2 == 2)
+                           {
+                        	   writeCurrentComponentSingle(&(c_jx[index%CellDouble_array_dim]),&(dt.t2.Jx));
+                           }
 //                        }
 //        			}
 //        		}
