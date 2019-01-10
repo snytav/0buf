@@ -858,7 +858,10 @@ __device__ void AccumulateCurrentWithParticlesInCell(
 
                            if(pqr2 == 2)
                            {
-                        	   writeCurrentComponentSingle(&(c_jx[index%CellDouble_array_dim]),&(dt.t2.Jx));
+                        	   if(checkCurrentTensorComponentNonZero(&(dt.t2.Jx)))
+                        	   {
+                        	      writeCurrentComponentSingle(&(c_jx[index%CellDouble_array_dim]),&(dt.t2.Jx));
+                        	   }
                            }
 //                        }
 //        			}
@@ -956,9 +959,6 @@ __global__ void GPU_CurrentsAllCells(GPUCell  **cells,int nt)
 
 	assignSharedWithLocal(&c_jx,&c_jy,&c_jz,&c_ex,&c_ey,&c_ez,&c_hx,&c_hy,&c_hz,fd);
 
-
-
-
 	copyFieldsToSharedMemory(c_jx,c_jy,c_jz,c_ex,c_ey,c_ez,c_hx,c_hy,c_hz,c,
 			threadIdx.x,blockIdx,blockDim.x);
 
@@ -973,8 +973,6 @@ __global__ void GPU_CurrentsAllCells(GPUCell  **cells,int nt)
 	addCellDouble(c_jz,&(m_c_jz[0]),threadIdx.x,blockIdx,CURRENT_SUM_BUFFER_LENGTH);
 
     copyFromSharedMemoryToCell(c_jx,c_jy,c_jz,c,threadIdx.x,blockDim.x,blockIdx);
-
-
 }
 
 
