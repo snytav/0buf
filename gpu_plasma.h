@@ -221,6 +221,50 @@ double checkGPUArray(double *a,double *d_a,std::string name,std::string where,in
 	 return res;
 }
 
+double check_array(double *a,double *d_a,std::string name,std::string where,int nt)
+{
+	 static double *t;
+	 static int f1 = 1;
+	 char fname[1000];
+	 double res;
+//	 FILE *f;
+#ifndef CHECK_ARRAY_OUTPUT
+   return 0.0;
+#endif
+
+	 sprintf(fname,"diff_%s_at_%s_nt%08d.dat",name.c_str(),where.c_str(),nt);
+
+
+	 if(f1 == 1)
+	 {
+		 t = (double *)malloc(sizeof(double)*(Nx+2)*(Ny+2)*(Nz+2));
+		 f1 = 0;
+	 }
+	 int err;
+	 err = MemoryCopy(t,d_a,sizeof(double)*(Nx+2)*(Ny+2)*(Nz+2),HOST_TO_HOST);
+	 if(err != cudaSuccess)
+	         {
+	          	printf("bCheckArray err %d %s \n",err,getErrorString(err));
+	        	exit(0);
+	         }
+
+#ifdef CHECK_ARRAY_DETAIL_PRINTS
+	 if((f = fopen(fname,"wt")) != NULL)
+	 {
+		 res = CheckArray(a,t,f);
+		 fclose(f);
+	 }
+#else
+//	 res = CheckArray(a,t,f);
+	 int size = (Nx+2)*(Ny+2)*(Nz+2);
+	 res = CheckArraySilent(a,t,size);
+#endif
+
+	 return res;
+}
+
+
+
 double checkGPUArray(double *a,double *d_a)
 {
 	 static double *t;
@@ -1224,6 +1268,12 @@ void checkControlPoint(int num,int nt,int check_part)
 	 t_jy = CheckArraySilent(Jy,dbgJy,size);
 	 t_jz = CheckArraySilent(Jz,dbgJz,size);
 
+	 if(nt >= 2)
+	 {
+	    t_jx = check_array(Jx,dbgJx,"Jx","cp",nt);
+	    t_jy = CheckArraySilent(Jy,dbgJy,size);
+	    t_jz = CheckArraySilent(Jz,dbgJz,size);
+	 }
 	 memory_monitor("checkControlPoint4",nt);
 
 	 t_ex = CheckGPUArraySilent(dbgEx,d_Ex);

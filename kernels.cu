@@ -114,12 +114,12 @@ __global__ void GPU_WriteAllCurrents(GPUCell **cells,int n0,
 		         int3 i3 = c->getCellTripletNumber(n);
 
 
-		         atomicAdd(&(jx[n]),t_x);
+		         cuda_atomicAdd(&(jx[n]),t_x);
 
 		         t_y= c->Jy->M[i1][l1][k1];
-		         atomicAdd(&(jy[n]),t_y);
+		         cuda_atomicAdd(&(jy[n]),t_y);
 		         t = c->Jz->M[i1][l1][k1];
-		         atomicAdd(&(jz[n]),t);
+		         cuda_atomicAdd(&(jz[n]),t);
 /*		         cuda_atomicAdd(&(jx[n]),t_x);
 		         t_y= c->Jy->M[i1][l1][k1];
 		         cuda_atomicAdd(&(jy[n]),t_y);
