@@ -831,25 +831,6 @@ __device__ void AccumulateCurrentWithParticlesInCell(
         writeCurrentComponent(&(c_jy[index%CellDouble_array_dim]),&(dt.t1.Jy),&(dt.t2.Jy),pqr2);
         writeCurrentComponent(&(c_jz[index%CellDouble_array_dim]),&(dt.t1.Jz),&(dt.t2.Jz),pqr2);
 
-//        if(index%2 == 0)
-//        {
-//
-//        }
-//        else
-//        {
-//        	if(index%2 == 1)
-//        	{
-//        		writeCurrentComponent(&(c_jx[1]),&(dt.t1.Jx),&(dt.t2.Jx),pqr2);
-//        	}
-//        	else
-//        	{
-//        		writeCurrentComponent(&(c_jx[2]),&(dt.t1.Jx),&(dt.t2.Jx),pqr2);
-//        	}
-//        }
-
-//        writeCurrentComponent(c_jy,&(dt.t1.Jy),&(dt.t2.Jy),pqr2);
-        //writeCurrentComponent(c_jz,&(dt.t1.Jz),&(dt.t2.Jz),pqr2);
-
         index += blockDimX;
     }
     __syncthreads();
@@ -924,20 +905,12 @@ __global__ void GPU_StepAllCells(GPUCell  **cells//,
 }
 
 
-__global__ void GPU_CurrentsAllCells(GPUCell  **cells,int nt
-//		                         int i,
-//		                         double *global_jx,
-//		                         double mass,
-//		                         double q_mass
-//		                         CellDouble *
-		                         )
+__global__ void GPU_CurrentsAllCells(GPUCell  **cells,int nt)
 {
 	Cell  *c,*c0 = cells[0];
 	__shared__  CellDouble fd[9];
 	CellDouble *c_jx,*c_jy,*c_jz,*c_ex,*c_ey,*c_ez,*c_hx,*c_hy,*c_hz;
-//	CurrentTensor t1,t2;
-//	int pqr2;
-//	Particle p;
+
 	__shared__ CellDouble m_c_jx[CURRENT_SUM_BUFFER_LENGTH];
 	__shared__ CellDouble m_c_jy[CURRENT_SUM_BUFFER_LENGTH];
 	__shared__ CellDouble m_c_jz[CURRENT_SUM_BUFFER_LENGTH];
@@ -962,31 +935,9 @@ __global__ void GPU_CurrentsAllCells(GPUCell  **cells,int nt
 	addCellDouble(c_jx,&(m_c_jx[0]),threadIdx.x,blockIdx,CURRENT_SUM_BUFFER_LENGTH);
 	addCellDouble(c_jy,&(m_c_jy[0]),threadIdx.x,blockIdx,CURRENT_SUM_BUFFER_LENGTH);
 	addCellDouble(c_jz,&(m_c_jz[0]),threadIdx.x,blockIdx,CURRENT_SUM_BUFFER_LENGTH);
-//	addCellDouble(c_jx,&(m_c_jx[1]),threadIdx.x,blockIdx,3);
-//	addCellDouble(c_jx,&(m_c_jx[2]),threadIdx.x,blockIdx,3);
 
     copyFromSharedMemoryToCell(c_jx,c_jy,c_jz,c,threadIdx.x,blockDim.x,blockIdx);
 
-//    if((c->i == 28) && (c->l == 3) && (c->k == 2) && (nt == 1))
-//    	{
-//    		for(int i = 0;i < CellExtent;i++)
-//    		{
-//    			for(int l = 0;l < CellExtent;l++)
-//    			{
-//    				for(int k = 0;k < CellExtent;k++)
-//    				{
-//    					if(fabs(c_jx->M[i][l][k]) > 1e-15)
-//    					{
-//    						printf("c_jx %5d %3d %3d %25.15e thread %5d %3d %3d block %5d %3d %3d nt %3d\n",
-//    								i,l,k,
-//    								c_jx->M[i][l][k],
-//    								threadIdx.x,threadIdx.y, threadIdx.z,
-//    								blockIdx.x,blockIdx.y,blockIdx.z,nt);
-//    					}
-//    				}
-//    			}
-//    		}
-//    	}
 
 }
 
