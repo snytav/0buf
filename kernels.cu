@@ -877,14 +877,14 @@ __device__ void AccumulateCurrentWithParticlesInCell(
 //       	{
 //        		for(l = 0;l < CellExtent;l++)
 //        		{
-//        			for(k = 0;k < CellExtent;k++)
-//        			{
+        			for(k = 0;k < CellExtent;k++)
+        			{
 
                           if(checkCurrentTensorComponentNonZero(&(dt.t1.Jx)))
                           {
                            writeCurrentComponentSingle(&(c_jx[index%CellDouble_array_dim]),&(dt.t1.Jx),k);
                           }
-//        			}
+        			}
 
                            if(pqr2 == 2)
                            {
