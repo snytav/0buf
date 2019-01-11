@@ -905,10 +905,10 @@ __device__ void AccumulateCurrentWithParticlesInCell(
 
         			}
         		}
-       	}
-
-        for(i = 0;i < CellExtent;i++)
-        {
+//       	}
+//
+//        for(i = 0;i < CellExtent;i++)
+//        {
             for(l = 0;l < CellExtent;l++)
             {
                 for(k = 0;k < CellExtent;k++)
