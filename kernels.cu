@@ -543,23 +543,23 @@ __device__ void writeCurrentComponent(CellDouble *J,
 
 }
 
-__device__ void writeCurrentComponentSingle(CellDouble *J,CurrentTensorComponent *t1,int k)
+__device__ void writeCurrentComponentSingle(CellDouble *J,CurrentTensorComponent *t1,int l,int k)
 {
-	if(k == t1->i13)
+	if(l == t1->i12 && k == t1->i13)
 	{
        cuda_atomicAdd(&(J->M[t1->i11][t1->i12][t1->i13]),t1->t[0]);
 	}
-	if(k == t1->i23)
+	if(l == t1->i22 && k == t1->i23)
 	{
        cuda_atomicAdd(&(J->M[t1->i21][t1->i22][t1->i23]),t1->t[1]);
 	}
 
-	if(k == t1->i33)
+	if(l == t1->i32 && k == t1->i33)
 	{
        cuda_atomicAdd(&(J->M[t1->i31][t1->i32][t1->i33]),t1->t[2]);
 	}
 
-	if(k == t1->i43)
+	if(l == t1->i42 && k == t1->i43)
 	{
        cuda_atomicAdd(&(J->M[t1->i41][t1->i42][t1->i43]),t1->t[3]);
 	}
@@ -875,16 +875,17 @@ __device__ void AccumulateCurrentWithParticlesInCell(
         c->AccumulateCurrentSingleParticle    (index,&pqr2,&dt);
 //        for(i = 0;i < CellExtent;i++)
 //       	{
-//        		for(l = 0;l < CellExtent;l++)
-//        		{
+        		for(l = 0;l < CellExtent;l++)
+        		{
         			for(k = 0;k < CellExtent;k++)
         			{
 
                           if(checkCurrentTensorComponentNonZero(&(dt.t1.Jx)))
                           {
-                           writeCurrentComponentSingle(&(c_jx[index%CellDouble_array_dim]),&(dt.t1.Jx),k);
+                           writeCurrentComponentSingle(&(c_jx[index%CellDouble_array_dim]),&(dt.t1.Jx),l,k);
                           }
         			}
+        		}
 
                            if(pqr2 == 2)
                            {
