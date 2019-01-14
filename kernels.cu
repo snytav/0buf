@@ -525,6 +525,24 @@ __device__ double checkCurrentComponentImpact(
 }
 
 
+__device__ void writeCurrentComponentY(CellDouble *J,
+		CurrentTensorComponent *t1,CurrentTensorComponent *t2,int pqr2,int index)
+{
+    cuda_atomicAdd(&(J->M[t1->i11][t1->i12][t1->i13]),t1->t[0]);
+    cuda_atomicAdd(&(J->M[t1->i21][t1->i22][t1->i23]),t1->t[1]);
+    cuda_atomicAdd(&(J->M[t1->i31][t1->i32][t1->i33]),t1->t[2]);
+    cuda_atomicAdd(&(J->M[t1->i41][t1->i42][t1->i43]),t1->t[3]);
+
+    if(pqr2 == 2)
+    {
+        cuda_atomicAdd(&(J->M[t2->i11][t2->i12][t2->i13]),t2->t[0]);
+        cuda_atomicAdd(&(J->M[t2->i21][t2->i22][t2->i23]),t2->t[1]);
+        cuda_atomicAdd(&(J->M[t2->i31][t2->i32][t2->i33]),t2->t[2]);
+        cuda_atomicAdd(&(J->M[t2->i41][t2->i42][t2->i43]),t2->t[3]);
+    }
+
+}
+
 __device__ void writeCurrentComponent(CellDouble *J,
 		CurrentTensorComponent *t1,CurrentTensorComponent *t2,int pqr2)
 {
@@ -914,7 +932,7 @@ __device__ void AccumulateCurrentWithParticlesInCell(
 //    while(index < c->number_of_particles)
 //      {
 //          c->AccumulateCurrentSingleParticle    (index,&pqr2,&dt);
-        writeCurrentComponent(&(c_jy[index%CellDouble_array_dim]),&(dt.t1.Jy),&(dt.t2.Jy),pqr2);
+        writeCurrentComponentY(&(c_jy[index%CellDouble_array_dim]),&(dt.t1.Jy),&(dt.t2.Jy),pqr2,index);
         writeCurrentComponent(&(c_jz[index%CellDouble_array_dim]),&(dt.t1.Jz),&(dt.t2.Jz),pqr2);
 
         index += blockDimX;
