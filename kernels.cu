@@ -103,11 +103,11 @@ __global__ void GPU_WriteAllCurrents(GPUCell **cells,int n0,
 		         int3 i3 = c->getCellTripletNumber(n);
 
 
-		         cuda_atomicAdd(&(jx[n]),t_x);
+		         atomicAdd(&(jx[n]),t_x);
 		         t_y= c->Jy->M[i1][l1][k1];
-		         cuda_atomicAdd(&(jy[n]),t_y);
+		         atomicAdd(&(jy[n]),t_y);
 		         t = c->Jz->M[i1][l1][k1];
-		         cuda_atomicAdd(&(jz[n]),t);
+		         atomicAdd(&(jz[n]),t);
 
 }
 
@@ -532,17 +532,17 @@ __device__ void writeCurrentComponentY(CellDouble *J,
 //	int pqr2;
 //	c->AccumulateCurrentSingleParticle    (index,&pqr2,&dt);
 
-    cuda_atomicAdd(&(J->M[t1->i11][t1->i12][t1->i13]),t1->t[0]);
-    cuda_atomicAdd(&(J->M[t1->i21][t1->i22][t1->i23]),t1->t[1]);
-    cuda_atomicAdd(&(J->M[t1->i31][t1->i32][t1->i33]),t1->t[2]);
-    cuda_atomicAdd(&(J->M[t1->i41][t1->i42][t1->i43]),t1->t[3]);
+    atomicAdd(&(J->M[t1->i11][t1->i12][t1->i13]),t1->t[0]);
+    atomicAdd(&(J->M[t1->i21][t1->i22][t1->i23]),t1->t[1]);
+    atomicAdd(&(J->M[t1->i31][t1->i32][t1->i33]),t1->t[2]);
+    atomicAdd(&(J->M[t1->i41][t1->i42][t1->i43]),t1->t[3]);
 
     if(pqr2 == 2)
     {
-        cuda_atomicAdd(&(J->M[t2->i11][t2->i12][t2->i13]),t2->t[0]);
-        cuda_atomicAdd(&(J->M[t2->i21][t2->i22][t2->i23]),t2->t[1]);
-        cuda_atomicAdd(&(J->M[t2->i31][t2->i32][t2->i33]),t2->t[2]);
-        cuda_atomicAdd(&(J->M[t2->i41][t2->i42][t2->i43]),t2->t[3]);
+        atomicAdd(&(J->M[t2->i11][t2->i12][t2->i13]),t2->t[0]);
+        atomicAdd(&(J->M[t2->i21][t2->i22][t2->i23]),t2->t[1]);
+        atomicAdd(&(J->M[t2->i31][t2->i32][t2->i33]),t2->t[2]);
+        atomicAdd(&(J->M[t2->i41][t2->i42][t2->i43]),t2->t[3]);
     }
 
 }
@@ -550,17 +550,17 @@ __device__ void writeCurrentComponentY(CellDouble *J,
 __device__ void writeCurrentComponent(CellDouble *J,
 		CurrentTensorComponent *t1,CurrentTensorComponent *t2,int pqr2)
 {
-    cuda_atomicAdd(&(J->M[t1->i11][t1->i12][t1->i13]),t1->t[0]);
-    cuda_atomicAdd(&(J->M[t1->i21][t1->i22][t1->i23]),t1->t[1]);
-    cuda_atomicAdd(&(J->M[t1->i31][t1->i32][t1->i33]),t1->t[2]);
-    cuda_atomicAdd(&(J->M[t1->i41][t1->i42][t1->i43]),t1->t[3]);
+    atomicAdd(&(J->M[t1->i11][t1->i12][t1->i13]),t1->t[0]);
+    atomicAdd(&(J->M[t1->i21][t1->i22][t1->i23]),t1->t[1]);
+    atomicAdd(&(J->M[t1->i31][t1->i32][t1->i33]),t1->t[2]);
+    atomicAdd(&(J->M[t1->i41][t1->i42][t1->i43]),t1->t[3]);
 
     if(pqr2 == 2)
     {
-        cuda_atomicAdd(&(J->M[t2->i11][t2->i12][t2->i13]),t2->t[0]);
-        cuda_atomicAdd(&(J->M[t2->i21][t2->i22][t2->i23]),t2->t[1]);
-        cuda_atomicAdd(&(J->M[t2->i31][t2->i32][t2->i33]),t2->t[2]);
-        cuda_atomicAdd(&(J->M[t2->i41][t2->i42][t2->i43]),t2->t[3]);
+        atomicAdd(&(J->M[t2->i11][t2->i12][t2->i13]),t2->t[0]);
+        atomicAdd(&(J->M[t2->i21][t2->i22][t2->i23]),t2->t[1]);
+        atomicAdd(&(J->M[t2->i31][t2->i32][t2->i33]),t2->t[2]);
+        atomicAdd(&(J->M[t2->i41][t2->i42][t2->i43]),t2->t[3]);
     }
 
 }
@@ -572,21 +572,21 @@ __device__ void writeCurrentComponentSingle(CellDouble *J,CurrentTensorComponent
 
 	if(i == t1->i11 && l == t1->i12 && k == t1->i13)
 	{
-       cuda_atomicAdd(&(J->M[t1->i11][t1->i12][t1->i13]),t1->t[0]);
+       atomicAdd(&(J->M[t1->i11][t1->i12][t1->i13]),t1->t[0]);
 	}
 	if(i == t1->i21 && l == t1->i22 && k == t1->i23)
 	{
-       cuda_atomicAdd(&(J->M[t1->i21][t1->i22][t1->i23]),t1->t[1]);
+       atomicAdd(&(J->M[t1->i21][t1->i22][t1->i23]),t1->t[1]);
 	}
 
 	if(i == t1->i31 && l == t1->i32 && k == t1->i33)
 	{
-       cuda_atomicAdd(&(J->M[t1->i31][t1->i32][t1->i33]),t1->t[2]);
+       atomicAdd(&(J->M[t1->i31][t1->i32][t1->i33]),t1->t[2]);
 	}
 
 	if(i == t1->i41 && l == t1->i42 && k == t1->i43)
 	{
-       cuda_atomicAdd(&(J->M[t1->i41][t1->i42][t1->i43]),t1->t[3]);
+       atomicAdd(&(J->M[t1->i41][t1->i42][t1->i43]),t1->t[3]);
 	}
 }
 
@@ -596,22 +596,22 @@ __device__ void writeCurrentComponentSingle2(CellDouble *J,CurrentTensorComponen
 
 	if(i == t1->i11 && l == t1->i12 && k == t1->i13)
 	{
-       cuda_atomicAdd(&(J->M[t1->i11][t1->i12][t1->i13]),t1->t[0]);
+       atomicAdd(&(J->M[t1->i11][t1->i12][t1->i13]),t1->t[0]);
 	}
 
 	if(i == t1->i21 &&  l == t1->i22 && k == t1->i23)
 	{
-       cuda_atomicAdd(&(J->M[t1->i21][t1->i22][t1->i23]),t1->t[1]);
+       atomicAdd(&(J->M[t1->i21][t1->i22][t1->i23]),t1->t[1]);
 	}
 
 	if(i == t1->i31 && l == t1->i23 && k == t1->i33)
 	{
-       cuda_atomicAdd(&(J->M[t1->i31][t1->i32][t1->i33]),t1->t[2]);
+       atomicAdd(&(J->M[t1->i31][t1->i32][t1->i33]),t1->t[2]);
 	}
 
 	if(i == t1->i41 && l == t1->i42 && k == t1->i43)
 	{
-       cuda_atomicAdd(&(J->M[t1->i41][t1->i42][t1->i43]),t1->t[3]);
+       atomicAdd(&(J->M[t1->i41][t1->i42][t1->i43]),t1->t[3]);
 	}
 }
 
