@@ -1311,7 +1311,7 @@ void CurrentToMesh(double tau,int *cells,DoubleCurrentTensor *dt,Particle *p,dou
       int  m,i,l,k;
       double3 x   = x_in;
       double3 x1  = x1_in;
-      Reflect(p);
+
 
 //      double mass = p->m;
 //      double q_m  = p->q_m;
@@ -1832,6 +1832,7 @@ void MoveSingleParticle(unsigned int i, CellTotalField cf)
 
 	 p = readParticleFromSurfaceDevice(i);
 	 CurrentToMesh(tau,cells,dt,&p,p.GetX(),p.GetX1(),p.m,p.q_m);
+     Reflect(&p);
 
      writeParticleToSurface(i,&p);
 
