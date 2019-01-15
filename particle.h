@@ -65,6 +65,9 @@ public:
 
 #endif   
 
+   __host__ __device__ void get_reserved_coordinate(double *x,double *y,double *z){*x = xc.getx(); *y = xc.gety();*z = xc.getz();}
+   __host__ __device__ void set_reserved_coordinate(double x,double y,double z){xc.set(x,y,z);}
+
 __host__ __device__ Particle(){}
 
 __host__ __device__ __forceinline__
