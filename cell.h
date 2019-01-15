@@ -1424,10 +1424,7 @@ L18:
 #endif
 void Reflect(Particle *p)
 {
-//        p->x = p->x1;
-//	    p->y = p->y1;
-//	    p->z = p->z1;
-        double3 x1;// = p->GetX();
+        double3 x1;
         x1.x = p->x1;
         x1.y = p->y1;
         x1.z = p->z1;
@@ -1437,6 +1434,9 @@ void Reflect(Particle *p)
         x1.z = (x1.z > zm)*(x1.z - zm) + (x1.z < 0.0)*(zm + x1.z) + (x1.z > 0 && x1.z < zm)*x1.z;
 
 	p->SetX(x1);
+	    p->x = x1.x;
+	    p->y = x1.y;
+	    p->z = x1.z;
 
 
 }
