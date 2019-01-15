@@ -33,11 +33,22 @@ typedef char gpu_string[200];
 
 #include "compare.h"
 
+class Coordinate{
+	double x,y,z;
+    public:
+	Coordinate(){}
+	~Coordinate(){}
+	void set(double x1,double y1,double z1) {x = x1;y = y1;z = z1;}
+	double getx(){return x;}
+	double gety(){return y;}
+	double getz(){return z;}
+};
+
 
 
 class Particle
 {
-   double xc,yc,zc;
+   Coordinate xc;
 
 public:  
   
