@@ -1426,53 +1426,13 @@ L18:  p->x = p->x1;
 #endif
 void Reflect(Particle *p)
 {
-       // double s1;
-
         double3 x1 = p->GetX();
 
         x1.x = (x1.x > xm)*(x1.x - xm) + (x1.x < 0.0)*(xm + x1.x) + (x1.x > 0 && x1.x < xm)*x1.x;
         x1.y = (x1.y > ym)*(x1.y - ym) + (x1.y < 0.0)*(ym + x1.y) + (x1.y > 0 && x1.y < ym)*x1.y;
         x1.z = (x1.z > zm)*(x1.z - zm) + (x1.z < 0.0)*(zm + x1.z) + (x1.z > 0 && x1.z < zm)*x1.z;
-/*
-//L18:
-	d__1 = x1.x *(xm - x1.x);
-	s1 = d_sign(1.0, d__1);
-	d__1 = x1.y *(ym - x1.y);
-	s1 += d_sign(1.0, d__1);
-	d__1 = x1.z *(zm - x1.z);
-	s1 += d_sign(1.0, d__1);
-	if (s1 > 2.5) {
-	    goto L15;
-	}
-L112:
-	if (x1.x > 0.) {
-	    goto L12;
-	}
-	x1.x += xm;
-	goto L13;
-L12:
-	if (x1.x <= xm) {
-	    goto L13;
-	}
-	x1.x -= xm;
-L13:
-	if (x1.z > 0.) {
-	    goto L14;
-	}
-	x1.z += zm;
-	goto L15;
-L14:
-	if (x1.z <= zm) {
-	    goto L15;
-	}
-	x1.z -= zm;
-L15:
-	if ((x1.x < 0. || x1.x > xm) || (x1.z < 0. || x1.z > zm))
-	{
-	    goto L112;
-	}
-*/
-	p->SetX(x1);
+
+     	p->SetX(x1);
 
 
 }
