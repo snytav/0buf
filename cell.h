@@ -1822,20 +1822,6 @@ int getParticleTypeNumber(double mass,double q_mass)
 	return num;
 }
 
-//#ifdef __CUDACC__
-// __host__ __device__
-// #endif
-//int WriteParticleToCell(Particle *p, int i,double3 x1)
-//{
-//    		 p->x = x1.x;
-//    		 p->y = x1.y;
-//    		 p->z = x1.z;
-//
-//             Reflect(p);
-//
-//             writeParticleToSurface(i,p);
-//             return 0;
-//}
 
 
 #ifdef __CUDACC__
@@ -2146,34 +2132,6 @@ int getFortranParticleNumber(int n)
     return p.fortran_number;
 }
 
-//__host__ __device__
-//void MoveParticle(void *cv,int n,double tau)
-//{
-//    double3 x,x1,E,H;//,v;
-//    double  m,q_m;
-//    Particle p;
-//    Cell *c;
-//#ifndef GPU_PARTICLE
-//    n = threadIdx.x + blockIdx.x*blockDim.x;
-//#endif
-//    readParticleFromSurfaceDevice(n,&p);
-//
-//     c = (Cell *)cv;
-//
-//	 x = p.GetX();
-//	 c->GetField(x,E,H,p);
-//	 p.Move(E,H,tau);
-//	 m = p.GetMass();
-//
-//	 x1 = p.GetX();
-//
-//	 q_m = p.GetQ2M();
-//
-//	 c->CurrentToMesh(x,x1,m,q_m,tau);
-//
-//	 c->Reflect(&p);
-//
-//}
 
 void memcpy(unsigned char *tgt,unsigned char *src,int size)
 {
