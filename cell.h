@@ -1309,8 +1309,8 @@ void CurrentToMesh(double tau,int *cells,DoubleCurrentTensor *dt,Particle *p,dou
       double s;
       int3 i2,i1;
       int  m,i,l,k;
-      double3 x   = p->GetX();
-      double3 x1  = p->GetX1();
+      double3 x   = x_in;
+      double3 x1  = x1_in;
       Reflect(p);
 
       double mass = p->m;
