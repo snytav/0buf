@@ -1815,6 +1815,7 @@ void MoveSingleParticle(unsigned int i, CellTotalField cf)
  DoubleCurrentTensor AccumulateCurrentSingleParticle(unsigned int i,int *cells,DoubleCurrentTensor *dt)
  {
 	 Particle p;
+	 double3 x;
 //	 DoubleCurrentTensor dt;
 	 if(i >= number_of_particles)
 	 {
@@ -1831,7 +1832,8 @@ void MoveSingleParticle(unsigned int i, CellTotalField cf)
 	 }
 
 	 p = readParticleFromSurfaceDevice(i);
-	 CurrentToMesh(tau,cells,dt,&p,p.GetX(),p.GetX1(),p.m,p.q_m);
+	 x = p.GetX();
+	 CurrentToMesh(tau,cells,dt,&p,x,p.GetX1(),p.m,p.q_m);
      Reflect(&p);
 
      writeParticleToSurface(i,&p);
