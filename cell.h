@@ -1822,20 +1822,20 @@ int getParticleTypeNumber(double mass,double q_mass)
 	return num;
 }
 
-#ifdef __CUDACC__
- __host__ __device__
- #endif
-int WriteParticleToCell(Particle *p, int i,double3 x1)
-{
-    		 p->x = x1.x;
-    		 p->y = x1.y;
-    		 p->z = x1.z;
-
-             Reflect(p);
-
-             writeParticleToSurface(i,p);
-             return 0;
-}
+//#ifdef __CUDACC__
+// __host__ __device__
+// #endif
+//int WriteParticleToCell(Particle *p, int i,double3 x1)
+//{
+//    		 p->x = x1.x;
+//    		 p->y = x1.y;
+//    		 p->z = x1.z;
+//
+//             Reflect(p);
+//
+//             writeParticleToSurface(i,p);
+//             return 0;
+//}
 
 
 #ifdef __CUDACC__
