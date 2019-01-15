@@ -1427,7 +1427,7 @@ void Reflect(Particle *p)
         p->x = p->x1;
 	    p->y = p->y1;
 	    p->z = p->z1;
-        double3 x1 = p->GetX();
+        double3 x1;// = p->GetX();
         x1.x = p->x;
         x1.y = p->y;
         x1.z = p->z;
