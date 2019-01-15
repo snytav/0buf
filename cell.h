@@ -1433,7 +1433,7 @@ void Reflect(Particle *p)
         x1.y = (x1.y > ym)*(x1.y - ym) + (x1.y < 0.0)*(ym + x1.y) + (x1.y > 0 && x1.y < ym)*x1.y;
         x1.z = (x1.z > zm)*(x1.z - zm) + (x1.z < 0.0)*(zm + x1.z) + (x1.z > 0 && x1.z < zm)*x1.z;
 
-	p->SetX(x1);
+//	p->SetX(x1);
 	    p->x = x1.x;
 	    p->y = x1.y;
 	    p->z = x1.z;
