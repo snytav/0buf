@@ -1303,7 +1303,7 @@ double d_sign(double a, double b)
  #ifdef __CUDACC__
  __host__ __device__
  #endif
-void CurrentToMesh(double tau,int *cells,DoubleCurrentTensor *dt,Particle *p,double3 x_in,double3 x1_in)
+void CurrentToMesh(double tau,int *cells,DoubleCurrentTensor *dt,Particle *p,double3 x_in,double3 x1_in, double mass,double q_m)
 {
       double3 x2;
       double s;
@@ -1313,8 +1313,8 @@ void CurrentToMesh(double tau,int *cells,DoubleCurrentTensor *dt,Particle *p,dou
       double3 x1  = x1_in;
       Reflect(p);
 
-      double mass = p->m;
-      double q_m  = p->q_m;
+//      double mass = p->m;
+//      double q_m  = p->q_m;
 //      DoubleCurrentTensor dt;
       CurrentTensor t;
 
@@ -1831,7 +1831,7 @@ void MoveSingleParticle(unsigned int i, CellTotalField cf)
 	 }
 
 	 p = readParticleFromSurfaceDevice(i);
-	 CurrentToMesh(tau,cells,dt,&p,p.GetX(),p.GetX1());
+	 CurrentToMesh(tau,cells,dt,&p,p.GetX(),p.GetX1(),p.m,p.q_m);
 
      writeParticleToSurface(i,&p);
 
