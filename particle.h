@@ -37,6 +37,7 @@ typedef char gpu_string[200];
 
 class Particle
 {
+   double xc,yc,zc;
 
 public:  
   
