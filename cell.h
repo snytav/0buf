@@ -1407,9 +1407,7 @@ L11:
 
 	*cells = 2;
 
-L18:  p->x = p->x1;
-      p->y = p->y1;
-      p->z = p->z1;
+L18:
 
       Reflect(p);
 
@@ -1426,13 +1424,16 @@ L18:  p->x = p->x1;
 #endif
 void Reflect(Particle *p)
 {
+        p->x = p->x1;
+	    p->y = p->y1;
+	    p->z = p->z1;
         double3 x1 = p->GetX();
 
         x1.x = (x1.x > xm)*(x1.x - xm) + (x1.x < 0.0)*(xm + x1.x) + (x1.x > 0 && x1.x < xm)*x1.x;
         x1.y = (x1.y > ym)*(x1.y - ym) + (x1.y < 0.0)*(ym + x1.y) + (x1.y > 0 && x1.y < ym)*x1.y;
         x1.z = (x1.z > zm)*(x1.z - zm) + (x1.z < 0.0)*(zm + x1.z) + (x1.z > 0 && x1.z < zm)*x1.z;
 
-     	p->SetX(x1);
+	p->SetX(x1);
 
 
 }
