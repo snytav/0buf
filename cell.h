@@ -1846,6 +1846,9 @@ void MoveSingleParticle(unsigned int i, CellTotalField cf)
 
 	 p = readParticleFromSurfaceDevice(i);
 	 x = p.GetX();
+
+	 //p.get_reserved_coordinate(&(x.x),&(x.y),&(x.z));
+
 	 CurrentToMesh(tau,cells,dt,&p,x,p.GetX1(),p.m,p.q_m);
      Reflect(&p);
 
