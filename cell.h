@@ -63,21 +63,10 @@ surface<void, 2> particle_surface;
 
 
 /*
-#ifdef GPU_PARTICLE
-__device__ void writeParticleToSurface(int n,Particle *p)
-{
-   	double3 x;
-   	int size_p = sizeof(Particle);
-   	x = p->GetX();
-   	//surf2Dwrite(t,in_surface,ny*8,nx+shift);
-   	surf2Dwrite(x.x,particle_surface,1*8,n);
-   	surf2Dwrite(x.y,particle_surface,2*8,n);
-   	surf2Dwrite(x.z,particle_surface,3*8,n);
-}
+
 
 __device__ void addParticleToSurface(Particle *p,int *number_of_particles)
 {
-	writeParticleToSurface(*number_of_particles,p);
 	number_of_particles++;
 
 }
@@ -353,7 +342,7 @@ void
 {
 
 
-	writeParticleToSurface(*number_of_particles,p);
+	writeParticleToSurface(*number_of_particles,p);//ADD TO SURFACE
 
 //	atomicAdd(number_of_particles, 1);
 	(*number_of_particles)++;
@@ -1819,7 +1808,7 @@ void MoveSingleParticle(unsigned int i, CellTotalField cf)
 	 fd = GetField(&p,cf);
 
 	 p.Move(fd,tau);
-	 writeParticleToSurface(i,&p);
+	 writeParticleToSurface(i,&p);//MOVE
 }
 
 #ifdef __CUDACC__
@@ -1852,7 +1841,6 @@ void MoveSingleParticle(unsigned int i, CellTotalField cf)
 	 CurrentToMesh(tau,cells,dt,&p,x,p.GetX1(),p.m,p.q_m);
 //     Reflect(&p);
 
-//     writeParticleToSurface(i,&p);
 
 //     dt.t1 = *t1;
 //     dt.t2 = *t2;

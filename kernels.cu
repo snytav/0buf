@@ -177,7 +177,7 @@ __global__ void GPU_MakeDepartureLists(GPUCell  **cells,int nt,int *d_stage)
 			p = c->readParticleFromSurfaceDevice(num);
 
 			c->flyDirection(&p,&ix,&iy,&iz);
-			c->writeParticleToSurface(num,&p);
+			c->writeParticleToSurface(num,&p);//MAKE-DEP1
 				if(!c->isPointInCell(p.GetX()))   //check Paricle = operator !!!!!!!!!!!!!!!!!!!!!!!!!!!
 				{
 
@@ -185,7 +185,7 @@ __global__ void GPU_MakeDepartureLists(GPUCell  **cells,int nt,int *d_stage)
 //					printf("fly %d:(%d,%d,%d) %d \n",p.direction,ix,iy,iz,ix*9 +iy*3 +iz);
 
 
-					c->writeParticleToSurface(num,&p);
+					c->writeParticleToSurface(num,&p);//MAKE-DEP2
 
 
 //					if(p.direction == 0) printf("Blin-hren'\n");
@@ -1025,7 +1025,7 @@ __global__ void GPU_Reflect(GPUCell  **cells)
 	     Particle p = c->readParticleFromSurfaceDevice(index);
 	     c->Reflect(&p);
 
-	     c->writeParticleToSurface(index,&p);
+	     c->writeParticleToSurface(index,&p);//REFLECT
 
 	     index += blockDim.x;
 	 }
