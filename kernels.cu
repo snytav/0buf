@@ -923,10 +923,10 @@ __device__ void AccumulateCurrentWithParticlesInCell(
         			{
                         writeCurrentComponentSingle(&(c_jx[index%CellDouble_array_dim]),&(dt.t1.Jx),i,l,k);
 
-        			}
-
-                    for(k = 0;k < CellExtent;k++)
-                    {
+//        			}
+//
+//                    for(k = 0;k < CellExtent;k++)
+//                    {
                         writeCurrentComponentSingle2(&(c_jx[index%CellDouble_array_dim]),&(dt.t2.Jx), pqr2,i,l,k);
                     }
             }
