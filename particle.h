@@ -213,7 +213,7 @@ void Move(Field fd,double tau)
 //	x = x1;
 //	y = y1;
 //	z = z1;
-	xc.set(x,y,z);
+	set_reserved_coordinate(x,y,z);
 
 }
    
