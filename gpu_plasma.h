@@ -1799,6 +1799,20 @@ int StepAllCells(int nt,double mass,double q_mass)
 	   puts("end step");
 	   cudaDeviceSynchronize();
 
+	   void *args3[] = { (void* )&d_CellArray,0};
+	   	   cudaStatus = cudaFuncSetCacheConfig((const void*)GPU_Reflect,cudaFuncCachePreferShared);
+	   	   std::cout<<"cudaFuncSetCacheConfig returns "<<cudaStatus<<" "<<cudaGetErrorString(cudaStatus)<<std::endl;
+	   //	   GPU_CurrentsAllCells//<<<dimGrid, dimBlock,16000>>>(d_CellArray);//,0,d_Jx,
+	   	   cudaStatus = cudaLaunchKernel(
+	   	                                            (const void*)GPU_Reflect, // pointer to kernel func.
+	   	                                            dimGrid,                       // grid
+	   	                                            dimBlock,                      // block
+	   	                                            args3,                          // arguments
+	   	                                            4000,
+	   	                                            0
+	   	                                           );
+	   	   std::cout<<"GPU_CurrentsAllCells returns "<<cudaStatus<<" "<<cudaGetErrorString(cudaStatus)<<std::endl;
+
 	   puts("end step-12");
 
 	   return 0;
