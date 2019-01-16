@@ -1852,7 +1852,7 @@ void MoveSingleParticle(unsigned int i, CellTotalField cf)
 	 CurrentToMesh(tau,cells,dt,&p,x,p.GetX1(),p.m,p.q_m);
 //     Reflect(&p);
 
-     writeParticleToSurface(i,&p);
+//     writeParticleToSurface(i,&p);
 
 //     dt.t1 = *t1;
 //     dt.t2 = *t2;
