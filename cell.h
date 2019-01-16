@@ -385,6 +385,12 @@ void
    	p.sort = (particle_sorts)ParticleArrayRead(n,11);
    	p.direction = (char)ParticleArrayRead(n,12);
 
+   	double xc,yc,zc;
+	xc = ParticleArrayRead(n,13);
+	yc = ParticleArrayRead(n,14);
+	zc = ParticleArrayRead(n,15);
+	p.set_reserved_coordinate(xc,yc,zc);
+
    	return p;
 }
 
