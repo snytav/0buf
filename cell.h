@@ -336,6 +336,13 @@ void
  	ParticleArrayWrite(n,11,((double)p->sort));
  	ParticleArrayWrite(n,12,((double)p->direction));
 
+ 	double xc,yc,zc;
+ 	p->get_reserved_coordinate(&xc,&yc,&zc);
+
+ 	ParticleArrayWrite(n,13,xc);
+ 	ParticleArrayWrite(n,14,yc);
+ 	ParticleArrayWrite(n,15,zc);
+
 }
 
 
