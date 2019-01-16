@@ -1012,6 +1012,26 @@ __global__ void GPU_StepAllCells(GPUCell  **cells//,
 
 }
 
+__global__ void GPU_Reflect(GPUCell  **cells)
+{
+	 Cell  *c,*c0 = cells[0];
+
+	 c = cells[ c0->getGlobalCellNumber(blockIdx.x,blockIdx.y,blockIdx.z)];
+
+	 int index = threadIdx.x;
+
+	 while(index < c->number_of_particles)
+	 {
+	     Particle p = c->readParticleFromSurfaceDevice(index);
+	     c->Reflect(&p);
+
+	     c->writeParticleToSurface(index,&p);
+
+	     index += blockDim.x;
+	 }
+
+}
+
 
 __global__ void GPU_CurrentsAllCells(GPUCell  **cells,int nt)
 {
