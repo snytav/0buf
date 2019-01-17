@@ -923,6 +923,9 @@ __device__ void AccumulateCurrentWithParticlesInCell(
         			{
                         writeCurrentComponentSingle(&(c_jx[index%CellDouble_array_dim]),&(dt.t1.Jx),i,l,k);
                         writeCurrentComponentSingle2(&(c_jx[index%CellDouble_array_dim]),&(dt.t2.Jx), pqr2,i,l,k);
+
+                        writeCurrentComponentSingle(&(c_jy[index%CellDouble_array_dim]),&(dt.t1.Jy),i,l,k);
+                        writeCurrentComponentSingle2(&(c_jy[index%CellDouble_array_dim]),&(dt.t2.Jy), pqr2,i,l,k);
                     }
             }
         }
@@ -931,7 +934,7 @@ __device__ void AccumulateCurrentWithParticlesInCell(
 //    while(index < c->number_of_particles)
 //      {
 //          c->AccumulateCurrentSingleParticle    (index,&pqr2,&dt);
-        writeCurrentComponentY(&(c_jy[index%CellDouble_array_dim]),&(dt.t1.Jy),&(dt.t2.Jy),index,pqr2,c);
+//        writeCurrentComponentY(&(c_jy[index%CellDouble_array_dim]),&(dt.t1.Jy),&(dt.t2.Jy),index,pqr2,c);
         writeCurrentComponent(&(c_jz[index%CellDouble_array_dim]),&(dt.t1.Jz),&(dt.t2.Jz),pqr2);
 
         index += blockDimX;
