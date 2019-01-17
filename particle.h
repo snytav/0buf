@@ -48,7 +48,6 @@ class Coordinate{
 
 class Particle
 {
-   Coordinate xc;
 
 public:  
   
@@ -65,8 +64,6 @@ public:
 
 #endif   
 
-   __host__ __device__ void get_reserved_coordinate(double *x,double *y,double *z){*x = xc.getx(); *y = xc.gety();*z = xc.getz();}
-   __host__ __device__ void set_reserved_coordinate(double x,double y,double z){xc.set(x,y,z);}
 
 __host__ __device__ Particle(){}
 
@@ -213,7 +210,7 @@ void Move(Field fd,double tau)
 //	x = x1;
 //	y = y1;
 //	z = z1;
-	set_reserved_coordinate(x,y,z);
+
 
 }
    
