@@ -926,7 +926,10 @@ __device__ void AccumulateCurrentWithParticlesInCell(
 
                         writeCurrentComponentSingle(&(c_jy[index%CellDouble_array_dim]),&(dt.t1.Jy),i,l,k);
                         writeCurrentComponentSingle2(&(c_jy[index%CellDouble_array_dim]),&(dt.t2.Jy), pqr2,i,l,k);
-                    }
+
+//                        writeCurrentComponentSingle(&(c_jz[index%CellDouble_array_dim]),&(dt.t1.Jz),i,l,k);
+//                        writeCurrentComponentSingle2(&(c_jz[index%CellDouble_array_dim]),&(dt.t2.Jz), pqr2,i,l,k);
+                      }
             }
         }
 
