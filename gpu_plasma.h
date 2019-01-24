@@ -1788,7 +1788,7 @@ int StepAllCells(int nt,double mass,double q_mass)
        std::cout<<"GPU_StepAllCells returns "<<cudaStatus<<std::endl;
 	   dim3 dimBlock1(1,1,1);
 	   void *args1[] = { (void* )&d_CellArray,&nt,0};
-	   dim3 dimBlockExt(CellExtent,CellExtent,CellExtent);
+	   dim3 dimBlockExt(CellExtent,CellExtent,CellExtent*3);
 	   cudaStatus = cudaFuncSetCacheConfig((const void*)GPU_CurrentsAllCells_1,cudaFuncCachePreferShared);
 	   std::cout<<"cudaFuncSetCacheConfig returns "<<cudaStatus<<" "<<cudaGetErrorString(cudaStatus)<<std::endl;
 //	   GPU_CurrentsAllCells//<<<dimGrid, dimBlock,16000>>>(d_CellArray);//,0,d_Jx,

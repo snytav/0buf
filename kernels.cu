@@ -1083,7 +1083,9 @@ __global__ void GPU_CurrentsAllCells_1(GPUCell  **cells,int nt)
 	int pqr2;
 	int idx = threadIdx.x;
 	int idy = threadIdx.y;
-	int idz = threadIdx.z;
+	int idz = threadIdx.z%5;
+	int idj = threadIdx.z/5;
+
 	DoubleCurrentTensor dt;
 	Cell  *c,*c0 = cells[0];
 
@@ -1092,32 +1094,44 @@ __global__ void GPU_CurrentsAllCells_1(GPUCell  **cells,int nt)
 	for(int n = 0;n < c->number_of_particles;n++)
 	{
 		c->AccumulateCurrentSingleParticle(n,&pqr2,&dt);
-		add_fun(0, 0, 1, 2, t1, Jx, 0);
-		add_fun(0, 0, 1, 2, t1, Jy, 0);
-		add_fun(0, 0, 1, 2, t1, Jz, 0);
-		add_fun(1, 0, 1, 2, t1, Jx, 1);
-		add_fun(1, 0, 1, 2, t1, Jy, 1);
-		add_fun(1, 0, 1, 2, t1, Jz, 1);
-		add_fun(2, 0, 1, 2, t1, Jx, 2);
-		add_fun(2, 0, 1, 2, t1, Jy, 2);
-		add_fun(2, 0, 1, 2, t1, Jz, 2);
-		add_fun(3, 0, 1, 2, t1, Jx, 3);
-		add_fun(3, 0, 1, 2, t1, Jy, 3);
-		add_fun(3, 0, 1, 2, t1, Jz, 3);
+		if(idj == 0){
+			add_fun(0, 0, 1, 2, t1, Jx, 0);
+			add_fun(1, 0, 1, 2, t1, Jx, 1);
+			add_fun(2, 0, 1, 2, t1, Jx, 2);
+			add_fun(3, 0, 1, 2, t1, Jx, 3);
+		}
+		if(idj == 1){
+			add_fun(0, 0, 1, 2, t1, Jy, 0);
+			add_fun(1, 0, 1, 2, t1, Jy, 1);
+			add_fun(2, 0, 1, 2, t1, Jy, 2);
+			add_fun(3, 0, 1, 2, t1, Jy, 3);
+		}
+		if(idj == 2){
+			add_fun(0, 0, 1, 2, t1, Jz, 0);
+			add_fun(1, 0, 1, 2, t1, Jz, 1);
+			add_fun(2, 0, 1, 2, t1, Jz, 2);
+			add_fun(3, 0, 1, 2, t1, Jz, 3);
+		}
 		if(pqr2 == 2)
 		{
-			add_fun(0, 0, 1, 2, t2, Jx, 0);
-			add_fun(0, 0, 1, 2, t2, Jy, 0);
-			add_fun(0, 0, 1, 2, t2, Jz, 0);
-			add_fun(1, 0, 1, 2, t2, Jx, 1);
-			add_fun(1, 0, 1, 2, t2, Jy, 1);
-			add_fun(1, 0, 1, 2, t2, Jz, 1);
-			add_fun(2, 0, 1, 2, t2, Jx, 2);
-			add_fun(2, 0, 1, 2, t2, Jy, 2);
-			add_fun(2, 0, 1, 2, t2, Jz, 2);
-			add_fun(3, 0, 1, 2, t2, Jx, 3);
-			add_fun(3, 0, 1, 2, t2, Jy, 3);
-			add_fun(3, 0, 1, 2, t2, Jz, 3);
+			if(idj == 0){
+				add_fun(0, 0, 1, 2, t2, Jx, 0);
+				add_fun(1, 0, 1, 2, t2, Jx, 1);
+				add_fun(2, 0, 1, 2, t2, Jx, 2);
+				add_fun(3, 0, 1, 2, t2, Jx, 3);
+			}
+			if(idj == 1){
+				add_fun(0, 0, 1, 2, t2, Jy, 0);
+				add_fun(1, 0, 1, 2, t2, Jy, 1);
+				add_fun(2, 0, 1, 2, t2, Jy, 2);
+				add_fun(3, 0, 1, 2, t2, Jy, 3);
+			}
+			if(idj == 2){
+				add_fun(0, 0, 1, 2, t2, Jz, 0);
+				add_fun(1, 0, 1, 2, t2, Jz, 1);
+				add_fun(2, 0, 1, 2, t2, Jz, 2);
+				add_fun(3, 0, 1, 2, t2, Jz, 3);
+			}
 		}
 
 	}
