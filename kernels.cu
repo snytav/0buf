@@ -933,6 +933,7 @@ __device__ void AccumulateCurrentWithParticlesInCell(
             }
         }
 
+
 //
 //    while(index < c->number_of_particles)
 //      {
