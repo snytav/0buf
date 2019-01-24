@@ -16,40 +16,46 @@
 
 class LiteCurrentTensorComponent {
 public:
-	char i11, i12, i13,
-	 i21, i22, i23,
-	 i31, i32, i33,
-	 i41, i42, i43;
+	char ii[4][3];
+//	char i11, i12, i13,
+//	 i21, i22, i23,
+//	 i31, i32, i33,
+//	 i41, i42, i43;
 };
 
 
 class CurrentTensorComponent {
 public:
-	char i11, i12, i13,
-	 i21, i22, i23,
-	 i31, i32, i33,
-	 i41, i42, i43;
+	char ii[4][3];
+//	char i11, i12, i13,
+//	 i21, i22, i23,
+//	 i31, i32, i33,
+//	 i41, i42, i43;
 	double t[4];
 
 
 	__host__ __device__	CurrentTensorComponent & operator=(CurrentTensorComponent b)
 	{
 
-		i11 = b.i11;
-		i12 = b.i12;
-		i13 = b.i13;
+//		i11 = b.i11;
+//		i12 = b.i12;
+//		i13 = b.i13;
+//
+//		i21 = b.i21;
+//		i22 = b.i22;
+//		i23 = b.i23;
+//
+//		i31 = b.i31;
+//		i32 = b.i32;
+//		i33 = b.i33;
+//
+//		i41 = b.i41;
+//		i42 = b.i42;
+//		i43 = b.i43;
 
-		i21 = b.i21;
-		i22 = b.i22;
-		i23 = b.i23;
-
-		i31 = b.i31;
-		i32 = b.i32;
-		i33 = b.i33;
-
-		i41 = b.i41;
-		i42 = b.i42;
-		i43 = b.i43;
+		for(int i=0; i<4; i++)
+			for(int j=0; j<3; j++)
+				ii[i][j] = b.ii[i][j];
 
 		t[0] = b.t[0];
 		t[1] = b.t[1];

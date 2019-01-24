@@ -488,10 +488,11 @@ __global__ void GPU_CollectStrayParticles(Cell **cells,int nt
 
 __device__ int checkCurrentTensorComponentNonZero(CurrentTensorComponent *t1,int k)
 {
-	return (( (t1->i13 == k) && (fabs(t1->t[0]) > 1e-15)) ||
-			( (t1->i23 == k) && (fabs(t1->t[1]) > 1e-15)) ||
-			( (t1->i33 == k) && (fabs(t1->t[2]) > 1e-15)) ||
-			( (t1->i43 == k) && (fabs(t1->t[3]) > 1e-15))     );
+//	return (( (t1->i13 == k) && (fabs(t1->t[0]) > 1e-15)) ||
+//			( (t1->i23 == k) && (fabs(t1->t[1]) > 1e-15)) ||
+//			( (t1->i33 == k) && (fabs(t1->t[2]) > 1e-15)) ||
+//			( (t1->i43 == k) && (fabs(t1->t[3]) > 1e-15))     );
+	return 0; // temporary 'coz commented above
 }
 
 __device__ int checkCurrentTensorComponentNonZero(CurrentTensorComponent *t1)
@@ -508,19 +509,19 @@ __device__ double checkCurrentComponentImpact(
 		)
 {
 	double res = 0;
-    if((t1->i11 == i && t1->i12 == l && t1->i13 == k && (fabs(t1->t[0]) > 1e-15))) res = t1->t[0];
-    if((t1->i21 == i && t1->i22 == l && t1->i23 == k && (fabs(t1->t[1]) > 1e-15))) res = t1->t[1];
-    if((t1->i31 == i && t1->i32 == l && t1->i33 == k && (fabs(t1->t[2]) > 1e-15))) res = t1->t[2];
-    if((t1->i41 == i && t1->i42 == l && t1->i43 == k && (fabs(t1->t[3]) > 1e-15))) res = t1->t[3];
-
-
-    if(pqr2 == 2)
-    {
-    	if((t2->i11 == i && t2->i12 == l && t2->i13 == k && (fabs(t2->t[0]) > 1e-15))) res = t2->t[0];
-    	if((t2->i21 == i && t2->i22 == l && t2->i23 == k && (fabs(t2->t[1]) > 1e-15))) res = t2->t[1];
-    	if((t2->i31 == i && t2->i32 == l && t2->i33 == k && (fabs(t2->t[2]) > 1e-15))) res = t2->t[2];
-    	if((t2->i41 == i && t2->i42 == l && t2->i43 == k && (fabs(t2->t[3]) > 1e-15))) res = t2->t[3];
-    }
+//    if((t1->i11 == i && t1->i12 == l && t1->i13 == k && (fabs(t1->t[0]) > 1e-15))) res = t1->t[0];
+//    if((t1->i21 == i && t1->i22 == l && t1->i23 == k && (fabs(t1->t[1]) > 1e-15))) res = t1->t[1];
+//    if((t1->i31 == i && t1->i32 == l && t1->i33 == k && (fabs(t1->t[2]) > 1e-15))) res = t1->t[2];
+//    if((t1->i41 == i && t1->i42 == l && t1->i43 == k && (fabs(t1->t[3]) > 1e-15))) res = t1->t[3];
+//
+//
+//    if(pqr2 == 2)
+//    {
+//    	if((t2->i11 == i && t2->i12 == l && t2->i13 == k && (fabs(t2->t[0]) > 1e-15))) res = t2->t[0];
+//    	if((t2->i21 == i && t2->i22 == l && t2->i23 == k && (fabs(t2->t[1]) > 1e-15))) res = t2->t[1];
+//    	if((t2->i31 == i && t2->i32 == l && t2->i33 == k && (fabs(t2->t[2]) > 1e-15))) res = t2->t[2];
+//    	if((t2->i41 == i && t2->i42 == l && t2->i43 == k && (fabs(t2->t[3]) > 1e-15))) res = t2->t[3];
+//    }
     return fabs(res);
 }
 
@@ -532,87 +533,87 @@ __device__ void writeCurrentComponentY(CellDouble *J,
 //	int pqr2;
 //	c->AccumulateCurrentSingleParticle    (index,&pqr2,&dt);
 
-    atomicAdd(&(J->M[t1->i11][t1->i12][t1->i13]),t1->t[0]);
-    atomicAdd(&(J->M[t1->i21][t1->i22][t1->i23]),t1->t[1]);
-    atomicAdd(&(J->M[t1->i31][t1->i32][t1->i33]),t1->t[2]);
-    atomicAdd(&(J->M[t1->i41][t1->i42][t1->i43]),t1->t[3]);
-
-    if(pqr2 == 2)
-    {
-        atomicAdd(&(J->M[t2->i11][t2->i12][t2->i13]),t2->t[0]);
-        atomicAdd(&(J->M[t2->i21][t2->i22][t2->i23]),t2->t[1]);
-        atomicAdd(&(J->M[t2->i31][t2->i32][t2->i33]),t2->t[2]);
-        atomicAdd(&(J->M[t2->i41][t2->i42][t2->i43]),t2->t[3]);
-    }
+//    atomicAdd(&(J->M[t1->i11][t1->i12][t1->i13]),t1->t[0]);
+//    atomicAdd(&(J->M[t1->i21][t1->i22][t1->i23]),t1->t[1]);
+//    atomicAdd(&(J->M[t1->i31][t1->i32][t1->i33]),t1->t[2]);
+//    atomicAdd(&(J->M[t1->i41][t1->i42][t1->i43]),t1->t[3]);
+//
+//    if(pqr2 == 2)
+//    {
+//        atomicAdd(&(J->M[t2->i11][t2->i12][t2->i13]),t2->t[0]);
+//        atomicAdd(&(J->M[t2->i21][t2->i22][t2->i23]),t2->t[1]);
+//        atomicAdd(&(J->M[t2->i31][t2->i32][t2->i33]),t2->t[2]);
+//        atomicAdd(&(J->M[t2->i41][t2->i42][t2->i43]),t2->t[3]);
+//    }
 
 }
 
 __device__ void writeCurrentComponent(CellDouble *J,
 		CurrentTensorComponent *t1,CurrentTensorComponent *t2,int pqr2)
 {
-    atomicAdd(&(J->M[t1->i11][t1->i12][t1->i13]),t1->t[0]);
-    atomicAdd(&(J->M[t1->i21][t1->i22][t1->i23]),t1->t[1]);
-    atomicAdd(&(J->M[t1->i31][t1->i32][t1->i33]),t1->t[2]);
-    atomicAdd(&(J->M[t1->i41][t1->i42][t1->i43]),t1->t[3]);
-
-    if(pqr2 == 2)
-    {
-        atomicAdd(&(J->M[t2->i11][t2->i12][t2->i13]),t2->t[0]);
-        atomicAdd(&(J->M[t2->i21][t2->i22][t2->i23]),t2->t[1]);
-        atomicAdd(&(J->M[t2->i31][t2->i32][t2->i33]),t2->t[2]);
-        atomicAdd(&(J->M[t2->i41][t2->i42][t2->i43]),t2->t[3]);
-    }
+//    atomicAdd(&(J->M[t1->i11][t1->i12][t1->i13]),t1->t[0]);
+//    atomicAdd(&(J->M[t1->i21][t1->i22][t1->i23]),t1->t[1]);
+//    atomicAdd(&(J->M[t1->i31][t1->i32][t1->i33]),t1->t[2]);
+//    atomicAdd(&(J->M[t1->i41][t1->i42][t1->i43]),t1->t[3]);
+//
+//    if(pqr2 == 2)
+//    {
+//        atomicAdd(&(J->M[t2->i11][t2->i12][t2->i13]),t2->t[0]);
+//        atomicAdd(&(J->M[t2->i21][t2->i22][t2->i23]),t2->t[1]);
+//        atomicAdd(&(J->M[t2->i31][t2->i32][t2->i33]),t2->t[2]);
+//        atomicAdd(&(J->M[t2->i41][t2->i42][t2->i43]),t2->t[3]);
+//    }
 
 }
 
 __device__ void writeCurrentComponentSingle(CellDouble *J,CurrentTensorComponent *t1,int i,int l,int k)
 {
-	if(!checkCurrentTensorComponentNonZero(t1)) return;
-
-
-	if(i == t1->i11 && l == t1->i12 && k == t1->i13)
-	{
-       atomicAdd(&(J->M[t1->i11][t1->i12][t1->i13]),t1->t[0]);
-	}
-	if(i == t1->i21 && l == t1->i22 && k == t1->i23)
-	{
-       atomicAdd(&(J->M[t1->i21][t1->i22][t1->i23]),t1->t[1]);
-	}
-
-	if(i == t1->i31 && l == t1->i32 && k == t1->i33)
-	{
-       atomicAdd(&(J->M[t1->i31][t1->i32][t1->i33]),t1->t[2]);
-	}
-
-	if(i == t1->i41 && l == t1->i42 && k == t1->i43)
-	{
-       atomicAdd(&(J->M[t1->i41][t1->i42][t1->i43]),t1->t[3]);
-	}
+//	if(!checkCurrentTensorComponentNonZero(t1)) return;
+//
+//
+//	if(i == t1->i11 && l == t1->i12 && k == t1->i13)
+//	{
+//       atomicAdd(&(J->M[t1->i11][t1->i12][t1->i13]),t1->t[0]);
+//	}
+//	if(i == t1->i21 && l == t1->i22 && k == t1->i23)
+//	{
+//       atomicAdd(&(J->M[t1->i21][t1->i22][t1->i23]),t1->t[1]);
+//	}
+//
+//	if(i == t1->i31 && l == t1->i32 && k == t1->i33)
+//	{
+//       atomicAdd(&(J->M[t1->i31][t1->i32][t1->i33]),t1->t[2]);
+//	}
+//
+//	if(i == t1->i41 && l == t1->i42 && k == t1->i43)
+//	{
+//       atomicAdd(&(J->M[t1->i41][t1->i42][t1->i43]),t1->t[3]);
+//	}
 }
 
 __device__ void writeCurrentComponentSingle2(CellDouble *J,CurrentTensorComponent *t1,int pqr2,int i,int l,int k)
 {
 	if(pqr2 != 2) return;
 
-	if(i == t1->i11 && l == t1->i12 && k == t1->i13)
-	{
-       atomicAdd(&(J->M[t1->i11][t1->i12][t1->i13]),t1->t[0]);
-	}
-
-	if(i == t1->i21 &&  l == t1->i22 && k == t1->i23)
-	{
-       atomicAdd(&(J->M[t1->i21][t1->i22][t1->i23]),t1->t[1]);
-	}
-
-	if(i == t1->i31 && l == t1->i23 && k == t1->i33)
-	{
-       atomicAdd(&(J->M[t1->i31][t1->i32][t1->i33]),t1->t[2]);
-	}
-
-	if(i == t1->i41 && l == t1->i42 && k == t1->i43)
-	{
-       atomicAdd(&(J->M[t1->i41][t1->i42][t1->i43]),t1->t[3]);
-	}
+//	if(i == t1->i11 && l == t1->i12 && k == t1->i13)
+//	{
+//       atomicAdd(&(J->M[t1->i11][t1->i12][t1->i13]),t1->t[0]);
+//	}
+//
+//	if(i == t1->i21 &&  l == t1->i22 && k == t1->i23)
+//	{
+//       atomicAdd(&(J->M[t1->i21][t1->i22][t1->i23]),t1->t[1]);
+//	}
+//
+//	if(i == t1->i31 && l == t1->i23 && k == t1->i33)
+//	{
+//       atomicAdd(&(J->M[t1->i31][t1->i32][t1->i33]),t1->t[2]);
+//	}
+//
+//	if(i == t1->i41 && l == t1->i42 && k == t1->i43)
+//	{
+//       atomicAdd(&(J->M[t1->i41][t1->i42][t1->i43]),t1->t[3]);
+//	}
 }
 
 __device__ void copyCellDouble(CellDouble *dst,CellDouble *src,unsigned int n,uint3 block)
@@ -1070,10 +1071,12 @@ __global__ void GPU_CurrentsAllCells(GPUCell  **cells,int nt)
 			c->Jx->M[threadIdx.x][threadIdx.y][threadIdx.z] += dt.t1.Jx.t[num123]; \
 		}
 
-#define add_fun(k1, k2, k3, t1, Jx, num123) \
+#define add_fun2(k1, k2, k3, t1, Jx, num123) \
 		c->Jx->M[idx][idy][idz] +=  (dt.t1.Jx.k1 == idx &&  dt.t1.Jx.k2 == idy && dt.t1.Jx.k3 == idz ? 1.0 : 0.0) * dt.t1.Jx.t[num123];
 
 
+#define add_fun(i1, j1, j2, j3, t1, Jx, num123) \
+		c->Jx->M[idx][idy][idz] +=  (dt.t1.Jx.ii[i1][j1] == idx &&  dt.t1.Jx.ii[i1][j2] == idy && dt.t1.Jx.ii[i1][j3] == idz ? 1.0 : 0.0) * dt.t1.Jx.t[num123];
 
 __global__ void GPU_CurrentsAllCells_1(GPUCell  **cells,int nt)
 {
@@ -1089,32 +1092,32 @@ __global__ void GPU_CurrentsAllCells_1(GPUCell  **cells,int nt)
 	for(int n = 0;n < c->number_of_particles;n++)
 	{
 		c->AccumulateCurrentSingleParticle(n,&pqr2,&dt);
-		add_fun(i11, i12, i13, t1, Jx, 0);
-		add_fun(i11, i12, i13, t1, Jy, 0);
-		add_fun(i11, i12, i13, t1, Jz, 0);
-		add_fun(i21, i22, i23, t1, Jx, 1);
-		add_fun(i21, i22, i23, t1, Jy, 1);
-		add_fun(i21, i22, i23, t1, Jz, 1);
-		add_fun(i31, i32, i33, t1, Jx, 2);
-		add_fun(i31, i32, i33, t1, Jy, 2);
-		add_fun(i31, i32, i33, t1, Jz, 2);
-		add_fun(i41, i42, i43, t1, Jx, 3);
-		add_fun(i41, i42, i43, t1, Jy, 3);
-		add_fun(i41, i42, i43, t1, Jz, 3);
+		add_fun(0, 0, 1, 2, t1, Jx, 0);
+		add_fun(0, 0, 1, 2, t1, Jy, 0);
+		add_fun(0, 0, 1, 2, t1, Jz, 0);
+		add_fun(1, 0, 1, 2, t1, Jx, 1);
+		add_fun(1, 0, 1, 2, t1, Jy, 1);
+		add_fun(1, 0, 1, 2, t1, Jz, 1);
+		add_fun(2, 0, 1, 2, t1, Jx, 2);
+		add_fun(2, 0, 1, 2, t1, Jy, 2);
+		add_fun(2, 0, 1, 2, t1, Jz, 2);
+		add_fun(3, 0, 1, 2, t1, Jx, 3);
+		add_fun(3, 0, 1, 2, t1, Jy, 3);
+		add_fun(3, 0, 1, 2, t1, Jz, 3);
 		if(pqr2 == 2)
 		{
-			add_fun(i11, i12, i13, t2, Jx, 0);
-			add_fun(i11, i12, i13, t2, Jy, 0);
-			add_fun(i11, i12, i13, t2, Jz, 0);
-			add_fun(i21, i22, i23, t2, Jx, 1);
-			add_fun(i21, i22, i23, t2, Jy, 1);
-			add_fun(i21, i22, i23, t2, Jz, 1);
-			add_fun(i31, i32, i33, t2, Jx, 2);
-			add_fun(i31, i32, i33, t2, Jy, 2);
-			add_fun(i31, i32, i33, t2, Jz, 2);
-			add_fun(i41, i42, i43, t2, Jx, 3);
-			add_fun(i41, i42, i43, t2, Jy, 3);
-			add_fun(i41, i42, i43, t2, Jz, 3);
+			add_fun(0, 0, 1, 2, t2, Jx, 0);
+			add_fun(0, 0, 1, 2, t2, Jy, 0);
+			add_fun(0, 0, 1, 2, t2, Jz, 0);
+			add_fun(1, 0, 1, 2, t2, Jx, 1);
+			add_fun(1, 0, 1, 2, t2, Jy, 1);
+			add_fun(1, 0, 1, 2, t2, Jz, 1);
+			add_fun(2, 0, 1, 2, t2, Jx, 2);
+			add_fun(2, 0, 1, 2, t2, Jy, 2);
+			add_fun(2, 0, 1, 2, t2, Jz, 2);
+			add_fun(3, 0, 1, 2, t2, Jx, 3);
+			add_fun(3, 0, 1, 2, t2, Jy, 3);
+			add_fun(3, 0, 1, 2, t2, Jz, 3);
 		}
 
 	}

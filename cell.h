@@ -1553,24 +1553,24 @@ void pqr(int3& i,double3& x,double3& x1,double& a1,double tau,CurrentTensor *t1,
       d_ctrlParticles[ParticleAttributePosition(jmp,p->fortran_number,p->sort,64+num)] = i.z+this->k -1;
 #endif
 
-      t1->Jx.i11 = i.x;
-      t1->Jx.i12 = i.y;
-      t1->Jx.i13 = i.z;
+      t1->Jx.ii[0][0] = i.x;
+      t1->Jx.ii[0][1] = i.y;
+      t1->Jx.ii[0][2] = i.z;
       t1->Jx.t[0] = su*(dy1*dz1+s1);
 
-      t1->Jx.i21 = i.x;
-      t1->Jx.i22 = i.y;
-      t1->Jx.i23 = i.z+1;
+      t1->Jx.ii[1][0] = i.x;
+      t1->Jx.ii[1][1] = i.y;
+      t1->Jx.ii[1][2] = i.z+1;
       t1->Jx.t[1] = su*(dy1*dz-s1);
 
-      t1->Jx.i31 = i.x;
-      t1->Jx.i32 = i.y+1;
-      t1->Jx.i33 = i.z;
+      t1->Jx.ii[2][0] = i.x;
+      t1->Jx.ii[2][1] = i.y+1;
+      t1->Jx.ii[2][2] = i.z;
       t1->Jx.t[2] = su*(dy*dz1-s1);
 
-      t1->Jx.i41 = i.x;
-      t1->Jx.i42 = i.y+1;
-      t1->Jx.i43 = i.z+1;
+      t1->Jx.ii[3][0] = i.x;
+      t1->Jx.ii[3][1] = i.y+1;
+      t1->Jx.ii[3][2] = i.z+1;
       t1->Jx.t[3] = su*(dy*dz+s1);
 #ifdef ATTRIBUTES_CHECK
       d_ctrlParticles[ParticleAttributePosition(jmp,p->fortran_number,p->sort,66+num)] = su*(dy1*dz1+s1);
@@ -1584,24 +1584,24 @@ void pqr(int3& i,double3& x,double3& x1,double& a1,double tau,CurrentTensor *t1,
       p(i,l+1,k+1)=p(i,l+1,k+1)+su*(dy*dz+s1) */
 
       //Kernel(*Jy,i.x,i.y,i.z, i.x,i.y,i.z+1, i.x+1,i.y,i.z,    i.x+1,i.y,i.z+1,sv,dx,dz,dx1,dz1,s2);
-      t1->Jy.i11 = i.x;
-      t1->Jy.i12 = i.y;
-      t1->Jy.i13 = i.z;
+      t1->Jy.ii[0][0] = i.x;
+      t1->Jy.ii[0][1] = i.y;
+      t1->Jy.ii[0][2] = i.z;
       t1->Jy.t[0] = sv*(dx1*dz1+s2);
 
-      t1->Jy.i21 = i.x;
-      t1->Jy.i22 = i.y;
-      t1->Jy.i23 = i.z+1;
+      t1->Jy.ii[1][0] = i.x;
+      t1->Jy.ii[1][1] = i.y;
+      t1->Jy.ii[1][2] = i.z+1;
       t1->Jy.t[1] = sv*(dx1*dz-s2);
 
-      t1->Jy.i31 = i.x+1;
-      t1->Jy.i32 = i.y;
-      t1->Jy.i33 = i.z;
+      t1->Jy.ii[2][0] = i.x+1;
+      t1->Jy.ii[2][1] = i.y;
+      t1->Jy.ii[2][2] = i.z;
       t1->Jy.t[2] = sv*(dx*dz1-s2);
 
-      t1->Jy.i41 = i.x+1;
-      t1->Jy.i42 = i.y;
-      t1->Jy.i43 = i.z+1;
+      t1->Jy.ii[3][0] = i.x+1;
+      t1->Jy.ii[3][1] = i.y;
+      t1->Jy.ii[3][2] = i.z+1;
       t1->Jy.t[3] = sv*(dx*dz+s2);
 #ifdef ATTRIBUTES_CHECK
       d_ctrlParticles[ParticleAttributePosition(jmp,p->fortran_number,p->sort,74+num)] = sv*(dx1*dz1+s2);
@@ -1616,24 +1616,24 @@ void pqr(int3& i,double3& x,double3& x1,double& a1,double tau,CurrentTensor *t1,
       q(i+1,l,k+1)=q(i+1,l,k+1)+sv*(dx*dz+s2) */
 
 //      Kernel(*Jz,i.x,i.y,i.z,    i.x,i.y+1,i.z,            i.x+1,i.y,i.z,          i.x+1,i.y+1,i.z,sw,dx,dy,dx1,dy1,s3);
-      t1->Jz.i11 = i.x;
-      t1->Jz.i12 = i.y;
-      t1->Jz.i13 = i.z;
+      t1->Jz.ii[0][0] = i.x;
+      t1->Jz.ii[0][1] = i.y;
+      t1->Jz.ii[0][2] = i.z;
       t1->Jz.t[0] = sw*(dx1*dy1+s3);
 
-      t1->Jz.i21 = i.x;
-      t1->Jz.i22 = i.y+1;
-      t1->Jz.i23 = i.z;
+      t1->Jz.ii[1][0] = i.x;
+      t1->Jz.ii[1][1] = i.y+1;
+      t1->Jz.ii[1][2] = i.z;
       t1->Jz.t[1] = sw*(dx1*dy-s3);
 
-      t1->Jz.i31 = i.x+1;
-      t1->Jz.i32 = i.y;
-      t1->Jz.i33 = i.z;
+      t1->Jz.ii[2][0] = i.x+1;
+      t1->Jz.ii[2][1] = i.y;
+      t1->Jz.ii[2][2] = i.z;
       t1->Jz.t[2] = sw*(dx*dy1-s3);
 
-      t1->Jz.i41 = i.x+1;
-      t1->Jz.i42 = i.y+1;
-      t1->Jz.i43 = i.z;
+      t1->Jz.ii[3][0] = i.x+1;
+      t1->Jz.ii[3][1] = i.y+1;
+      t1->Jz.ii[3][2] = i.z;
       t1->Jz.t[3] = sw*(dx*dy+s3);
 #ifdef ATTRIBUTES_CHECK
       d_ctrlParticles[ParticleAttributePosition(jmp,p->fortran_number,p->sort,82+num)] = sw*(dx1*dy1+s3);
