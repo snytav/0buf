@@ -1065,15 +1065,22 @@ __global__ void GPU_CurrentsAllCells(GPUCell  **cells,int nt)
     copyFromSharedMemoryToCell(c_jx,c_jy,c_jz,c,threadIdx.x,blockDim.x,blockIdx);
 }
 
-#define add_fun(k1, k2, k3, t1, Jx, num123) \
+#define add_fun1(k1, k2, k3, t1, Jx, num123) \
 		if(dt.t1.Jx.k1 == threadIdx.x &&  dt.t1.Jx.k2 == threadIdx.y && dt.t1.Jx.k3 == threadIdx.z){ \
 			c->Jx->M[threadIdx.x][threadIdx.y][threadIdx.z] += dt.t1.Jx.t[num123]; \
 		}
+
+#define add_fun(k1, k2, k3, t1, Jx, num123) \
+		c->Jx->M[idx][idy][idz] +=  (dt.t1.Jx.k1 == idx &&  dt.t1.Jx.k2 == idy && dt.t1.Jx.k3 == idz ? 1.0 : 0.0) * dt.t1.Jx.t[num123];
+
 
 
 __global__ void GPU_CurrentsAllCells_1(GPUCell  **cells,int nt)
 {
 	int pqr2;
+	int idx = threadIdx.x;
+	int idy = threadIdx.y;
+	int idz = threadIdx.z;
 	DoubleCurrentTensor dt;
 	Cell  *c,*c0 = cells[0];
 

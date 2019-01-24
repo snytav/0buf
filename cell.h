@@ -1804,7 +1804,7 @@ void MoveSingleParticle(unsigned int i, CellTotalField cf)
 #ifdef __CUDACC__
  __host__ __device__
  #endif
- DoubleCurrentTensor AccumulateCurrentSingleParticle(unsigned int i,int *cells,DoubleCurrentTensor *dt)
+void AccumulateCurrentSingleParticle(unsigned int i,int *cells,DoubleCurrentTensor *dt)
  {
 	 Particle p;
 	 double3 x;
@@ -1820,7 +1820,7 @@ void MoveSingleParticle(unsigned int i, CellTotalField cf)
 		 dt->t1.Jz = dt->t1.Jx;
 		 dt->t2    = dt->t1;
 
-		 return (*dt);
+//		 return (*dt);
 	 }
 
 	 p = readParticleFromSurfaceDevice(i);
@@ -1835,7 +1835,7 @@ void MoveSingleParticle(unsigned int i, CellTotalField cf)
 //     dt.t1 = *t1;
 //     dt.t2 = *t2;
 
-     return (*dt);
+//     return (*dt);
 }
 
 
