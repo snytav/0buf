@@ -1034,7 +1034,6 @@ __global__ void GPU_Reflect(GPUCell  **cells)
 
 }
 
-
 __global__ void GPU_CurrentsAllCells(GPUCell  **cells,int nt)
 {
 	Cell  *c,*c0 = cells[0];
@@ -1064,6 +1063,54 @@ __global__ void GPU_CurrentsAllCells(GPUCell  **cells,int nt)
 	addCellDouble(c_jz,&(m_c_jz[0]),threadIdx.x,blockIdx,CURRENT_SUM_BUFFER_LENGTH);
 
     copyFromSharedMemoryToCell(c_jx,c_jy,c_jz,c,threadIdx.x,blockDim.x,blockIdx);
+}
+
+#define add_fun(k1, k2, k3, t1, Jx, num123) \
+		if(dt.t1.Jx.k1 == threadIdx.x &&  dt.t1.Jx.k2 == threadIdx.y && dt.t1.Jx.k3 == threadIdx.z){ \
+			c->Jx->M[threadIdx.x][threadIdx.y][threadIdx.z] += dt.t1.Jx.t[num123]; \
+		}
+
+
+__global__ void GPU_CurrentsAllCells_1(GPUCell  **cells,int nt)
+{
+	int pqr2;
+	DoubleCurrentTensor dt;
+	Cell  *c,*c0 = cells[0];
+
+	c = cells[ c0->getGlobalCellNumber(blockIdx.x,blockIdx.y,blockIdx.z)];
+
+	for(int n = 0;n < c->number_of_particles;n++)
+	{
+		c->AccumulateCurrentSingleParticle(n,&pqr2,&dt);
+		add_fun(i11, i12, i13, t1, Jx, 0);
+		add_fun(i11, i12, i13, t1, Jy, 0);
+		add_fun(i11, i12, i13, t1, Jz, 0);
+		add_fun(i21, i22, i23, t1, Jx, 1);
+		add_fun(i21, i22, i23, t1, Jy, 1);
+		add_fun(i21, i22, i23, t1, Jz, 1);
+		add_fun(i31, i32, i33, t1, Jx, 2);
+		add_fun(i31, i32, i33, t1, Jy, 2);
+		add_fun(i31, i32, i33, t1, Jz, 2);
+		add_fun(i41, i42, i43, t1, Jx, 3);
+		add_fun(i41, i42, i43, t1, Jy, 3);
+		add_fun(i41, i42, i43, t1, Jz, 3);
+		if(pqr2 == 2)
+		{
+			add_fun(i11, i12, i13, t2, Jx, 0);
+			add_fun(i11, i12, i13, t2, Jy, 0);
+			add_fun(i11, i12, i13, t2, Jz, 0);
+			add_fun(i21, i22, i23, t2, Jx, 1);
+			add_fun(i21, i22, i23, t2, Jy, 1);
+			add_fun(i21, i22, i23, t2, Jz, 1);
+			add_fun(i31, i32, i33, t2, Jx, 2);
+			add_fun(i31, i32, i33, t2, Jy, 2);
+			add_fun(i31, i32, i33, t2, Jz, 2);
+			add_fun(i41, i42, i43, t2, Jx, 3);
+			add_fun(i41, i42, i43, t2, Jy, 3);
+			add_fun(i41, i42, i43, t2, Jz, 3);
+		}
+
+	}
 }
 
 
